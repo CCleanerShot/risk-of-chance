@@ -1,0 +1,4 @@
+- x get supabase connection working
+- customize supabase connection cuz apparently its kinda weird to be using the template thingy
+- map out game
+- implement game
