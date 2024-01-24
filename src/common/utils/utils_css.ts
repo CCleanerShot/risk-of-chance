@@ -27,34 +27,31 @@ export default class UtilsCSS {
 		return result.join(" ");
 	}
 
-	static returnStylesFromAlignment(alignment: Alignment) {
-		let styles = "";
-		styles += "left-0";
+	static returnPositionFromAlignment(alignment: Alignment) {
+		let alignmentStyles: { left: 0; top: 0; transform: { x: string; y: string } } = { left: 0, top: 0, transform: { x: "", y: "" } };
 		switch (alignment.x) {
 			case "left":
 				break;
 			case "middle":
-				styles += "calc(50vw-50%)";
+				alignmentStyles.transform.x = "calc( 50vw - 50% )";
 				break;
 			case "right":
-				styles += "calc(100vw-100%)";
+				alignmentStyles.transform.x = "calc( 100vw - 100% )";
 				break;
 		}
 
-		styles += "top-0";
 		switch (alignment.y) {
 			case "top":
 				break;
 			case "middle":
-				styles += "calc(50vh-50%)";
+				alignmentStyles.transform.y = "calc( 50vh - 50% )";
 				break;
 			case "bottom":
-				styles += "calc(100vh-100%)";
+				alignmentStyles.transform.y = "calc( 100vh - 100% )";
 				break;
 		}
 
-		const resultStyles = `transform[${styles}]`;
-		return resultStyles;
+		return alignmentStyles;
 	}
 
 	static returnStylesFromSize(size: SizeTypes) {

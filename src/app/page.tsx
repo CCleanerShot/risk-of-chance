@@ -1,5 +1,5 @@
-import View from "@/app/components/Logic/View";
-import ModalAuth from "./components/Logic/ModalAuth";
+import View from "@/app/components/Logic/View/View";
+import ModalAuth from "./components/Logic/ModalAuth/ModalAuth";
 
 export default function Home() {
 	return (

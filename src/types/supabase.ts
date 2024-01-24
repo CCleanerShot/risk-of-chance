@@ -9,28 +9,61 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
-      items: {
+      user_dices: {
         Row: {
-          created_at: string
-          id: number
-          item_name: string
-          user_origin: number | null
+          item_origin: string
+          sides: number
+          user_origin: string
         }
         Insert: {
-          created_at?: string
-          id?: number
-          item_name: string
-          user_origin?: number | null
+          item_origin: string
+          sides: number
+          user_origin: string
         }
         Update: {
-          created_at?: string
-          id?: number
-          item_name?: string
-          user_origin?: number | null
+          item_origin?: string
+          sides?: number
+          user_origin?: string
         }
         Relationships: [
           {
-            foreignKeyName: "items_user_origin_fkey"
+            foreignKeyName: "user_dices_item_origin_fkey"
+            columns: ["item_origin"]
+            isOneToOne: true
+            referencedRelation: "user_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_dices_user_origin_fkey"
+            columns: ["user_origin"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      user_items: {
+        Row: {
+          created_at: string
+          id: string
+          type: string
+          user_origin: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          type: string
+          user_origin: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          type?: string
+          user_origin?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_items_user_origin_fkey"
             columns: ["user_origin"]
             isOneToOne: false
             referencedRelation: "users"
@@ -41,20 +74,31 @@ export interface Database {
       users: {
         Row: {
           created_at: string
-          id: number
+          id: string
+          oauth_origin: string
           username: string
         }
         Insert: {
           created_at?: string
-          id?: number
+          id?: string
+          oauth_origin: string
           username: string
         }
         Update: {
           created_at?: string
-          id?: number
+          id?: string
+          oauth_origin?: string
           username?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "users_oauth_origin_fkey"
+            columns: ["oauth_origin"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
       }
     }
     Views: {

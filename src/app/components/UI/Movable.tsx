@@ -39,10 +39,17 @@ const Movable = ({ children, className, defaultPosition }: MovableProps) => {
 		setIsDragged(false);
 	};
 
-	const defaultAlignment = UtilsCSS.returnStylesFromAlignment(defaultPosition);
+	const { left, top, transform } = UtilsCSS.returnPositionFromAlignment(defaultPosition);
 
 	return (
-		<div style={newPosition ? { left: newPosition.x, top: newPosition.y } : {}} className={twMerge(!newPosition ? defaultAlignment : "", isDragged ? "bg-green-200" : "", "fixed", className)} onDragStart={handleDragStart} onDrag={handleDrag} onDragEnd={handleDragEnd}>
+		<div
+			draggable
+			style={newPosition ? { left: newPosition.x, top: newPosition.y } : { left: 0, top: 0, transform: `translate(${transform.x}, ${transform.y})` }}
+			className={twMerge(isDragged ? "bg-green-200" : "", "fixed", className)}
+			onDragStart={handleDragStart}
+			onDrag={handleDrag}
+			onDragEnd={handleDragEnd}
+		>
 			{children}
 		</div>
 	);

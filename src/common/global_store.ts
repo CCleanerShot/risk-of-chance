@@ -1,6 +1,7 @@
 import { supabase } from "@/common/utils/utils_supabase";
 import { SupabaseSession } from "@/types";
-import { ModalAuthTabTypes, StatusColorTypes, SupabaseSessionStatus } from "@/types/local";
+import { ModalAuthTabTypes, StatusColorTypes, SupabaseSessionStatus } from "@/types";
+import { Game, NPC } from "@/types/game";
 
 type VariableType<T extends any, K extends (args: any) => void> = {
 	variable: T;
@@ -98,7 +99,8 @@ export const wrapperList = {};
 /** TO ENSURE INTELLISENSE, JUST ADD ADDITIONAL ITEMS HERE AS NEEDED */
 export const contextsList = {
 	supabaseClient: GlobalStore.AddVariableToGlobalStore({ supabaseClient: supabase }),
-	supabaseSession: GlobalStore.AddVariableToGlobalStore({ supabaseSession: { data: { session: null }, error: null } as SupabaseSession, status: "none" as SupabaseSessionStatus }),
-	modalAuth: GlobalStore.AddVariableToGlobalStore({ isOpened: false, tab: "signin" as ModalAuthTabTypes }),
-	statusColor: GlobalStore.AddVariableToGlobalStore({ statusColor: "red" as StatusColorTypes }),
+	supabaseSessionStatus: GlobalStore.AddVariableToGlobalStore({ status: "none" as SupabaseSessionStatus }),
+	modalAuth: GlobalStore.AddVariableToGlobalStore({ isOpened: false }),
+	isLoading: GlobalStore.AddVariableToGlobalStore({ isLoading: false }),
+	game: GlobalStore.AddVariableToGlobalStore({ game: { gameStatus: { type: "start" }, player: { name: "", items: [] } } as Game }),
 } as const;
