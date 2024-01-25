@@ -1,20 +1,18 @@
 import dotenv from "dotenv";
 import { Session, createClient } from "@supabase/supabase-js";
-import { Database, ProviderTypes, SupabaseSession } from "@/types";
+import { Database, Json, ProviderTypes, SupabaseSession } from "@/types";
 import GlobalStore from "../global_store";
-import { Item, ItemDB } from "@/types/game";
+import { Backpack, Dice, Inventory, Item, ItemDB } from "@/types/game";
 
 const URL = process.env.NEXT_PUBLIC_SUPABASE_HOST_URL;
 const PUBLIC_KEY = process.env.NEXT_PUBLIC_SUPABASE_PUBLIC_KEY;
 
 export const supabase = createClient<Database>(URL, PUBLIC_KEY);
 
+// prettier-ignore
 export const queries = {
-	createUser: async (oauth_origin: string, username: string) => await supabase.from("users").insert({ oauth_origin: oauth_origin, username: username }),
-	getBackpackByUserOrigin: async (user_id: string) => await supabase.from("user_dices").select("*, user_items ( user_origin, type ) ").eq("user_origin", user_id),
-	addItemToBackpackByUserOrigin: async (type: string, user_id: string) => await supabase.from("user_items").insert({ type: type, user_origin: user_id }),
-	addDiceDetailsToItemWithIDOriginAndUserOrigin: async (sides: number, item_id: string, user_id: string) => await supabase.from("user_dices").insert({ item_origin: item_id, sides: sides, user_origin: user_id }),
-	deleteItemFromBackpackByUserOrigin: async (item_id: string, user_id: string) => await supabase.from("user_items").delete().eq("user_origin", user_id).eq("id", item_id),
+	createUser: async (oauth_origin: string, username: string) => await supabase.from("users").insert({ oauth_origin: oauth_origin, username: username, inventory: null }),
+	UpdateInventory: async (backpack: Backpack, session_id: string) => await supabase.from("users").update({ backpack: JSON.stringify(backpack) }).eq("oauth_origin", session_id),
 } as const;
 
 export default class UtilsSupabase {
