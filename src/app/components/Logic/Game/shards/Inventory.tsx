@@ -28,7 +28,7 @@ const Inventory = () => {
 					if (item === null) {
 						return <Button onClick={() => {}} template="green_border" className="w-8 h-8 border border-white"></Button>;
 					} else {
-						return <ItemContainer key={`inventory${index}`} item={item} className="w-8 h-8" />;
+						return <ItemContainer key={`inventory${index}`} item={item} className="w-8 h-8" origin="inventory" />;
 					}
 				})}
 			</div>

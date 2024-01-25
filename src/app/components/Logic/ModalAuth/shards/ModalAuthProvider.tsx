@@ -16,7 +16,7 @@ const ModalAuthProvider = ({ provider }: ModalAuthProviderProps) => {
 	return (
 		<Button onClick={handleClick} template="standard" className="flex justify-between gap-2 group">
 			<div>{`Sign In/Sign Up with ${Utils.firstLetterUppercase(provider)}`}</div>
-			<SVG size="large" url={`images/${provider}.svg`} className="transition h-6 w-6 group-hover:bg-green-500" />
+			<SVG size="large" url={`images/${provider}.svg`} className="transition h-6 w-6 group-hover:bg-green-600" />
 		</Button>
 	);
 };

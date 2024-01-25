@@ -1,17 +1,21 @@
 import { Dice, Item } from "@/types/game";
 import Utils from "../utils/utils";
+import GlobalStore from "../global_store";
+import { StorageTypes } from "@/types";
 
 export default class UtilsGame {
+	static MAX_LIFE = 2;
 	static MIN_DIFFICULTY = 9;
 	static MAX_DIFFICULTY = 680;
 	static MIN_FLOORS = 1;
 	static MAX_FLOORS = 100;
 	static MAX_BACKPACK_SIZE = 100;
 	static MAX_INVENTORY_SIZE = 9;
+	static MAX_BATTLE_ITEMS_SIZE = 3;
 	static slope = (UtilsGame.MAX_DIFFICULTY - UtilsGame.MIN_DIFFICULTY) / (UtilsGame.MAX_FLOORS - UtilsGame.MIN_FLOORS);
 	static intercept = UtilsGame.MIN_DIFFICULTY / UtilsGame.slope;
 
-	static generateEnemyInventory(lvl: number): Item[] {
+	static createEnemyInventory(lvl: number): Item[] {
 		const inv: Item[] = [];
 		const totalPool = Math.floor(UtilsGame.slope * lvl + UtilsGame.intercept);
 
@@ -31,4 +35,12 @@ export default class UtilsGame {
 		inv.push(...finalNumbers.map((number) => new Dice(number)));
 		return inv as Item[];
 	}
+
+	static generateFloor(lvl: number) {
+		// TODO: add more cool things to a lvl
+		const enemyInventory = UtilsGame.createEnemyInventory(lvl);
+		GlobalStore.UpdateVariableProperty("game", "game", { currentFloor: lvl, gameStatus: { type: "battle", turn: "player", enemyInventory: enemyInventory } });
+	}
+
+	static MoveItem(item: Item, source: StorageTypes, destination: StorageTypes) {}
 }

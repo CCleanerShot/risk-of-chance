@@ -15,13 +15,13 @@ const Corner = ({ color, facing, size }: CornerProps) => {
 
 	switch (color) {
 		case "red":
-			colorStyles = "border-red-500";
+			colorStyles = "border-red-600";
 			break;
 		case "green":
-			colorStyles = "border-green-500";
+			colorStyles = "border-green-600";
 			break;
 		case "yellow":
-			colorStyles = "border-yellow-500";
+			colorStyles = "border-yellow-600";
 			break;
 	}
 

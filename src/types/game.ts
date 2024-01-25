@@ -30,13 +30,17 @@ export class DiceDB extends Dice {
 	}
 }
 
-export type GameStatusTypes = { type: "battle"; turn: "player" | "enemy" } | { type: "start" } | { type: "loot" };
+export type GameStatusTypes = { type: "battle"; turn: "player" | "enemy"; enemyInventory: Item[] } | { type: "start" } | { type: "loot" };
 export interface Game {
-	player: NPC;
 	gameStatus: GameStatusTypes;
-	currentLevel: number;
+	currentFloor: number;
 }
 
 // to check if database query matches the type of a backpack
 export const backpackConst = [{ type: "dice", sides: 1 } as Dice] as Item[];
 export type Backpack = typeof backpackConst;
+
+export interface Health {
+	current: number;
+	max: number;
+}

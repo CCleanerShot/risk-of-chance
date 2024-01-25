@@ -4,23 +4,30 @@ import Button from "@/app/components/UI/Button";
 import GlobalStore from "@/common/global_store";
 import { Dice, Item } from "@/types/game";
 import { twMerge } from "tailwind-merge";
+import { StorageTypes } from "@/types";
 
 // TODO: refactor from 100 different buttons listening on everything, to a radio-like system where only the submit button knows
 
-interface ItemButtonProps {
+interface ItemContainerProps {
 	item: Item;
+	origin: StorageTypes;
 	className?: string;
 }
 
-const ItemButton = ({ item, className }: ItemButtonProps) => {
+const ItemContainer = ({ item, origin, className }: ItemContainerProps) => {
 	const [isSelected, setIsSelected] = useState(false);
 
 	const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+		const currentStage = GlobalStore.getFromGlobalStore("game").game.gameStatus.type;
+		switch (origin) {
+			case "backpack": {
+			}
+		}
 		GlobalStore.UpdateVariableProperty("viewSelected", "itemSelect", item);
 	};
 
 	const listenToViewSelected = () => {
-		const { itemSelect, levelSelect } = GlobalStore.getFromGlobalStore("viewSelected");
+		const { itemSelect, floorSelect } = GlobalStore.getFromGlobalStore("viewSelected");
 		setIsSelected(itemSelect === item);
 	};
 
@@ -46,10 +53,10 @@ const ItemButton = ({ item, className }: ItemButtonProps) => {
 	};
 
 	return (
-		<Button template="green_border" className={twMerge(" text-white border border-slate-900 p-1", isSelected ? "text-green-500" : "", className)} onClick={handleClick}>
+		<Button template="green_border" className={twMerge(" text-white border border-slate-900 p-1", isSelected ? "text-green-600" : "", className)} onClick={handleClick}>
 			<Contents />
 		</Button>
 	);
 };
 
-export default ItemButton;
+export default ItemContainer;

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import GlobalStore from "@/common/global_store";
-import { Backpack, Dice } from "@/types/game";
+import { Backpack } from "@/types/game";
 import UtilsSupabase from "@/common/utils/utils_supabase";
 import UtilsGame from "@/common/utils/utils_game";
 import Utils from "@/common/utils/utils";
@@ -35,13 +35,13 @@ const Backpack = () => {
 
 	return (
 		<div>
-			<H1>Level Select</H1>
+			<H1>Backpack</H1>
 			<div className="grid grid-cols-10 gap-1">
 				{Utils.MakeArray(UtilsGame.MAX_BACKPACK_SIZE, (i) => i).map((index) => {
 					if (backpack[index]) {
 						return (
 							<Container key={`item${index}`}>
-								<ItemContainer item={backpack[index]} />;
+								<ItemContainer item={backpack[index]} origin="backpack" />;
 							</Container>
 						);
 					} else {

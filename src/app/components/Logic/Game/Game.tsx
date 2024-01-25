@@ -1,7 +1,7 @@
 "use effect";
 
 import React, { useEffect, useState } from "react";
-import Levels from "./shards/Levels";
+import Floors from "./shards/Floors";
 import Backpack from "./shards/Backpack";
 import { GameStatusTypes } from "@/types/game";
 import GlobalStore from "@/common/global_store";
@@ -30,7 +30,7 @@ const Game = () => {
 						<Backpack />
 						<Inventory />
 					</div>
-					<Levels />
+					<Floors />
 				</div>
 			);
 		case "loot":

@@ -1,6 +1,6 @@
 import { supabase } from "@/common/utils/utils_supabase";
 import { MessageTypes, SupabaseSessionStatusTypes } from "@/types";
-import { Backpack, Game, Item } from "@/types/game";
+import { Backpack, Game, Health, Item } from "@/types/game";
 import { Session } from "@supabase/supabase-js";
 import UtilsGame from "./utils/utils_game";
 
@@ -100,12 +100,15 @@ export const wrapperList = {};
 /** TO ENSURE INTELLISENSE, JUST ADD ADDITIONAL ITEMS HERE AS NEEDED */
 export const contextsList = {
 	backpack: GlobalStore.AddVariableToGlobalStore({ backpack: [] as Backpack }),
-	game: GlobalStore.AddVariableToGlobalStore({ game: { gameStatus: { type: "start" }, player: { name: "", items: [] }, currentLevel: UtilsGame.MIN_FLOORS } as Game }),
+	chosenBattleItems: GlobalStore.AddVariableToGlobalStore({ chosenBattleItems: [] as Item[] }),
+	playerDetails: GlobalStore.AddVariableToGlobalStore({ playerDetails: { name: "" } }),
+	game: GlobalStore.AddVariableToGlobalStore({ game: { gameStatus: { type: "start" }, currentFloor: UtilsGame.MIN_FLOORS } as Game }),
+	lives: GlobalStore.AddVariableToGlobalStore({ lives: { current: UtilsGame.MAX_LIFE, max: UtilsGame.MAX_LIFE } as Health }),
 	inventory: GlobalStore.AddVariableToGlobalStore({ inventory: [] as Item[] }),
 	isLoading: GlobalStore.AddVariableToGlobalStore({ isLoading: false }),
-	modalAuth: GlobalStore.AddVariableToGlobalStore({ isOpened: false }),
 	supabaseClient: GlobalStore.AddVariableToGlobalStore({ supabaseClient: supabase }),
+	modalAuth: GlobalStore.AddVariableToGlobalStore({ isOpened: false }),
 	supabaseSession: GlobalStore.AddVariableToGlobalStore({ session: null as Session | null, status: "none" as SupabaseSessionStatusTypes }),
 	updateMessage: GlobalStore.AddVariableToGlobalStore({ updateMessage: { msg: "", type: "log" as MessageTypes } }),
-	viewSelected: GlobalStore.AddVariableToGlobalStore({ levelSelect: 1, itemSelect: { type: "dice" } as Item }),
+	viewSelected: GlobalStore.AddVariableToGlobalStore({ floorSelect: 1, itemSelect: { type: "dice" } as Item }),
 } as const;
