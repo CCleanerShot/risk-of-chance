@@ -5,6 +5,8 @@ import Levels from "./shards/Levels";
 import Backpack from "./shards/Backpack";
 import { GameStatusTypes } from "@/types/game";
 import GlobalStore from "@/common/global_store";
+import Inventory from "./shards/Inventory";
+import Battle from "./shards/Battle";
 
 const Game = () => {
 	const [gameScreen, setGameScreen] = useState<GameStatusTypes>({ type: "start" });
@@ -20,11 +22,14 @@ const Game = () => {
 
 	switch (gameScreen.type) {
 		case "battle":
-			return <div></div>;
+			return <Battle />;
 		case "start":
 			return (
 				<div className="flex-1 flex justify-around">
-					<Backpack />
+					<div className="flex gap-2">
+						<Backpack />
+						<Inventory />
+					</div>
 					<Levels />
 				</div>
 			);

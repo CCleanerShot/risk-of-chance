@@ -4,7 +4,7 @@ export interface NPC {
 }
 
 export interface Item {
-	type: string;
+	type: "dice" | "health";
 }
 
 export interface ItemDB extends Item {
@@ -30,14 +30,13 @@ export class DiceDB extends Dice {
 	}
 }
 
-export type Inventory = [Dice, Dice, Dice, Dice, Dice, Dice, Dice, Dice, Dice];
-
-export type GameStatusTypes = { type: "battle"; turn: NPC } | { type: "start" } | { type: "loot" };
+export type GameStatusTypes = { type: "battle"; turn: "player" | "enemy" } | { type: "start" } | { type: "loot" };
 export interface Game {
 	player: NPC;
 	gameStatus: GameStatusTypes;
+	currentLevel: number;
 }
 
 // to check if database query matches the type of a backpack
-export const backpackConst = [{ type: "dice" } as Item] as Item[];
+export const backpackConst = [{ type: "dice", sides: 1 } as Dice] as Item[];
 export type Backpack = typeof backpackConst;

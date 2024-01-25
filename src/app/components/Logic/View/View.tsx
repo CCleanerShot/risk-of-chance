@@ -7,8 +7,7 @@ import Game from "@/app/components/Logic/Game/Game";
 import Corner from "@/app/components/UI/Corner";
 import { SizeTypes, StatusColorTypes, SupabaseSessionStatusTypes } from "@/types";
 import LoadingIcon from "@/app/components/UI/LoadingIcon";
-import Routes from "../../Test/Routes";
-import { Session } from "@supabase/supabase-js";
+import toast from "react-hot-toast";
 
 const View = () => {
 	const cornerSize: SizeTypes = "medium";
@@ -41,9 +40,25 @@ const View = () => {
 		}
 	};
 
+	const listenToUpdateMessage = () => {
+		const { msg, type } = GlobalStore.getFromGlobalStore("updateMessage").updateMessage;
+		switch (type) {
+			case "error":
+				toast.error(msg);
+				break;
+			case "warn":
+				toast.error(msg);
+				break;
+			case "log":
+				toast.success(msg);
+				break;
+		}
+	};
+
 	useEffect(() => {
 		async function execute() {
 			GlobalStore.AddListenerToVariable("supabaseSession", listenToSupabaseSession);
+			GlobalStore.AddListenerToVariable("updateMessage", listenToUpdateMessage);
 			const supabaseClient = GlobalStore.getFromGlobalStore("supabaseClient").supabaseClient;
 			const session = (await supabaseClient.auth.getSession()).data.session;
 			if (!session) {
@@ -69,8 +84,9 @@ const View = () => {
 				return <GetStarted />;
 		}
 	};
+
 	return (
-		<div className="bg-slate-700 h-screen flex flex-col">
+		<div className="bg-slate-700 h-screen flex flex-col text-white">
 			<div className="flex justify-between bg-slate-700">
 				<Corner color={color} facing="down-right" size={cornerSize} />
 				<Corner color={color} facing="down-left" size={cornerSize} />

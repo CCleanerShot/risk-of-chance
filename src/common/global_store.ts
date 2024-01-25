@@ -1,7 +1,8 @@
 import { supabase } from "@/common/utils/utils_supabase";
 import { MessageTypes, SupabaseSessionStatusTypes } from "@/types";
-import { Backpack, Game } from "@/types/game";
+import { Backpack, Game, Item } from "@/types/game";
 import { Session } from "@supabase/supabase-js";
+import UtilsGame from "./utils/utils_game";
 
 type VariableType<T extends any, K extends (args: any) => void> = {
 	variable: T;
@@ -28,7 +29,6 @@ export default class GlobalStore {
 	private static callAllListenersOfVariable<T extends ContextsListKeys>(variable: T) {
 		const foundVariable = GlobalStore.findVariable(contextsList[variable]);
 		foundVariable.listeners.forEach((listener) => {
-			console.log(foundVariable.listeners.length, listener);
 			if (listener.listenerArgs) {
 				listener.listener(listener.listenerArgs);
 			} else {
@@ -99,11 +99,13 @@ export const wrapperList = {};
 
 /** TO ENSURE INTELLISENSE, JUST ADD ADDITIONAL ITEMS HERE AS NEEDED */
 export const contextsList = {
+	backpack: GlobalStore.AddVariableToGlobalStore({ backpack: [] as Backpack }),
+	game: GlobalStore.AddVariableToGlobalStore({ game: { gameStatus: { type: "start" }, player: { name: "", items: [] }, currentLevel: UtilsGame.MIN_FLOORS } as Game }),
+	inventory: GlobalStore.AddVariableToGlobalStore({ inventory: [] as Item[] }),
+	isLoading: GlobalStore.AddVariableToGlobalStore({ isLoading: false }),
+	modalAuth: GlobalStore.AddVariableToGlobalStore({ isOpened: false }),
 	supabaseClient: GlobalStore.AddVariableToGlobalStore({ supabaseClient: supabase }),
 	supabaseSession: GlobalStore.AddVariableToGlobalStore({ session: null as Session | null, status: "none" as SupabaseSessionStatusTypes }),
-	modalAuth: GlobalStore.AddVariableToGlobalStore({ isOpened: false }),
-	isLoading: GlobalStore.AddVariableToGlobalStore({ isLoading: false }),
 	updateMessage: GlobalStore.AddVariableToGlobalStore({ updateMessage: { msg: "", type: "log" as MessageTypes } }),
-	game: GlobalStore.AddVariableToGlobalStore({ game: { gameStatus: { type: "start" }, player: { name: "", items: [] } } as Game }),
-	backpack: GlobalStore.AddVariableToGlobalStore({ backpack: [] as Backpack }),
+	viewSelected: GlobalStore.AddVariableToGlobalStore({ levelSelect: 1, itemSelect: { type: "dice" } as Item }),
 } as const;

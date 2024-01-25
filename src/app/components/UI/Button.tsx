@@ -2,20 +2,22 @@ import React from "react";
 import { twMerge } from "tailwind-merge";
 
 interface ButtonProps {
-	children: React.ReactNode;
 	onClick: (args: any) => any;
 	template: keyof typeof buttonStyles;
+	children?: React.ReactNode;
 	className?: string;
 }
 
 const buttonStyles = {
-	standard: "border-2 p-2 hover:text-green-500 border-slate-900 hover:scale-105 font-bold",
-	borderless: "hover:text-green-500 hover:scale-105 font-bold",
+	standard: "border-2 border-slate-900 hover:text-green-500",
+	darker_inner: "border-2 border-slate-900 hover:text-green-500 hover:bg-green-900 ",
+	borderless: "hover:text-green-500",
+	green_border: "border-2 border-slate-900 hover:border-green-500",
 } as const;
 
-const Button = ({ children, onClick, template, className }: ButtonProps) => {
+const Button = ({ onClick, template, children, className }: ButtonProps) => {
 	return (
-		<button type="button" className={twMerge(buttonStyles[template], "transition cursor-pointer", className)} onClick={onClick}>
+		<button type="button" className={twMerge(buttonStyles[template], "p-2 font-bold hover:scale-105 transition cursor-pointer", className)} onClick={onClick}>
 			{children}
 		</button>
 	);

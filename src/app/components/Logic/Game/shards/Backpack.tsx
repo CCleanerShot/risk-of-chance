@@ -2,14 +2,17 @@
 
 import React, { useEffect, useState } from "react";
 import GlobalStore from "@/common/global_store";
-import { Backpack, Dice, backpackConst } from "@/types/game";
+import { Backpack, Dice } from "@/types/game";
 import UtilsSupabase from "@/common/utils/utils_supabase";
-import { SupabaseSession } from "@/types";
+import UtilsGame from "@/common/utils/utils_game";
+import Utils from "@/common/utils/utils";
+import ItemContainer from "./ItemContainer";
+import Button from "@/app/components/UI/Button";
+import H1 from "@/app/components/UI/H1";
 
 const Backpack = () => {
 	const [backpack, setBackpack] = useState<Backpack>([]);
 	const listenToUpdate = async () => {
-		await UtilsSupabase.Load();
 		const backpack = GlobalStore.getFromGlobalStore("backpack").backpack;
 		setBackpack(backpack);
 	};
@@ -24,17 +27,32 @@ const Backpack = () => {
 		execute();
 	}, []);
 
+	const Container = ({ children }: { children?: React.ReactNode }) => (
+		<Button onClick={() => {}} template="green_border" className="w-8 h-8 border flex">
+			{children}
+		</Button>
+	);
+
 	return (
-		<div className="border">
-			{backpack.map((item, index) => {
-				console.log(item);
-				if (item["type"] === "dice") {
-					const _item = item as Dice;
-					return <div key={index}>{_item.sides}</div>;
-				} else {
-					return <div>{item.type}</div>;
-				}
-			})}
+		<div>
+			<H1>Level Select</H1>
+			<div className="grid grid-cols-10 gap-1">
+				{Utils.MakeArray(UtilsGame.MAX_BACKPACK_SIZE, (i) => i).map((index) => {
+					if (backpack[index]) {
+						return (
+							<Container key={`item${index}`}>
+								<ItemContainer item={backpack[index]} />;
+							</Container>
+						);
+					} else {
+						return (
+							<Container key={`item${index}`}>
+								<div></div>
+							</Container>
+						);
+					}
+				})}
+			</div>
 		</div>
 	);
 };
