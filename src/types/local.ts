@@ -11,11 +11,10 @@ export type ProviderTypes = "google" | "github";
 export type SizeTypes = "smallest" | "small" | "medium" | "large" | "largest";
 export type StatusColorTypes = "red" | "yellow" | "green";
 export type SupabaseSessionStatusTypes = "loading" | "none" | "exists" | "valid" | "guest";
+export type MessageTypes = "log" | "warn" | "error";
 
-//prettier-ignore
-export type SupabaseSession = 
-{ data: { session: Session }; error: null } |
-{ data: { session: null }; error: AuthError } |
-{ data: { session: null }; error: null };
-
-export type SupabaseQueryType = "DELETE" | "INSERT" | "UPDATE";
+// // prettier-ignore
+// export type SupabaseSession =
+// { data: { session: Session }; error: null } |
+// { data: { session: null }; error: AuthError } |
+// { data: { session: null }; error: null };

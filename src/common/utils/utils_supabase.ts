@@ -1,8 +1,7 @@
-import dotenv from "dotenv";
-import { Session, createClient } from "@supabase/supabase-js";
-import { Database, Json, ProviderTypes, SupabaseSession } from "@/types";
+import { createClient } from "@supabase/supabase-js";
+import { Database, ProviderTypes } from "@/types";
 import GlobalStore from "../global_store";
-import { Backpack, Dice, Inventory, Item, ItemDB } from "@/types/game";
+import { Backpack, backpackConst } from "@/types/game";
 
 const URL = process.env.NEXT_PUBLIC_SUPABASE_HOST_URL;
 const PUBLIC_KEY = process.env.NEXT_PUBLIC_SUPABASE_PUBLIC_KEY;
@@ -12,27 +11,11 @@ export const supabase = createClient<Database>(URL, PUBLIC_KEY);
 // prettier-ignore
 export const queries = {
 	createUser: async (oauth_origin: string, username: string) => await supabase.from("users").insert({ oauth_origin: oauth_origin, username: username, inventory: null }),
-	UpdateInventory: async (backpack: Backpack, session_id: string) => await supabase.from("users").update({ backpack: JSON.stringify(backpack) }).eq("oauth_origin", session_id),
+	getBackpack: async(oauth_origin: string) => await supabase.from('users').select().eq('oauth_origin', oauth_origin),
+	updateBackpack: async (backpack: Backpack, session_id: string) => await supabase.from("users").update({ backpack: JSON.stringify(backpack) }).eq("oauth_origin", session_id),
 } as const;
 
 export default class UtilsSupabase {
-	static updateSession() {}
-
-	static SignInWithProvider(provider: ProviderTypes) {
-		switch (provider) {
-			case "github": {
-				const queryParams = { access_type: "offline", prompt: "consent" };
-				supabase.auth.signInWithOAuth({ provider: provider, options: { queryParams: queryParams } });
-				break;
-			}
-			case "google": {
-				const queryParams = { access_type: "offline", prompt: "consent" };
-				supabase.auth.signInWithOAuth({ provider: provider, options: { queryParams: queryParams } });
-				break;
-			}
-		}
-	}
-
 	static GetQuery<T extends keyof typeof queries>(query: T) {
 		const item = queries[query];
 
@@ -49,5 +32,70 @@ export default class UtilsSupabase {
 		return {
 			callQuery: (...params: Parameters<typeof item>) => wrapperFunction(params),
 		};
+	}
+
+	static SignInWithProvider(provider: ProviderTypes) {
+		switch (provider) {
+			case "github": {
+				const queryParams = { access_type: "offline", prompt: "consent" };
+				supabase.auth.signInWithOAuth({ provider: provider, options: { queryParams: queryParams } });
+				break;
+			}
+			case "google": {
+				const queryParams = { access_type: "offline", prompt: "consent" };
+				supabase.auth.signInWithOAuth({ provider: provider, options: { queryParams: queryParams } });
+				break;
+			}
+		}
+	}
+
+	static async Load() {
+		const session_id = GlobalStore.getFromGlobalStore("supabaseSession").session?.user.id;
+
+		if (!session_id) {
+			GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: "Unable to load: Session missing. Perhaps you cleared cookies?", type: "error" });
+			return;
+		}
+
+		const { data, error } = await UtilsSupabase.GetQuery("getBackpack").callQuery(session_id);
+
+		if (error) {
+			GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: "Unable to load: Server error. Is your internet even on?", type: "error" });
+			return;
+		}
+
+		const foundBackpack = JSON.parse(data?.[0].backpack as string);
+
+		// check if object is a valid backpack;
+		for (const prop in backpackConst[0]) {
+			if (!foundBackpack[prop]) {
+				GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: "Unable to load: A save was found with invalid format. Perhaps an update occurred?", type: "warn" });
+				return;
+			}
+		}
+
+		console.log("step");
+		GlobalStore.UpdateVariableProperty("backpack", "backpack", foundBackpack);
+		GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: "Load success!", type: "log" });
+	}
+
+	static async Save() {
+		const session_id = GlobalStore.getFromGlobalStore("supabaseSession").session?.user.id;
+
+		if (!session_id) {
+			GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: "Unable to save: Session missing. Perhaps you cleared cookies?", type: "error" });
+			return;
+		}
+
+		const backpack = GlobalStore.getFromGlobalStore("backpack").backpack;
+
+		const { data, error } = await UtilsSupabase.GetQuery("updateBackpack").callQuery(backpack, session_id);
+
+		if (error) {
+			GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: "Unable to save: Server error. Is your internet even on?", type: "error" });
+			return;
+		}
+
+		GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: "Save success!", type: "log" });
 	}
 }

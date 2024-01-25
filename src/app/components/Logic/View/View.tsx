@@ -5,17 +5,18 @@ import GlobalStore from "@/common/global_store";
 import GetStarted from "./shards/GetStarted";
 import Game from "@/app/components/Logic/Game/Game";
 import Corner from "@/app/components/UI/Corner";
-import { SizeTypes, StatusColorTypes, SupabaseSessionStatus } from "@/types";
+import { SizeTypes, StatusColorTypes, SupabaseSessionStatusTypes } from "@/types";
 import LoadingIcon from "@/app/components/UI/LoadingIcon";
 import Routes from "../../Test/Routes";
+import { Session } from "@supabase/supabase-js";
 
 const View = () => {
 	const cornerSize: SizeTypes = "medium";
 	const [color, setColor] = useState<StatusColorTypes>("red");
-	const [status, setStatus] = useState<SupabaseSessionStatus>("loading");
+	const [status, setStatus] = useState<SupabaseSessionStatusTypes>("loading");
 
-	const listenToSupabaseSessionStatus = () => {
-		const status = GlobalStore.getFromGlobalStore("supabaseSessionStatus").status;
+	const listenToSupabaseSession = () => {
+		const status = GlobalStore.getFromGlobalStore("supabaseSession").status;
 		switch (status) {
 			case "loading":
 				setColor("red");
@@ -42,16 +43,14 @@ const View = () => {
 
 	useEffect(() => {
 		async function execute() {
-			GlobalStore.AddListenerToVariable("supabaseSessionStatus", listenToSupabaseSessionStatus);
+			GlobalStore.AddListenerToVariable("supabaseSession", listenToSupabaseSession);
 			const supabaseClient = GlobalStore.getFromGlobalStore("supabaseClient").supabaseClient;
 			const session = (await supabaseClient.auth.getSession()).data.session;
-
-			console.log(session?.user);
-
 			if (!session) {
-				GlobalStore.UpdateVariableProperty("supabaseSessionStatus", "status", "none");
+				GlobalStore.UpdateVariableProperty("supabaseSession", "status", "none");
 			} else {
-				GlobalStore.UpdateVariableProperty("supabaseSessionStatus", "status", "exists");
+				GlobalStore.UpdateVariableProperty("supabaseSession", "status", "exists");
+				GlobalStore.UpdateVariableProperty("supabaseSession", "session", session);
 			}
 		}
 
@@ -77,8 +76,7 @@ const View = () => {
 				<Corner color={color} facing="down-left" size={cornerSize} />
 			</div>
 			<div className="flex-1 flex justify-center items-center h-full w-full">
-				{/* <Page /> */}
-				<Routes />
+				<Page />
 			</div>
 			<div className="flex justify-between bg-slate-700">
 				<Corner color={color} facing="up-right" size={cornerSize} />
