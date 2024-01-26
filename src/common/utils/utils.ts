@@ -29,4 +29,16 @@ export default class Utils {
 			.fill(null)
 			.map((v, i) => eachNumber(i)) as T[];
 	}
+
+	static ShuffleArray<T extends any[]>(array: T) {
+		const newArray = [...array];
+
+		for (let i = 0; i < newArray.length; i++) {
+			const r = Math.floor(Math.random() * newArray.length);
+
+			[newArray[i], newArray[r]] = [newArray[r], newArray[i]];
+		}
+
+		return newArray;
+	}
 }

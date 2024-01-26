@@ -26,7 +26,7 @@ const Battle = () => {
 	return (
 		<div className="flex flex-col gap-5 justify-center items-center">
 			<H1>{`Floor ${floor}`}</H1>
-			<Inventory size="medium" />
+			<Inventory size="medium" source="player" />
 			<div className="flex gap-5">
 				<div className="flex flex-col gap-4 border-2 border-slate-900 border-double p-4 rounded-lg">
 					<H2>{"You"}</H2>

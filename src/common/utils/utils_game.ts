@@ -2,10 +2,9 @@ import { Dice, Item } from "@/types/game";
 import Utils from "../utils/utils";
 import GlobalStore from "../global_store";
 import { StorageTypes } from "@/types";
+import { NPCTypes } from "@/types/local";
 
 export default class UtilsGame {
-	static MAX_ENEMY_LIFE = 2;
-	static MAX_PLAYER_LIFE = 2;
 	static MIN_DIFFICULTY = 9;
 	static MAX_DIFFICULTY = 680;
 	static MIN_FLOORS = 1;
@@ -15,8 +14,12 @@ export default class UtilsGame {
 	static MAX_BATTLE_ITEMS_SIZE = 3;
 	static slope = (UtilsGame.MAX_DIFFICULTY - UtilsGame.MIN_DIFFICULTY) / (UtilsGame.MAX_FLOORS - UtilsGame.MIN_FLOORS);
 	static intercept = UtilsGame.MIN_DIFFICULTY / UtilsGame.slope;
+	static health = {
+		player: 2,
+		enemy: 2,
+	};
 
-	static createEnemyInventory(lvl: number): Item[] {
+	static CreateEnemyInventory(lvl: number): Item[] {
 		const inv: Item[] = [];
 		const totalPool = Math.floor(UtilsGame.slope * lvl + UtilsGame.intercept);
 
@@ -37,10 +40,20 @@ export default class UtilsGame {
 		return inv as Item[];
 	}
 
-	static generateFloor(lvl: number) {
+	static SelectBattleItems(items: Item[], source: NPCTypes) {
+		const shuffled = Utils.ShuffleArray(items);
+		return shuffled.splice(0, UtilsGame.health[source] + 1);
+	}
+
+	static GenerateFloor(lvl: number) {
 		// TODO: add more cool things to a lvl
-		const enemyInventory = UtilsGame.createEnemyInventory(lvl);
-		GlobalStore.UpdateVariableProperty("game", "game", { currentFloor: lvl, gameStatus: { type: "battle", turn: "player", enemyInventory: enemyInventory } });
+		const inventory = UtilsGame.CreateEnemyInventory(lvl);
+		const items = UtilsGame.SelectBattleItems(inventory, "enemy");
+		const { enemy: enemyInv, player: playerInv } = GlobalStore.getFromGlobalStore("inventory").inventory;
+		const { enemy: enemyItems, player: playerItems } = GlobalStore.getFromGlobalStore("battleItems").battleItems;
+		GlobalStore.UpdateVariableProperty("inventory", "inventory", { enemy: inventory, player: playerInv });
+		GlobalStore.UpdateVariableProperty("battleItems", "battleItems", { enemy: items, player: playerItems });
+		GlobalStore.UpdateVariableProperty("game", "game", { currentFloor: lvl, gameStatus: { type: "battle", turn: "player" } });
 	}
 
 	static MoveItem(item: Item, source: StorageTypes, destination: StorageTypes) {}

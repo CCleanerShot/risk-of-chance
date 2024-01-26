@@ -21,13 +21,13 @@ export const defaultColorStyles = {
 
 export default class UtilsCSS {
 	/** @deprecated due to how tailwind works, it doesnt ship unknown string values */
-	static appendToTailwindCSS(prefix: string, tailwindCSS: string) {
+	static AppendToTailwindCSS(prefix: string, tailwindCSS: string) {
 		const copy = tailwindCSS.split(" ");
 		const result = copy.map((item) => `${prefix}:${item}`);
 		return result.join(" ");
 	}
 
-	static returnPositionFromAlignment(alignment: Alignment) {
+	static ReturnPositionFromAlignment(alignment: Alignment) {
 		let alignmentStyles: { left: 0; top: 0; transform: { x: string; y: string } } = { left: 0, top: 0, transform: { x: "", y: "" } };
 		switch (alignment.x) {
 			case "left":
@@ -54,7 +54,7 @@ export default class UtilsCSS {
 		return alignmentStyles;
 	}
 
-	static returnStylesFromSize(size: SizeTypes) {
+	static ReturnStylesFromSize(size: SizeTypes) {
 		switch (size) {
 			case "smallest":
 				return "w-[2rem] h-[2rem]";
@@ -70,7 +70,7 @@ export default class UtilsCSS {
 	}
 
 	/** @deprecated tailwindCSS lowkey cringe */
-	static getColor<T extends keyof typeof defaultColorStyles>(style: T) {
+	static GetColor<T extends keyof typeof defaultColorStyles>(style: T) {
 		return defaultColorStyles[style];
 	}
 }

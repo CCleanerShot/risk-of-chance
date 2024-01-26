@@ -9,7 +9,7 @@ import H1 from "@/app/components/UI/H1";
 const Floors = () => {
 	const handleStart = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		const { itemSelect, floorSelect } = GlobalStore.getFromGlobalStore("viewSelected");
-		UtilsGame.generateFloor(floorSelect);
+		UtilsGame.GenerateFloor(floorSelect);
 	};
 
 	return (

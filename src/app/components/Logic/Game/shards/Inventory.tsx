@@ -10,17 +10,19 @@ import Button from "@/app/components/UI/Button";
 import { SizeTypes } from "@/types";
 import { twMerge } from "tailwind-merge";
 import H1 from "@/app/components/UI/H1";
+import { NPCTypes } from "@/types/local";
 
 interface InventoryProps {
 	size: SizeTypes;
+	source: NPCTypes;
 }
 
-const Inventory = ({ size }: InventoryProps) => {
+const Inventory = ({ size, source }: InventoryProps) => {
 	const [inventory, setInventory] = useState<(Item | null)[]>(Utils.MakeArray(UtilsGame.MAX_INVENTORY_SIZE, (i) => ({ type: "dice" })) as (Item | null)[]);
 
 	const listenForInventory = () => {
-		const inventory = GlobalStore.getFromGlobalStore("inventory").inventory;
-		setInventory([...inventory]);
+		const newInventory = GlobalStore.getFromGlobalStore("inventory").inventory[source];
+		newInventory?.length && setInventory([...newInventory]);
 	};
 
 	useEffect(() => {

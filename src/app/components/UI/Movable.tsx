@@ -39,7 +39,7 @@ const Movable = ({ children, className, defaultPosition }: MovableProps) => {
 		setIsDragged(false);
 	};
 
-	const { left, top, transform } = UtilsCSS.returnPositionFromAlignment(defaultPosition);
+	const { left, top, transform } = UtilsCSS.ReturnPositionFromAlignment(defaultPosition);
 
 	return (
 		<div

@@ -13,7 +13,7 @@ interface LivesProps {
 }
 
 const Lives = ({ source }: LivesProps) => {
-	const [lives, setLives] = useState<Health>({ current: UtilsGame.MAX_PLAYER_LIFE, max: UtilsGame.MAX_PLAYER_LIFE });
+	const [lives, setLives] = useState<Health>({ current: UtilsGame.health[source], max: UtilsGame.health[source] });
 
 	const listenToLives = () => {
 		const { current, max } = GlobalStore.getFromGlobalStore("lives").lives[source];
@@ -28,9 +28,9 @@ const Lives = ({ source }: LivesProps) => {
 		<div className="flex justify-center">
 			{Utils.MakeArray(lives.max, (i) => i + 1).map((index) => {
 				if (index <= lives.current) {
-					return <IoMdHeart size={40} color="pink" className="transition hover:scale-105" />;
+					return <IoMdHeart key={`health${index}`} size={40} color="pink" className="transition hover:scale-105" />;
 				} else {
-					return <IoMdHeartEmpty size={40} color="pink" className="transition hover:scale-105" />;
+					return <IoMdHeartEmpty key={`health${index}`} size={40} color="pink" className="transition hover:scale-105" />;
 				}
 			})}
 		</div>

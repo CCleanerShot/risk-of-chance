@@ -30,7 +30,7 @@ export class DiceDB extends Dice {
 	}
 }
 
-export type GameStatusTypes = { type: "battle"; turn: "player" | "enemy"; enemyInventory: Item[] } | { type: "start" } | { type: "loot" };
+export type GameStatusTypes = { type: "battle"; turn: "player" | "enemy" } | { type: "start" } | { type: "loot" };
 export interface Game {
 	gameStatus: GameStatusTypes;
 	currentFloor: number;
