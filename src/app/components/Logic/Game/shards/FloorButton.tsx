@@ -31,6 +31,7 @@ const FloorButton = ({ floor }: FloorButtonProps) => {
 
 	useEffect(() => {
 		GlobalStore.AddListenerToVariable("viewSelected", listenToViewSelected);
+		listenToViewSelected();
 	}, []);
 
 	return (

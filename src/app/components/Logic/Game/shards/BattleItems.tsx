@@ -19,7 +19,6 @@ const BattleItems = ({ source, disabled = false }: BattleItemsProps) => {
 
 	const listenToBattleItems = () => {
 		const newItems = GlobalStore.getFromGlobalStore("battleItems").battleItems[source];
-		console.log(newItems);
 		setItems([...newItems]);
 	};
 
@@ -31,9 +30,8 @@ const BattleItems = ({ source, disabled = false }: BattleItemsProps) => {
 
 	return (
 		<div className="grid grid-cols-3 gap-1">
-			{Utils.MakeArray(UtilsGame.MAX_BATTLE_ITEMS_SIZE, (i) => i + 1).map((index) => {
+			{Utils.MakeArray(UtilsGame.MAX_BATTLE_ITEMS_SIZE, (i) => i).map((index) => {
 				if (items[index]) {
-					console.log("true");
 					return <ItemContainer disabled={disabled} key={`battle-item${index}`} item={items[index]} origin="battle_items" className="w-10 h-10" />;
 				} else {
 					return <Button disabled={disabled} key={`battle-item${index}`} onClick={handleClick} template="green_border" className="w-12 h-12"></Button>;

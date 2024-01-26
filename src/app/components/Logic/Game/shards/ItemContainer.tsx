@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Button from "@/app/components/UI/Button";
 import GlobalStore from "@/common/global_store";
-import { Dice, Item } from "@/types/game";
+import { Item } from "@/types/game";
 import { twMerge } from "tailwind-merge";
 import { StorageTypes } from "@/types";
 
@@ -39,7 +39,8 @@ const ItemContainer = ({ item, origin, className, disabled = false }: ItemContai
 	const Contents = () => {
 		switch (item.type) {
 			case "dice": {
-				const _item = item as Dice;
+				console.log(item);
+				const _item = item;
 				return <div>{_item.sides}</div>;
 			}
 

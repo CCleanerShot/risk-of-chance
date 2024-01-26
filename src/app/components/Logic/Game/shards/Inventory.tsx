@@ -18,7 +18,7 @@ interface InventoryProps {
 }
 
 const Inventory = ({ size, source }: InventoryProps) => {
-	const [inventory, setInventory] = useState<(Item | null)[]>(Utils.MakeArray(UtilsGame.MAX_INVENTORY_SIZE, (i) => ({ type: "dice" })) as (Item | null)[]);
+	const [inventory, setInventory] = useState<(Item | null)[]>(Utils.MakeArray(UtilsGame.MAX_INVENTORY_SIZE, (i) => null) as (Item | null)[]);
 
 	const listenForInventory = () => {
 		const newInventory = GlobalStore.getFromGlobalStore("inventory").inventory[source];
@@ -27,6 +27,7 @@ const Inventory = ({ size, source }: InventoryProps) => {
 
 	useEffect(() => {
 		GlobalStore.AddListenerToVariable("inventory", listenForInventory);
+		listenForInventory();
 	}, []);
 
 	let sizeStyles: string;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Utils from "@/common/utils/utils";
 import UtilsGame from "@/common/utils/utils_game";
 import GlobalStore from "@/common/global_store";
@@ -9,7 +9,7 @@ import H1 from "@/app/components/UI/H1";
 const Floors = () => {
 	const handleStart = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		const { itemSelect, floorSelect } = GlobalStore.getFromGlobalStore("viewSelected");
-		UtilsGame.GenerateFloor(floorSelect);
+		UtilsGame.StartBattleCycle(floorSelect);
 	};
 
 	return (
