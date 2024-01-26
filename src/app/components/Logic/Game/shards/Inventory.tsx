@@ -7,8 +7,15 @@ import ItemContainer from "./ItemContainer";
 import UtilsGame from "@/common/utils/utils_game";
 import GlobalStore from "@/common/global_store";
 import Button from "@/app/components/UI/Button";
+import { SizeTypes } from "@/types";
+import { twMerge } from "tailwind-merge";
+import H1 from "@/app/components/UI/H1";
 
-const Inventory = () => {
+interface InventoryProps {
+	size: SizeTypes;
+}
+
+const Inventory = ({ size }: InventoryProps) => {
 	const [inventory, setInventory] = useState<(Item | null)[]>(Utils.MakeArray(UtilsGame.MAX_INVENTORY_SIZE, (i) => ({ type: "dice" })) as (Item | null)[]);
 
 	const listenForInventory = () => {
@@ -20,15 +27,34 @@ const Inventory = () => {
 		GlobalStore.AddListenerToVariable("inventory", listenForInventory);
 	}, []);
 
+	let sizeStyles: string;
+	switch (size) {
+		case "largest":
+			sizeStyles = "w-24 h-24";
+			break;
+		case "large":
+			sizeStyles = "w-20 h-20";
+			break;
+		case "medium":
+			sizeStyles = "w-16 h-16";
+			break;
+		case "small":
+			sizeStyles = "w-12 h-12";
+			break;
+		case "smallest":
+			sizeStyles = "w-8 h-8";
+			break;
+	}
+
 	return (
 		<div>
-			<h1 className="font-bold underline text-lg text-center">Inventory</h1>
+			<H1>Inventory</H1>
 			<div className="grid grid-cols-3 gap-1">
 				{inventory.map((item, index) => {
 					if (item === null) {
-						return <Button onClick={() => {}} template="green_border" className="w-8 h-8 border border-white"></Button>;
+						return <Button onClick={() => {}} template="green_border" className={twMerge(sizeStyles, "border border-white")}></Button>;
 					} else {
-						return <ItemContainer key={`inventory${index}`} item={item} className="w-8 h-8" origin="inventory" />;
+						return <ItemContainer key={`inventory${index}`} item={item} className={twMerge(sizeStyles, "")} origin="inventory" />;
 					}
 				})}
 			</div>

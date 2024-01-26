@@ -1,15 +1,22 @@
+"use client";
+
+import React, { useEffect, useState } from "react";
 import GlobalStore from "@/common/global_store";
 import Utils from "@/common/utils/utils";
 import UtilsGame from "@/common/utils/utils_game";
 import { Health } from "@/types/game";
-import React, { useEffect, useState } from "react";
+import { NPCTypes } from "@/types/local";
 import { IoMdHeart, IoMdHeartEmpty } from "react-icons/io";
 
-const Lives = () => {
-	const [lives, setLives] = useState<Health>({ current: UtilsGame.MAX_LIFE, max: UtilsGame.MAX_LIFE });
+interface LivesProps {
+	source: NPCTypes;
+}
+
+const Lives = ({ source }: LivesProps) => {
+	const [lives, setLives] = useState<Health>({ current: UtilsGame.MAX_PLAYER_LIFE, max: UtilsGame.MAX_PLAYER_LIFE });
 
 	const listenToLives = () => {
-		const { current, max } = GlobalStore.getFromGlobalStore("lives").lives;
+		const { current, max } = GlobalStore.getFromGlobalStore("lives").lives[source];
 		setLives({ current, max });
 	};
 

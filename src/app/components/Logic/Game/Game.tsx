@@ -28,7 +28,7 @@ const Game = () => {
 				<div className="flex-1 flex justify-around">
 					<div className="flex gap-2">
 						<Backpack />
-						<Inventory />
+						<Inventory size="small" />
 					</div>
 					<Floors />
 				</div>

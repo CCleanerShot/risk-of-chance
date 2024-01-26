@@ -100,10 +100,10 @@ export const wrapperList = {};
 /** TO ENSURE INTELLISENSE, JUST ADD ADDITIONAL ITEMS HERE AS NEEDED */
 export const contextsList = {
 	backpack: GlobalStore.AddVariableToGlobalStore({ backpack: [] as Backpack }),
-	chosenBattleItems: GlobalStore.AddVariableToGlobalStore({ chosenBattleItems: [] as Item[] }),
+	battleItems: GlobalStore.AddVariableToGlobalStore({ battleItems: { player: [] as Item[], enemy: [] as Item[] } }),
 	playerDetails: GlobalStore.AddVariableToGlobalStore({ playerDetails: { name: "" } }),
 	game: GlobalStore.AddVariableToGlobalStore({ game: { gameStatus: { type: "start" }, currentFloor: UtilsGame.MIN_FLOORS } as Game }),
-	lives: GlobalStore.AddVariableToGlobalStore({ lives: { current: UtilsGame.MAX_LIFE, max: UtilsGame.MAX_LIFE } as Health }),
+	lives: GlobalStore.AddVariableToGlobalStore({ lives: { player: { current: UtilsGame.MAX_PLAYER_LIFE, max: UtilsGame.MAX_PLAYER_LIFE } as Health, enemy: { current: UtilsGame.MAX_ENEMY_LIFE, max: UtilsGame.MAX_ENEMY_LIFE } as Health } }),
 	inventory: GlobalStore.AddVariableToGlobalStore({ inventory: [] as Item[] }),
 	isLoading: GlobalStore.AddVariableToGlobalStore({ isLoading: false }),
 	supabaseClient: GlobalStore.AddVariableToGlobalStore({ supabaseClient: supabase }),

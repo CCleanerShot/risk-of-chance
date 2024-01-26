@@ -4,7 +4,8 @@ import GlobalStore from "../global_store";
 import { StorageTypes } from "@/types";
 
 export default class UtilsGame {
-	static MAX_LIFE = 2;
+	static MAX_ENEMY_LIFE = 2;
+	static MAX_PLAYER_LIFE = 2;
 	static MIN_DIFFICULTY = 9;
 	static MAX_DIFFICULTY = 680;
 	static MIN_FLOORS = 1;

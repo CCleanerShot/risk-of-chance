@@ -2,10 +2,11 @@ import React from "react";
 import { twMerge } from "tailwind-merge";
 
 interface ButtonProps {
-	onClick: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => any;
 	template: keyof typeof buttonStyles;
 	children?: React.ReactNode;
 	className?: string;
+	disabled?: boolean;
+	onClick?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => any;
 }
 
 const buttonStyles = {
@@ -15,9 +16,9 @@ const buttonStyles = {
 	green_border: "border-2 border-slate-900 hover:border-green-600",
 } as const;
 
-const Button = ({ onClick, template, children, className }: ButtonProps) => {
+const Button = ({ template, children, className, disabled = false, onClick }: ButtonProps) => {
 	return (
-		<button type="button" className={twMerge(buttonStyles[template], "p-2 hover:scale-105 transition cursor-pointer", className)} onClick={onClick}>
+		<button type="button" disabled={disabled} className={twMerge(buttonStyles[template], "p-2 hover:scale-105 transition cursor-pointer", className)} onClick={onClick}>
 			{children}
 		</button>
 	);

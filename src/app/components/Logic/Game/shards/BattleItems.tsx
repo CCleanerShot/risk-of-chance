@@ -1,4 +1,4 @@
-"use effect";
+"use client";
 
 import React, { useEffect, useState } from "react";
 import GlobalStore from "@/common/global_store";
@@ -7,27 +7,34 @@ import Utils from "@/common/utils/utils";
 import UtilsGame from "@/common/utils/utils_game";
 import ItemContainer from "./ItemContainer";
 import Button from "@/app/components/UI/Button";
+import { NPCTypes } from "@/types/local";
 
-const BattleItems = () => {
+interface BattleItemsProps {
+	source: NPCTypes;
+	disabled?: boolean;
+}
+
+const BattleItems = ({ source, disabled = false }: BattleItemsProps) => {
 	const [items, setItems] = useState<Item[]>([]);
 
-	const listenToChosenBattleItems = () => {
-		const newItems = GlobalStore.getFromGlobalStore("chosenBattleItems").chosenBattleItems;
+	const listenTobattleItems = () => {
+		const newItems = GlobalStore.getFromGlobalStore("battleItems").battleItems[source];
 		setItems([...newItems]);
 	};
 
 	const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {};
+
 	useEffect(() => {
-		GlobalStore.AddListenerToVariable("chosenBattleItems", listenToChosenBattleItems);
+		GlobalStore.AddListenerToVariable("battleItems", listenTobattleItems);
 	}, []);
 
 	return (
 		<div className="grid grid-cols-3 gap-1">
 			{Utils.MakeArray(UtilsGame.MAX_BATTLE_ITEMS_SIZE, (i) => i + 1).map((index) => {
 				if (items[index]) {
-					return <ItemContainer key={`battle-item${index}`} item={items[index]} origin="battle_items" className="w-10 h-10" />;
+					return <ItemContainer disabled={disabled} key={`battle-item${index}`} item={items[index]} origin="battle_items" className="w-10 h-10" />;
 				} else {
-					return <Button onClick={handleClick} template="green_border" className="w-12 h-12"></Button>;
+					return <Button disabled={disabled} onClick={handleClick} template="green_border" className="w-12 h-12"></Button>;
 				}
 			})}
 		</div>

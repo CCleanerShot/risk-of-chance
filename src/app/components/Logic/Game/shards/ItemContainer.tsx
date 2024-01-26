@@ -12,9 +12,10 @@ interface ItemContainerProps {
 	item: Item;
 	origin: StorageTypes;
 	className?: string;
+	disabled?: boolean;
 }
 
-const ItemContainer = ({ item, origin, className }: ItemContainerProps) => {
+const ItemContainer = ({ item, origin, className, disabled = false }: ItemContainerProps) => {
 	const [isSelected, setIsSelected] = useState(false);
 
 	const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -53,7 +54,7 @@ const ItemContainer = ({ item, origin, className }: ItemContainerProps) => {
 	};
 
 	return (
-		<Button template="green_border" className={twMerge(" text-white border border-slate-900 p-1", isSelected ? "text-green-600" : "", className)} onClick={handleClick}>
+		<Button disabled={disabled} template="green_border" className={twMerge(" text-white border border-slate-900 p-1", isSelected ? "text-green-600" : "", className)} onClick={handleClick}>
 			<Contents />
 		</Button>
 	);
