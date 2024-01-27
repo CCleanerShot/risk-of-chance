@@ -9,8 +9,13 @@ import Utils from "@/common/utils/utils";
 import ItemContainer from "./ItemContainer";
 import Button from "@/app/components/UI/Button";
 import H1 from "@/app/components/UI/H1";
+import { NPCTypes } from "@/types/local";
 
-const Backpack = () => {
+interface BackpackProps {
+	source: NPCTypes;
+}
+
+const Backpack = ({ source }: BackpackProps) => {
 	const [backpack, setBackpack] = useState<Backpack>([]);
 	const listenToUpdate = async () => {
 		const backpack = GlobalStore.getFromGlobalStore("backpack").backpack;
@@ -28,7 +33,7 @@ const Backpack = () => {
 	}, []);
 
 	const Container = ({ children }: { children?: React.ReactNode }) => (
-		<Button onClick={() => {}} template="green_border" className="w-8 h-8 border flex">
+		<Button onClick={() => {}} template="green_border" className="w-8 h-8 flex">
 			{children}
 		</Button>
 	);
@@ -37,7 +42,7 @@ const Backpack = () => {
 		<div>
 			<H1>Backpack</H1>
 			<div className="grid grid-cols-10 gap-1">
-				{Utils.MakeArray(UtilsGame.MAX_BACKPACK_SIZE, (i) => i).map((index) => {
+				{Utils.MakeArray(UtilsGame.maxStorage.backpack["player"], (i) => i).map((index) => {
 					if (backpack[index]) {
 						return (
 							<Container key={`item${index}`}>

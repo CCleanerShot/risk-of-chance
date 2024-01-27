@@ -30,9 +30,9 @@ const BattleItems = ({ source, disabled = false }: BattleItemsProps) => {
 
 	return (
 		<div className="grid grid-cols-3 gap-1">
-			{Utils.MakeArray(UtilsGame.MAX_BATTLE_ITEMS_SIZE, (i) => i).map((index) => {
+			{Utils.MakeArray(UtilsGame.maxStorage.battleItems[source], (i) => i).map((index) => {
 				if (items[index]) {
-					return <ItemContainer disabled={disabled} key={`battle-item${index}`} item={items[index]} origin="battle_items" className="w-10 h-10" />;
+					return <ItemContainer disabled={disabled} key={`battle-item${index}`} item={items[index]} origin="battleItems" className="w-10 h-10" />;
 				} else {
 					return <Button disabled={disabled} key={`battle-item${index}`} onClick={handleClick} template="green_border" className="w-12 h-12"></Button>;
 				}

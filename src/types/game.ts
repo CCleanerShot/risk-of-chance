@@ -10,7 +10,8 @@ export type Item =
 	  }
 	| {
 			type: "health";
-	  };
+	  }
+	| null;
 
 export type GameStatusTypes = { type: "battle"; turn: "player" | "enemy" } | { type: "start" } | { type: "loot" };
 export interface Game {

@@ -11,3 +11,5 @@ export default function Home() {
 		</main>
 	);
 }
+
+// TODO: fix infinite loading screen that happens occasionally

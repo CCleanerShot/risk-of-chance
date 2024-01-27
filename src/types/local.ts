@@ -12,7 +12,7 @@ export type SizeTypes = "smallest" | "small" | "medium" | "large" | "largest";
 export type StatusColorTypes = "red" | "yellow" | "green";
 export type SupabaseSessionStatusTypes = "loading" | "none" | "exists" | "valid" | "guest";
 export type MessageTypes = "log" | "warn" | "error";
-export type StorageTypes = "backpack" | "inventory" | "battle_items";
+export type StorageTypes = "backpack" | "inventory" | "battleItems";
 export type NPCTypes = "player" | "enemy";
 export type Opposite<Type1, Type2, Chosen> = Chosen extends Type1 ? Type1 : Type2;
 

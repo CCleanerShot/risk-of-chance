@@ -8,26 +8,26 @@ import { Health } from "@/types/game";
 import { NPCTypes } from "@/types/local";
 import { IoMdHeart, IoMdHeartEmpty } from "react-icons/io";
 
-interface LivesProps {
+interface HealthProps {
 	source: NPCTypes;
 }
 
-const Lives = ({ source }: LivesProps) => {
-	const [lives, setLives] = useState<Health>({ current: UtilsGame.health[source], max: UtilsGame.health[source] });
+const Health = ({ source }: HealthProps) => {
+	const [health, setHealth] = useState<Health>({ current: UtilsGame.maxHealth[source], max: UtilsGame.maxHealth[source] });
 
-	const listenToLives = () => {
-		const { current, max } = GlobalStore.getFromGlobalStore("lives").lives[source];
-		setLives({ current, max });
+	const listenToHealth = () => {
+		const { current, max } = GlobalStore.getFromGlobalStore("health").health[source];
+		setHealth({ current, max });
 	};
 
 	useEffect(() => {
-		GlobalStore.AddListenerToVariable("lives", listenToLives);
+		GlobalStore.AddListenerToVariable("health", listenToHealth);
 	}, []);
 
 	return (
 		<div className="flex justify-center">
-			{Utils.MakeArray(lives.max, (i) => i + 1).map((index) => {
-				if (index <= lives.current) {
+			{Utils.MakeArray(health.max, (i) => i + 1).map((index) => {
+				if (index <= health.current) {
 					return <IoMdHeart key={`health${index}`} size={40} color="pink" className="transition hover:scale-105" />;
 				} else {
 					return <IoMdHeartEmpty key={`health${index}`} size={40} color="pink" className="transition hover:scale-105" />;
@@ -37,4 +37,4 @@ const Lives = ({ source }: LivesProps) => {
 	);
 };
 
-export default Lives;
+export default Health;

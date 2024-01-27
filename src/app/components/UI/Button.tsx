@@ -18,7 +18,7 @@ const buttonStyles = {
 
 const Button = ({ template, children, className, disabled = false, onClick }: ButtonProps) => {
 	return (
-		<button type="button" disabled={disabled} className={twMerge(buttonStyles[template], "p-2 hover:scale-105 transition cursor-pointer", className)} onClick={onClick}>
+		<button type="button" disabled={disabled} style={{ pointerEvents: disabled ? "none" : "auto" }} className={twMerge(buttonStyles[template], "transition p-2 hover:scale-105 cursor-pointer", className)} onClick={onClick}>
 			{children}
 		</button>
 	);

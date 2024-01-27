@@ -30,7 +30,7 @@ const Game = () => {
 			return (
 				<div className="flex-1 flex justify-around">
 					<div className="flex gap-2">
-						<Backpack />
+						<Backpack source="player" />
 						<Inventory size="small" source="player" />
 					</div>
 					<Floors />

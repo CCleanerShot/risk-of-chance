@@ -53,7 +53,7 @@ export default class GlobalStore {
 	 * @param listener a function that will be called whenever the variable is updated with 'GlobalStore.UpdateVariableProperty', or a wrapper function is called
 	 * @param listenerArgs optional listener parameters of a listener
 	 */
-	static AddListenerToVariable<T extends ContextsListKeys, K extends (args: any) => void, A extends Parameters<K>>(variable: T, listener: K, ...listenerArgs: K extends (...args: infer Params) => any ? Params : never) {
+	static AddListenerToVariable<T extends ContextsListKeys, K extends (args: any) => void>(variable: T, listener: K, ...listenerArgs: K extends (...args: infer Params) => any ? Params : never) {
 		const foundVariable = GlobalStore.findVariable(contextsList[variable]);
 		foundVariable.listeners.push({ listener: listener, listenerArgs: listenerArgs });
 	}
@@ -63,7 +63,7 @@ export default class GlobalStore {
 	 * @param variable the variable to be removed on (comes from a static list)
 	 * @param listener a function that will be removed
 	 */
-	RemoveListenerToVariable<T extends ContextsListKeys, K extends (args: any) => void, A extends Parameters<K>>(variable: T, listener: K, ...listenerArgs: K extends (...args: infer Params) => any ? Params : never) {
+	RemoveListenerToVariable<T extends ContextsListKeys, K extends (args: any) => void>(variable: T, listener: K, ...listenerArgs: K extends (...args: infer Params) => any ? Params : never) {
 		const foundVariable = GlobalStore.findVariable(contextsList[variable]);
 
 		const foundIndex = foundVariable.listeners.findIndex((searchListener) => searchListener.listener === listener);
@@ -76,9 +76,14 @@ export default class GlobalStore {
 	 * @param property property of the variable to actually be updated
 	 * @param updatedValue the new value of the chosen variable's property
 	 */
-	static UpdateVariableProperty<T extends ContextsListKeys, K extends keyof (typeof contextsList)[T], U extends (typeof contextsList)[T][K]>(variable: T, property: K, updatedValue: U) {
+	static UpdateVariableProperty<T extends ContextsListKeys, K extends keyof (typeof contextsList)[T], U extends (typeof contextsList)[T][K] | ((args: (typeof contextsList)[T][K]) => (typeof contextsList)[T][K])>(variable: T, property: K, updatedValue: U) {
 		const foundVariable = GlobalStore.findVariable(contextsList[variable]);
-		foundVariable.variable[property] = updatedValue;
+		if (typeof updatedValue === "function") {
+			foundVariable.variable[property] = updatedValue(foundVariable.variable[property]);
+		} else {
+			foundVariable.variable[property] = updatedValue;
+		}
+
 		GlobalStore.updateTimestamp();
 		GlobalStore.callAllListenersOfVariable(variable);
 	}
@@ -103,7 +108,7 @@ export const contextsList = {
 	battleItems: GlobalStore.AddVariableToGlobalStore({ battleItems: { player: [] as Item[], enemy: [] as Item[] } }),
 	playerDetails: GlobalStore.AddVariableToGlobalStore({ playerDetails: { name: "" } }),
 	game: GlobalStore.AddVariableToGlobalStore({ game: { gameStatus: { type: "start" }, currentFloor: UtilsGame.MIN_FLOORS } as Game }),
-	lives: GlobalStore.AddVariableToGlobalStore({ lives: { player: { current: UtilsGame.health["player"], max: UtilsGame.health["player"] } as Health, enemy: { current: UtilsGame.health["enemy"], max: UtilsGame.health["enemy"] } as Health } }),
+	health: GlobalStore.AddVariableToGlobalStore({ health: { player: { current: UtilsGame.maxHealth["player"], max: UtilsGame.maxHealth["player"] } as Health, enemy: { current: UtilsGame.maxHealth["enemy"], max: UtilsGame.maxHealth["enemy"] } as Health } }),
 	inventory: GlobalStore.AddVariableToGlobalStore({ inventory: { player: [] as Item[], enemy: [] as Item[] } }),
 	isLoading: GlobalStore.AddVariableToGlobalStore({ isLoading: false }),
 	supabaseClient: GlobalStore.AddVariableToGlobalStore({ supabaseClient: supabase }),

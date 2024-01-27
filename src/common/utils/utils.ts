@@ -18,18 +18,26 @@ export default class Utils {
 		console.log(prefix, message);
 	}
 
+	/** helper function that returns a random number from a given min/max range */
 	static Random(min: number, max: number) {
 		const difference = max - min;
 		const result = Math.random() * difference + min;
 		return result;
 	}
 
+	/** helper function to create a null array */
+	static MakeNullArray(length: number) {
+		return Array(length).fill(null);
+	}
+
+	/** helper function to create a null array, which then each element is iterated on */
 	static MakeArray<T extends any>(length: number, eachNumber: (index: number) => T) {
 		return Array(length)
 			.fill(null)
 			.map((v, i) => eachNumber(i)) as T[];
 	}
 
+	/** helper function which returns a copy of the array, shuffled */
 	static ShuffleArray<T extends any[]>(array: T) {
 		const newArray = [...array];
 

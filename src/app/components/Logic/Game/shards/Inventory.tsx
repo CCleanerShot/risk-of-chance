@@ -18,7 +18,7 @@ interface InventoryProps {
 }
 
 const Inventory = ({ size, source }: InventoryProps) => {
-	const [inventory, setInventory] = useState<(Item | null)[]>(Utils.MakeArray(UtilsGame.MAX_INVENTORY_SIZE, (i) => null) as (Item | null)[]);
+	const [inventory, setInventory] = useState<Item[]>(Utils.MakeArray(UtilsGame.maxStorage.inventory[source], (i) => null) as Item[]);
 
 	const listenForInventory = () => {
 		const newInventory = GlobalStore.getFromGlobalStore("inventory").inventory[source];
@@ -55,7 +55,7 @@ const Inventory = ({ size, source }: InventoryProps) => {
 			<div className="grid grid-cols-3 gap-1">
 				{inventory.map((item, index) => {
 					if (item === null) {
-						return <Button onClick={() => {}} template="green_border" className={twMerge(sizeStyles, "border border-white")}></Button>;
+						return <Button key={`inventory${index}`} onClick={() => {}} template="green_border" className={twMerge(sizeStyles)}></Button>;
 					} else {
 						return <ItemContainer key={`inventory${index}`} item={item} className={twMerge(sizeStyles, "")} origin="inventory" />;
 					}
