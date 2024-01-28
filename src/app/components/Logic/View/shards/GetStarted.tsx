@@ -9,7 +9,7 @@ const GetStarted = () => {
 	};
 
 	const handleGuest = () => {
-		GlobalStore.UpdateVariableProperty("supabaseSessionStatus", "status", "guest");
+		GlobalStore.UpdateVariableProperty("supabaseSession", "status", "guest");
 	};
 
 	return (

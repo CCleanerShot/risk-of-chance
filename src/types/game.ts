@@ -6,14 +6,16 @@ export interface NPC {
 export type Item =
 	| {
 			type: "dice";
+			disabled: boolean;
 			sides: number;
 	  }
 	| {
 			type: "health";
+			disabled: boolean;
 	  }
 	| null;
 
-export type GameStatusTypes = { type: "battle"; turn: "player" | "enemy" } | { type: "start" } | { type: "loot" };
+export type GameStatusTypes = { type: "battle" } | { type: "start" } | { type: "results" };
 export interface Game {
 	gameStatus: GameStatusTypes;
 	currentFloor: number;

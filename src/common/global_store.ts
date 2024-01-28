@@ -1,5 +1,5 @@
 import { supabase } from "@/common/utils/utils_supabase";
-import { MessageTypes, SupabaseSessionStatusTypes } from "@/types";
+import { MessageTypes, ResultsTypes, SupabaseSessionStatusTypes } from "@/types";
 import { Backpack, Game, Health, Item } from "@/types/game";
 import { Session } from "@supabase/supabase-js";
 import UtilsGame from "./utils/utils_game";
@@ -106,13 +106,15 @@ export const wrapperList = {};
 export const contextsList = {
 	backpack: GlobalStore.AddVariableToGlobalStore({ backpack: [] as Backpack }),
 	battleItems: GlobalStore.AddVariableToGlobalStore({ battleItems: { player: [] as Item[], enemy: [] as Item[] } }),
+	battleResult: GlobalStore.AddVariableToGlobalStore({ battleResult: null as ResultsTypes | null, items: { enemy: [] as { original: number; value: number }[], player: [] as { original: number; value: number }[] } }),
 	playerDetails: GlobalStore.AddVariableToGlobalStore({ playerDetails: { name: "" } }),
 	game: GlobalStore.AddVariableToGlobalStore({ game: { gameStatus: { type: "start" }, currentFloor: UtilsGame.MIN_FLOORS } as Game }),
 	health: GlobalStore.AddVariableToGlobalStore({ health: { player: { current: UtilsGame.maxHealth["player"], max: UtilsGame.maxHealth["player"] } as Health, enemy: { current: UtilsGame.maxHealth["enemy"], max: UtilsGame.maxHealth["enemy"] } as Health } }),
 	inventory: GlobalStore.AddVariableToGlobalStore({ inventory: { player: [] as Item[], enemy: [] as Item[] } }),
 	isLoading: GlobalStore.AddVariableToGlobalStore({ isLoading: false }),
-	supabaseClient: GlobalStore.AddVariableToGlobalStore({ supabaseClient: supabase }),
 	modalAuth: GlobalStore.AddVariableToGlobalStore({ isOpened: false }),
+	finalResults: GlobalStore.AddVariableToGlobalStore({ finalResults: "draw" as ResultsTypes }),
+	supabaseClient: GlobalStore.AddVariableToGlobalStore({ supabaseClient: supabase }),
 	supabaseSession: GlobalStore.AddVariableToGlobalStore({ session: null as Session | null, status: "none" as SupabaseSessionStatusTypes }),
 	updateMessage: GlobalStore.AddVariableToGlobalStore({ updateMessage: { msg: "", type: "log" as MessageTypes } }),
 	viewSelected: GlobalStore.AddVariableToGlobalStore({ floorSelect: 1, itemSelect: { type: "dice" } as Item }),

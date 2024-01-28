@@ -1,16 +1,28 @@
 import { Item } from "@/types/game";
 import Utils from "../utils/utils";
-import GlobalStore, { ContextsListKeys } from "../global_store";
+import GlobalStore from "../global_store";
 import { StorageTypes } from "@/types";
-import { NPCTypes } from "@/types/local";
+import { NPCTypes, ResultsTypes } from "@/types/local";
+import { Result } from "postcss";
 
 export default class UtilsGame {
 	static MIN_DIFFICULTY = 9;
 	static MAX_DIFFICULTY = 680;
 	static MIN_FLOORS = 1;
 	static MAX_FLOORS = 100;
-	static slope = (UtilsGame.MAX_DIFFICULTY - UtilsGame.MIN_DIFFICULTY) / (UtilsGame.MAX_FLOORS - UtilsGame.MIN_FLOORS);
-	static intercept = UtilsGame.MIN_DIFFICULTY / UtilsGame.slope;
+	static FLOOR_TO_SWITCH_FORMULA = 5;
+	static formulas = {
+		1: () => {
+			const slope = (UtilsGame.MAX_DIFFICULTY - UtilsGame.MIN_DIFFICULTY) / (UtilsGame.MAX_FLOORS - UtilsGame.MIN_FLOORS);
+			const intercept = UtilsGame.MIN_DIFFICULTY / slope;
+			return { slope, intercept };
+		},
+		2: () => {
+			const slope = 3;
+			const intercept = 7;
+			return { slope, intercept };
+		},
+	};
 
 	static maxHealth = {
 		player: 2,
@@ -35,23 +47,32 @@ export default class UtilsGame {
 	};
 
 	static STARTING_INVENTORY: Item[] = [
-		{ type: "dice", sides: 1 },
-		{ type: "dice", sides: 1 },
-		{ type: "dice", sides: 1 },
-		{ type: "dice", sides: 1 },
-		{ type: "dice", sides: 1 },
-		{ type: "dice", sides: 1 },
-		{ type: "dice", sides: 2 },
-		{ type: "dice", sides: 2 },
-		{ type: "dice", sides: 2 },
+		{ type: "dice", sides: 1, disabled: false },
+		{ type: "dice", sides: 1, disabled: false },
+		{ type: "dice", sides: 1, disabled: false },
+		{ type: "dice", sides: 2, disabled: false },
+		{ type: "dice", sides: 2, disabled: false },
+		{ type: "dice", sides: 2, disabled: false },
+		{ type: "dice", sides: 3, disabled: false },
+		{ type: "dice", sides: 3, disabled: false },
+		{ type: "dice", sides: 3, disabled: false },
 	] as const;
 
 	static CreateEnemyInventory(floor: number): Item[] {
 		const inv: Item[] = [];
-		const totalPool = Math.floor(UtilsGame.slope * floor + UtilsGame.intercept);
+		let interceptAndSlope;
+
+		if (floor > UtilsGame.FLOOR_TO_SWITCH_FORMULA) {
+			interceptAndSlope = UtilsGame.formulas[1]();
+		} else {
+			interceptAndSlope = UtilsGame.formulas[2]();
+		}
+
+		const { intercept, slope } = interceptAndSlope;
+		const totalPool = Math.floor(slope * floor + intercept);
 
 		// have atleast 1 dice equal to the floor of the floor
-		inv.push({ type: "dice", sides: floor });
+		inv.push({ type: "dice", sides: floor, disabled: false });
 
 		// minimum amount of sides the other dice can be
 		const remainingPool = totalPool - floor;
@@ -61,28 +82,44 @@ export default class UtilsGame {
 		const randomNumbers = Utils.MakeArray(itemSlotsLeft, (i) => Utils.Random(min, floor));
 		const sum = randomNumbers.reduce((pV, cV) => pV + cV, 0);
 		const randomWeights = randomNumbers.map((number) => number / sum);
-		const finalNumbers = randomWeights.map((weight) => Math.min(Math.ceil(weight * remainingPool), floor));
+		const finalNumbers = randomWeights.map((weight) => Math.min(Math.round(weight * remainingPool), floor));
 
 		inv.push(...finalNumbers.map((number) => ({ type: "dice", sides: number } as Item)));
+
 		return inv as Item[];
 	}
 
-	static SelectBattleItems(items: Item[], source: NPCTypes) {
+	static ReturnRandomBattleItems(items: Item[], source: NPCTypes) {
+		function nextItem(index: number, array: Item[]) {
+			const currentItem = array[index];
+			const isDisabled = currentItem?.disabled;
+			const isNull = currentItem === null;
+			const isLastItem = index === array.length - 1;
+
+			if ((isDisabled || isNull) && !isLastItem) {
+				return nextItem(index + 1, shuffled);
+			}
+
+			if (!isDisabled && !isNull) {
+				return currentItem;
+			} else {
+				return null;
+			}
+		}
+
 		const shuffled = Utils.ShuffleArray(items);
-		return shuffled.splice(0, UtilsGame.maxHealth[source] + 1);
+		return Utils.MakeArray(UtilsGame.maxStorage.battleItems[source], (index) => nextItem(index, shuffled));
 	}
 
 	static GenerateFloor(floor: number) {
 		// TODO: add more cool things to a floor
-		const inventory = UtilsGame.CreateEnemyInventory(floor);
-		const items = UtilsGame.SelectBattleItems(inventory, "enemy");
-		const { enemy: enemyInv, player: playerInv } = GlobalStore.getFromGlobalStore("inventory").inventory;
-		const { enemy: enemyItems, player: playerItems } = GlobalStore.getFromGlobalStore("battleItems").battleItems;
+		let inventory = UtilsGame.CreateEnemyInventory(floor);
+		const items = UtilsGame.ReturnRandomBattleItems(inventory, "enemy");
 
-		// TODO: fix order i think
-		GlobalStore.UpdateVariableProperty("inventory", "inventory", { enemy: inventory, player: playerInv });
-		GlobalStore.UpdateVariableProperty("battleItems", "battleItems", { enemy: items, player: playerItems });
-		GlobalStore.UpdateVariableProperty("game", "game", { currentFloor: floor, gameStatus: { type: "battle", turn: "player" } });
+		inventory = inventory.map((i) => (items.includes(i) ? null : i));
+		GlobalStore.UpdateVariableProperty("inventory", "inventory", ({ enemy, player }) => ({ enemy: inventory, player: player }));
+		GlobalStore.UpdateVariableProperty("battleItems", "battleItems", ({ enemy, player }) => ({ enemy: items, player: player }));
+		GlobalStore.UpdateVariableProperty("game", "game", { currentFloor: floor, gameStatus: { type: "battle" } });
 	}
 
 	static StartBattleCycle(floor: number) {
@@ -108,13 +145,14 @@ export default class UtilsGame {
 		}
 	}
 
-	static MoveItem(item: Item, source: StorageTypes, destination: StorageTypes) {
-		const storageSource = UtilsGame.GetStorage(source, "player");
-		const storageDestination = UtilsGame.GetStorage(destination, "player");
+	static MoveItem(actor: NPCTypes, item: Item, source: StorageTypes, destination: StorageTypes) {
+		const storageSource = UtilsGame.GetStorage(source, actor);
+		const storageDestination = UtilsGame.GetStorage(destination, actor);
 
 		const foundSourceIndex = storageSource.findIndex((i) => i === item);
 		const amountOfItems = storageDestination.filter((i) => i?.type);
-		if (amountOfItems.length >= UtilsGame.maxStorage[destination].player) {
+
+		if (amountOfItems.length >= UtilsGame.maxStorage[destination][actor]) {
 			GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: `Cannot move: max capacity reached for ${destination}`, type: "warn" });
 			return;
 		}
@@ -133,25 +171,81 @@ export default class UtilsGame {
 			storageDestination[foundDestinationNullIndex] = item; // in the case that the array contained null values
 		}
 
-		GlobalStore.UpdateVariableProperty("backpack", "backpack", (backpack) => (backpack.length ? [] : [...backpack]));
+		GlobalStore.UpdateVariableProperty("backpack", "backpack", (backpack) => [...backpack]);
 		GlobalStore.UpdateVariableProperty("inventory", "inventory", (inventory) => ({ ...inventory }));
 		GlobalStore.UpdateVariableProperty("battleItems", "battleItems", (battleItems) => ({ ...battleItems }));
 	}
 
 	static DoBattle() {
+		function GetDiceRollsAndTotal(items: Item[]) {
+			const rolls = items.map((item) => {
+				switch (item?.type) {
+					// TODO: add health stuff so it isnt just 2 health
+					case "health":
+						default:
+							return 0;
+							case "dice":
+								return Math.round(Utils.Random(1, item.sides));
+							}
+						});
+						
+						const original = items.map((item) => item.)
+			const total = rolls.reduce((pV, cV) => pV + cV, 0);
+			return { rolls: {original: items}rolls, total: total };
+		}
+
+		function updateBattleAndState() {
+			const { enemy, player } = GlobalStore.getFromGlobalStore("inventory").inventory;
+			enemyDices.forEach((item) => (item!.disabled = true));
+			playerDices.forEach((item) => (item!.disabled = true));
+			playerDices.forEach((item) => UtilsGame.MoveItem("player", item, "battleItems", "inventory"));
+			enemyDices.forEach((item) => UtilsGame.MoveItem("enemy", item, "battleItems", "inventory"));
+			const newBattleItems = UtilsGame.ReturnRandomBattleItems(enemy, "enemy");
+			GlobalStore.UpdateVariableProperty("inventory", "inventory", (inv) => inv);
+			GlobalStore.UpdateVariableProperty("battleItems", "battleItems", (items) => ({ enemy: newBattleItems, player: items.player }));
+		}
+
 		const { enemy, player } = GlobalStore.getFromGlobalStore("battleItems").battleItems;
+		const enemyDices = enemy.filter((item) => item?.type === "dice");
+		const playerDices = player.filter((item) => item?.type === "dice");
+		const enemyResults = GetDiceRollsAndTotal(enemyDices);
+		const playerResults = GetDiceRollsAndTotal(playerDices);
+		const [enemyItems, playerItems] = [enemyDices.map(dice => ({original:}))]
+		switch (true) {
+			case enemyResults.total === playerResults.total:
+				break;
+
+			case enemyResults.total < playerResults.total: {
+				const newHealth = Math.max(0, GlobalStore.getFromGlobalStore("health").health["enemy"].current - 1);
+				if (newHealth === 0) {
+					UtilsGame.EndBattle("win");
+				} else {
+					GlobalStore.UpdateVariableProperty("battleResult", "battleResult", "win");
+					GlobalStore.UpdateVariableProperty("battleResult", "items", { enemy: [], player:  });
+					GlobalStore.UpdateVariableProperty("health", "health", ({ enemy, player }) => ({ enemy: { current: Math.max(0, enemy.current - 1), max: enemy.max }, player: player }));
+					updateBattleAndState();
+				}
+
+				break;
+			}
+
+			case enemyResults.total > playerResults.total: {
+				const newHealth = Math.max(0, GlobalStore.getFromGlobalStore("health").health["player"].current - 1);
+				if (newHealth === 0) {
+					UtilsGame.EndBattle("lose");
+				} else {
+					GlobalStore.UpdateVariableProperty("battleResult", "battleResult", "lose");
+					GlobalStore.UpdateVariableProperty("health", "health", ({ enemy, player }) => ({ enemy: enemy, player: { current: Math.max(0, player.current - 1), max: player.max } }));
+					updateBattleAndState();
+				}
+
+				break;
+			}
+		}
 	}
 
-	static UseItems(source: NPCTypes, items: Item[]) {
-		items.map((i) => {
-			switch (i?.type) {
-				case "dice":
-					return Math.floor(Utils.Random(1, i.sides));
-				case "health":
-				// TODO: add variable health increase so it isnt just 2 health
-				default:
-					return null;
-			}
-		});
+	static EndBattle(result: ResultsTypes) {
+		GlobalStore.UpdateVariableProperty("finalResults", "finalResults", result);
+		GlobalStore.UpdateVariableProperty("game", "game", ({ currentFloor, gameStatus }) => ({ currentFloor: currentFloor, gameStatus: { type: "results" } }));
 	}
 }
