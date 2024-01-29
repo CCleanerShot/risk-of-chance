@@ -1,9 +1,4 @@
 export default class Utils {
-	static firstLetterUppercase(input: string) {
-		const firstLetter = input[0].toUpperCase();
-		return input.replace(/./, firstLetter);
-	}
-
 	static Log(type: "error" | "warn", message: any) {
 		let prefix: "?" | "!";
 		switch (type) {
@@ -48,5 +43,28 @@ export default class Utils {
 		}
 
 		return newArray;
+	}
+
+	/** helper function which formats a number like so: 10 000 000 */
+	static FormatNumber(input: number) {
+		const reversed = Utils.ReverseString(input.toString());
+		const result = reversed.match(/.{1,3}/g)!.join(" ");
+		return Utils.ReverseString(result);
+	}
+
+	/** helper function that reverses a string */
+	static ReverseString(input: string) {
+		let result: string = "";
+		for (let i = input.length - 1; i >= 0; i--) {
+			result += input[i];
+		}
+
+		return result;
+	}
+
+	/** helper function that just uppercases the first letter */
+	static FirstLetterUppercase(input: string) {
+		const firstLetter = input[0].toUpperCase();
+		return input.replace(/./, firstLetter);
 	}
 }

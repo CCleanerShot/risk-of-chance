@@ -22,7 +22,7 @@ const Inventory = ({ size, source }: InventoryProps) => {
 
 	const listenForInventory = () => {
 		const newInventory = GlobalStore.getFromGlobalStore("inventory").inventory[source];
-		newInventory?.length && setInventory([...newInventory]);
+		newInventory?.length && setInventory(inventory.map((v, i) => (newInventory[i] ? newInventory[i] : null)));
 	};
 
 	useEffect(() => {
@@ -52,10 +52,10 @@ const Inventory = ({ size, source }: InventoryProps) => {
 	return (
 		<div>
 			<H1>Inventory</H1>
-			<div className="grid grid-cols-3 gap-1">
+			<div className="grid gap-1" style={{ gridTemplateColumns: `repeat(${Math.round(Math.sqrt(inventory.length))}, minmax(0, 1fr))` }}>
 				{inventory.map((item, index) => {
 					if (item === null) {
-						return <Button key={`inventory${index}`} onClick={() => {}} template="green_border" className={twMerge(sizeStyles)}></Button>;
+						return <Button key={`inventory${index}`} onClick={() => {}} template="green_border" className={twMerge(sizeStyles, "")}></Button>;
 					} else {
 						return <ItemContainer key={`inventory${index}`} item={item} className={twMerge(sizeStyles, "")} origin="inventory" />;
 					}

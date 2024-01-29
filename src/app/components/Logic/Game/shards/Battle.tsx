@@ -87,7 +87,7 @@ const Battle = () => {
 
 	const NPCMainComponent = ({ source, className, disabled }: { source: NPCTypes; className?: string; disabled: boolean }) => (
 		<div className="flex flex-col gap-4 border-2 border-slate-900 border-double p-4 rounded-lg">
-			<H2>{Utils.firstLetterUppercase(source)}</H2>
+			<H2>{Utils.FirstLetterUppercase(source)}</H2>
 			<Health source={source} />
 			<BattleItems source={source} disabled={disabled} />
 		</div>
@@ -103,14 +103,14 @@ const Battle = () => {
 					{NPCMainComponent({ disabled: false, source: "player", className: "border border-green-500" })}
 				</div>
 				<div className="flex gap-2">
-					{NPCMainComponent({ disabled: true, source: "enemy" })}
-					{NPCLogsComponent({ source: "enemy", className: "border border-green-500" })}
+					{NPCMainComponent({ disabled: true, source: "enemy", className: "border border-red-500" })}
+					{NPCLogsComponent({ source: "enemy", className: "border border-red-500" })}
 				</div>
 			</div>
 			<Button disabled={!isReady} template="darker_inner" onClick={handleBattle} className={twMerge("font-bold block w-full", isReady ? "bg-green-500" : "bg-slate-500")}>
 				FIGHT
 			</Button>
-			<BattleResultComponent />
+			{BattleResultComponent()}
 		</div>
 	);
 };

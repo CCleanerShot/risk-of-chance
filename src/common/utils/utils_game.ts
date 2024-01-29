@@ -35,7 +35,7 @@ export default class UtilsGame {
 		},
 
 		inventory: {
-			player: 9,
+			player: 12,
 			enemy: 9,
 		},
 
@@ -233,8 +233,30 @@ export default class UtilsGame {
 		}
 	}
 
+	static GenerateLoot(items: Item[], floor: number, roll: number): Item[] {
+		const result = Math.random() * roll;
+
+		if (result < 0.5) {
+			return items;
+		}
+
+		items.push({ disabled: false, sides: floor, type: "dice" } as Item<"dice">);
+		return UtilsGame.GenerateLoot(items, floor, result);
+	}
+
 	static EndBattle(result: ResultsTypes) {
-		GlobalStore.UpdateVariableProperty("finalResults", "finalResults", result);
+		const { currentFloor, gameStatus } = GlobalStore.getFromGlobalStore("game").game;
+		const lootTable = GlobalStore.UpdateVariableProperty("finalResults", "finalResults", result);
+		GlobalStore.UpdateVariableProperty("rewards", "rewards", (pV) => []);
 		GlobalStore.UpdateVariableProperty("game", "game", ({ currentFloor, gameStatus }) => ({ currentFloor: currentFloor, gameStatus: { type: "results" } }));
+
+		switch (result) {
+			case "win":
+				GlobalStore.UpdateVariableProperty("gold", "gold", (pV) => pV + currentFloor);
+				break;
+			case "lose":
+				GlobalStore.UpdateVariableProperty("inventory", "inventory", (pV) => ({ enemy: pV.enemy, player: [] }));
+				break;
+		}
 	}
 }
