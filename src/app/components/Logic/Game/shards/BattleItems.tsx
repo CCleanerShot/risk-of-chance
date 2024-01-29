@@ -7,11 +7,11 @@ import Utils from "@/common/utils/utils";
 import UtilsGame from "@/common/utils/utils_game";
 import ItemContainer from "./ItemContainer";
 import Button from "@/app/components/UI/Button";
-import { NPCTypes } from "@/types/local";
+import { ActorTypes } from "@/types/local";
 import { twMerge } from "tailwind-merge";
 
 interface BattleItemsProps {
-	source: NPCTypes;
+	source: ActorTypes;
 	disabled?: boolean;
 }
 

@@ -9,11 +9,11 @@ import Utils from "@/common/utils/utils";
 import ItemContainer from "./ItemContainer";
 import Button from "@/app/components/UI/Button";
 import H1 from "@/app/components/UI/H1";
-import { NPCTypes } from "@/types/local";
-import Gold from "./Gold";
+import { ActorTypes } from "@/types/local";
+import GoldTotal from "./GoldTotal";
 
 interface BackpackProps {
-	source: NPCTypes;
+	source: ActorTypes;
 }
 
 const Backpack = ({ source }: BackpackProps) => {
@@ -49,7 +49,7 @@ const Backpack = ({ source }: BackpackProps) => {
 					<Container key={`item${index}`}>{backpack[index] ? <ItemContainer item={backpack[index]} origin="backpack" /> : <div></div>}</Container>
 				))}
 			</div>
-			<Gold />
+			<GoldTotal />
 		</div>
 	);
 };

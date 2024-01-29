@@ -10,11 +10,11 @@ import Button from "@/app/components/UI/Button";
 import { SizeTypes } from "@/types";
 import { twMerge } from "tailwind-merge";
 import H1 from "@/app/components/UI/H1";
-import { NPCTypes } from "@/types/local";
+import { ActorTypes } from "@/types/local";
 
 interface InventoryProps {
 	size: SizeTypes;
-	source: NPCTypes;
+	source: ActorTypes;
 }
 
 const Inventory = ({ size, source }: InventoryProps) => {

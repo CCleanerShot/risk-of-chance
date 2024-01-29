@@ -73,8 +73,8 @@ const Battle = () => {
 	const NPCLogsComponent = ({ source, className }: { source: NPCTypes; className?: string }) =>
 		battleResult.rolls[source].length ? (
 			<div className={twMerge("flex p-2 gap-3 justify-start items-start", className)}>
-				{battleResult.rolls[source].map((number) => (
-					<div className="border flex justify-center items-center p-2">
+				{battleResult.rolls[source].map((number, index) => (
+					<div key={`logs${index}`} className="border flex justify-center items-center p-2">
 						<div className="text-sm">{`${number.value}`}</div>
 						<div>/</div>
 						<div className="text-sm">{`${number.item.sides}`}</div>

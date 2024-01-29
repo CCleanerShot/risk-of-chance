@@ -4,21 +4,19 @@ import GlobalStore from "@/common/global_store";
 import Utils from "@/common/utils/utils";
 import React, { useEffect, useState } from "react";
 import { TbCoinFilled } from "react-icons/tb";
+import { twMerge } from "tailwind-merge";
 
-const Gold = () => {
-	const [gold, setGold] = useState(GlobalStore.getFromGlobalStore("gold").gold);
-	const listenToGold = () => {
-		const newGold = GlobalStore.getFromGlobalStore("gold").gold;
-		setGold(gold);
-	};
+interface GoldProps {
+	children: React.ReactNode;
+	className?: string;
+	classNameText?: string;
+}
 
-	useEffect(() => {
-		GlobalStore.AddListenerToVariable("gold", listenToGold);
-	}, []);
+const Gold = ({ children, className, classNameText }: GoldProps) => {
 	return (
-		<div className="flex justify-start items-center gap-1">
+		<div className={twMerge("flex justify-start items-center gap-1", className)}>
 			<TbCoinFilled color="gold" />
-			<div className="font-bold">{Utils.FormatNumber(gold)}</div>
+			<div className={twMerge("font-bold", classNameText)}>{children}</div>
 		</div>
 	);
 };

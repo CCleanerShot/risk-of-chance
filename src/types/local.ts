@@ -13,8 +13,8 @@ export type StatusColorTypes = "red" | "yellow" | "green";
 export type SupabaseSessionStatusTypes = "loading" | "none" | "exists" | "valid" | "guest";
 export type MessageTypes = "log" | "warn" | "error";
 export type ResultsTypes = "win" | "lose" | "draw";
-export type StorageTypes = "backpack" | "inventory" | "battleItems";
-export type NPCTypes = "player" | "enemy";
+export type StorageTypes = "backpack" | "inventory" | "battleItems" | "rewards";
+export type ActorTypes = "player" | "enemy";
 
 // // prettier-ignore
 // export type SupabaseSession =
