@@ -11,6 +11,7 @@ import H2 from "@/app/components/UI/H2";
 import UtilsGame from "@/common/utils/utils_game";
 import { twMerge } from "tailwind-merge";
 import { NPCTypes } from "@/types";
+import Utils from "@/common/utils/utils";
 
 const Battle = () => {
 	function checkIfItemsMax(): boolean {
@@ -23,6 +24,7 @@ const Battle = () => {
 	const [helperHovered, setHelperHovered] = useState(false);
 	const [battleResult, setBattleResult] = useState(GlobalStore.getFromGlobalStore("battleResult"));
 	const [floor, setFloor] = useState(GlobalStore.getFromGlobalStore("game").game.currentFloor);
+
 	const handleBattle = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		UtilsGame.DoBattle();
 	};
@@ -37,8 +39,8 @@ const Battle = () => {
 	};
 
 	const listenToBattleResult = () => {
-		const { battleResult, items } = GlobalStore.getFromGlobalStore("battleResult");
-		setBattleResult({ battleResult, items });
+		const { battleResult, rolls } = GlobalStore.getFromGlobalStore("battleResult");
+		setBattleResult({ battleResult, rolls });
 	};
 
 	useEffect(() => {
@@ -68,39 +70,41 @@ const Battle = () => {
 		}
 	};
 
-	console.log("test", battleResult.items.player);
+	const NPCLogsComponent = ({ source, className }: { source: NPCTypes; className?: string }) =>
+		battleResult.rolls[source].length ? (
+			<div className={twMerge("flex p-2 gap-3 justify-start items-start", className)}>
+				{battleResult.rolls[source].map((number) => (
+					<div className="border flex justify-center items-center p-2">
+						<div className="text-sm">{`${number.value}`}</div>
+						<div>/</div>
+						<div className="text-sm">{`${number.item.sides}`}</div>
+					</div>
+				))}
+			</div>
+		) : (
+			<></>
+		);
+
+	const NPCMainComponent = ({ source, className, disabled }: { source: NPCTypes; className?: string; disabled: boolean }) => (
+		<div className="flex flex-col gap-4 border-2 border-slate-900 border-double p-4 rounded-lg">
+			<H2>{Utils.firstLetterUppercase(source)}</H2>
+			<Health source={source} />
+			<BattleItems source={source} disabled={disabled} />
+		</div>
+	);
+
 	return (
 		<div className="flex flex-col gap-5 justify-center items-center">
 			<H1>{`Floor ${floor}`}</H1>
 			<Inventory size="medium" source="player" />
 			<div className="flex gap-5">
 				<div className="flex gap-2 ">
-					{battleResult.items.player.length > 0 && (
-						<div className="flex p-2 border border-green-500 gap-1">
-							{battleResult.items.player.map((number) => (
-								<div>{number}</div>
-							))}
-						</div>
-					)}
-					<div className="flex flex-col gap-4 border-2 border-slate-900 border-double p-4 rounded-lg">
-						<H2>{"You"}</H2>
-						<Health source="player" />
-						<BattleItems source="player" />
-					</div>
+					{NPCLogsComponent({ source: "player", className: "border border-green-500" })}
+					{NPCMainComponent({ disabled: false, source: "player", className: "border border-green-500" })}
 				</div>
 				<div className="flex gap-2">
-					<div className="flex flex-col gap-4 border-2 border-slate-900 border-double p-4 rounded-lg">
-						<H2>{"Enemy"}</H2>
-						<Health source="enemy" />
-						<BattleItems source="enemy" disabled={true} />
-					</div>
-					{battleResult.items.enemy.length > 0 && (
-						<div className="flex p-2 border border-red-500 gap-2">
-							{battleResult.items.enemy.map((number) => (
-								<div>{number}</div>
-							))}
-						</div>
-					)}
+					{NPCMainComponent({ disabled: true, source: "enemy" })}
+					{NPCLogsComponent({ source: "enemy", className: "border border-green-500" })}
 				</div>
 			</div>
 			<Button disabled={!isReady} template="darker_inner" onClick={handleBattle} className={twMerge("font-bold block w-full", isReady ? "bg-green-500" : "bg-slate-500")}>

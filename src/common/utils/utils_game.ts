@@ -3,7 +3,6 @@ import Utils from "../utils/utils";
 import GlobalStore from "../global_store";
 import { StorageTypes } from "@/types";
 import { NPCTypes, ResultsTypes } from "@/types/local";
-import { Result } from "postcss";
 
 export default class UtilsGame {
 	static MIN_DIFFICULTY = 9;
@@ -113,10 +112,10 @@ export default class UtilsGame {
 
 	static GenerateFloor(floor: number) {
 		// TODO: add more cool things to a floor
-		let inventory = UtilsGame.CreateEnemyInventory(floor);
-		const items = UtilsGame.ReturnRandomBattleItems(inventory, "enemy");
-
+		let inventory: (Item | null)[] = UtilsGame.CreateEnemyInventory(floor) as Item[];
+		const items = UtilsGame.ReturnRandomBattleItems(inventory as Item[], "enemy");
 		inventory = inventory.map((i) => (items.includes(i) ? null : i));
+
 		GlobalStore.UpdateVariableProperty("inventory", "inventory", ({ enemy, player }) => ({ enemy: inventory, player: player }));
 		GlobalStore.UpdateVariableProperty("battleItems", "battleItems", ({ enemy, player }) => ({ enemy: items, player: player }));
 		GlobalStore.UpdateVariableProperty("game", "game", { currentFloor: floor, gameStatus: { type: "battle" } });
@@ -177,21 +176,10 @@ export default class UtilsGame {
 	}
 
 	static DoBattle() {
-		function GetDiceRollsAndTotal(items: Item[]) {
-			const rolls = items.map((item) => {
-				switch (item?.type) {
-					// TODO: add health stuff so it isnt just 2 health
-					case "health":
-						default:
-							return 0;
-							case "dice":
-								return Math.round(Utils.Random(1, item.sides));
-							}
-						});
-						
-						const original = items.map((item) => item.)
-			const total = rolls.reduce((pV, cV) => pV + cV, 0);
-			return { rolls: {original: items}rolls, total: total };
+		function GetDiceRollsAndTotal(items: Item<"dice">[]) {
+			const rolls = items.map((item) => ({ item: item, value: Math.round(Utils.Random(1, item.sides)) }));
+			const total = rolls.reduce((pV, cV) => pV + cV.value, 0);
+			return { rolls: rolls, total: total };
 		}
 
 		function updateBattleAndState() {
@@ -206,13 +194,13 @@ export default class UtilsGame {
 		}
 
 		const { enemy, player } = GlobalStore.getFromGlobalStore("battleItems").battleItems;
-		const enemyDices = enemy.filter((item) => item?.type === "dice");
-		const playerDices = player.filter((item) => item?.type === "dice");
+		const enemyDices = enemy.filter((item) => item?.type === "dice") as Item<"dice">[];
+		const playerDices = player.filter((item) => item?.type === "dice") as Item<"dice">[];
 		const enemyResults = GetDiceRollsAndTotal(enemyDices);
 		const playerResults = GetDiceRollsAndTotal(playerDices);
-		const [enemyItems, playerItems] = [enemyDices.map(dice => ({original:}))]
 		switch (true) {
 			case enemyResults.total === playerResults.total:
+				GlobalStore.UpdateVariableProperty("battleResult", "battleResult", "draw");
 				break;
 
 			case enemyResults.total < playerResults.total: {
@@ -221,7 +209,7 @@ export default class UtilsGame {
 					UtilsGame.EndBattle("win");
 				} else {
 					GlobalStore.UpdateVariableProperty("battleResult", "battleResult", "win");
-					GlobalStore.UpdateVariableProperty("battleResult", "items", { enemy: [], player:  });
+					GlobalStore.UpdateVariableProperty("battleResult", "rolls", { enemy: enemyResults.rolls, player: playerResults.rolls });
 					GlobalStore.UpdateVariableProperty("health", "health", ({ enemy, player }) => ({ enemy: { current: Math.max(0, enemy.current - 1), max: enemy.max }, player: player }));
 					updateBattleAndState();
 				}
@@ -235,6 +223,7 @@ export default class UtilsGame {
 					UtilsGame.EndBattle("lose");
 				} else {
 					GlobalStore.UpdateVariableProperty("battleResult", "battleResult", "lose");
+					GlobalStore.UpdateVariableProperty("battleResult", "rolls", { enemy: enemyResults.rolls, player: playerResults.rolls });
 					GlobalStore.UpdateVariableProperty("health", "health", ({ enemy, player }) => ({ enemy: enemy, player: { current: Math.max(0, player.current - 1), max: player.max } }));
 					updateBattleAndState();
 				}

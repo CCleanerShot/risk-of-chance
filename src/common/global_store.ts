@@ -105,12 +105,12 @@ export const wrapperList = {};
 /** TO ENSURE INTELLISENSE, JUST ADD ADDITIONAL ITEMS HERE AS NEEDED */
 export const contextsList = {
 	backpack: GlobalStore.AddVariableToGlobalStore({ backpack: [] as Backpack }),
-	battleItems: GlobalStore.AddVariableToGlobalStore({ battleItems: { player: [] as Item[], enemy: [] as Item[] } }),
-	battleResult: GlobalStore.AddVariableToGlobalStore({ battleResult: null as ResultsTypes | null, items: { enemy: [] as { original: number; value: number }[], player: [] as { original: number; value: number }[] } }),
+	battleItems: GlobalStore.AddVariableToGlobalStore({ battleItems: { player: [] as (Item | null)[], enemy: [] as (Item | null)[] } }),
+	battleResult: GlobalStore.AddVariableToGlobalStore({ battleResult: null as ResultsTypes | null, rolls: { enemy: [] as { item: Item<"dice">; value: number }[], player: [] as { item: Item<"dice">; value: number }[] } }),
 	playerDetails: GlobalStore.AddVariableToGlobalStore({ playerDetails: { name: "" } }),
 	game: GlobalStore.AddVariableToGlobalStore({ game: { gameStatus: { type: "start" }, currentFloor: UtilsGame.MIN_FLOORS } as Game }),
 	health: GlobalStore.AddVariableToGlobalStore({ health: { player: { current: UtilsGame.maxHealth["player"], max: UtilsGame.maxHealth["player"] } as Health, enemy: { current: UtilsGame.maxHealth["enemy"], max: UtilsGame.maxHealth["enemy"] } as Health } }),
-	inventory: GlobalStore.AddVariableToGlobalStore({ inventory: { player: [] as Item[], enemy: [] as Item[] } }),
+	inventory: GlobalStore.AddVariableToGlobalStore({ inventory: { player: [] as (Item | null)[], enemy: [] as (Item | null)[] } }),
 	isLoading: GlobalStore.AddVariableToGlobalStore({ isLoading: false }),
 	modalAuth: GlobalStore.AddVariableToGlobalStore({ isOpened: false }),
 	finalResults: GlobalStore.AddVariableToGlobalStore({ finalResults: "draw" as ResultsTypes }),

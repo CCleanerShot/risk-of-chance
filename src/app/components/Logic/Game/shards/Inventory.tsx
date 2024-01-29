@@ -18,7 +18,7 @@ interface InventoryProps {
 }
 
 const Inventory = ({ size, source }: InventoryProps) => {
-	const [inventory, setInventory] = useState<Item[]>(Utils.MakeArray(UtilsGame.maxStorage.inventory[source], (i) => null) as Item[]);
+	const [inventory, setInventory] = useState<(Item | null)[]>(Utils.MakeArray(UtilsGame.maxStorage.inventory[source], (i) => null) as (Item | null)[]);
 
 	const listenForInventory = () => {
 		const newInventory = GlobalStore.getFromGlobalStore("inventory").inventory[source];

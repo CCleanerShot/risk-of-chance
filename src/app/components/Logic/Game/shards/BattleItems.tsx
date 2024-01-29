@@ -16,7 +16,7 @@ interface BattleItemsProps {
 }
 
 const BattleItems = ({ source, disabled = false }: BattleItemsProps) => {
-	const [items, setItems] = useState<Item[]>(GlobalStore.getFromGlobalStore("battleItems").battleItems[source]);
+	const [items, setItems] = useState<(Item | null)[]>(GlobalStore.getFromGlobalStore("battleItems").battleItems[source]);
 
 	const listenToBattleItems = () => {
 		const newItems = GlobalStore.getFromGlobalStore("battleItems").battleItems[source];
@@ -42,7 +42,7 @@ const BattleItems = ({ source, disabled = false }: BattleItemsProps) => {
 		<div className="grid grid-cols-3 gap-1">
 			{Utils.MakeArray(UtilsGame.maxStorage.battleItems[source], (i) => i).map((index) => {
 				if (items[index]) {
-					return <ItemContainer disabled={disabled} key={`battle-item${index}`} item={items[index]} origin="battleItems" className={twMerge("w-12 h-12", backgroundStyles)} />;
+					return <ItemContainer disabled={disabled} key={`battle-item${index}`} item={items[index]!} origin="battleItems" className={twMerge("w-12 h-12", backgroundStyles)} />;
 				} else {
 					return <Button disabled={disabled} key={`battle-item${index}`} onClick={handleClick} template="green_border" className="w-12 h-12"></Button>;
 				}

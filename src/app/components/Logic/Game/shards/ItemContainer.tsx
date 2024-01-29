@@ -52,7 +52,7 @@ const ItemContainer = ({ item, origin, className, disabled = false }: ItemContai
 	const Contents = () => {
 		switch (item?.type) {
 			case "dice": {
-				const _item = item;
+				const _item = item as Item<"dice">;
 				return <div className={item.disabled ? "line-through text-red-500" : ""}>{_item.sides}</div>;
 			}
 

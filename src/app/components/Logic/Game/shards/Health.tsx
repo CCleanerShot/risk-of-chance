@@ -16,6 +16,7 @@ const Health = ({ source }: HealthProps) => {
 	const [health, setHealth] = useState<Health>({ current: UtilsGame.maxHealth[source], max: UtilsGame.maxHealth[source] });
 
 	const listenToHealth = () => {
+		console.log("listening");
 		const { current, max } = GlobalStore.getFromGlobalStore("health").health[source];
 		setHealth({ current, max });
 	};
