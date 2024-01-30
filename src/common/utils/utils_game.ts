@@ -1,8 +1,7 @@
-import { Item } from "@/types/game";
 import Utils from "../utils/utils";
 import GlobalStore from "../global_store";
 import { StorageTypes } from "@/types";
-import { ActorTypes, ResultsTypes } from "@/types/local";
+import { ActorTypes, ResultsTypes, Item } from "@/types";
 
 export default class UtilsGame {
 	static MIN_DIFFICULTY = 9;
@@ -34,19 +33,24 @@ export default class UtilsGame {
 			enemy: 100,
 		},
 
-		inventory: {
-			player: 12,
-			enemy: 9,
-		},
-
 		battleItems: {
 			player: 3,
 			enemy: 3,
 		},
 
+		inventory: {
+			player: 12,
+			enemy: 9,
+		},
+
 		rewards: {
 			player: 3,
 			enemy: 3,
+		},
+
+		trashcan: {
+			player: 1,
+			enemy: 1,
 		},
 	};
 
@@ -148,6 +152,8 @@ export default class UtilsGame {
 				return GlobalStore.getFromGlobalStore("inventory").inventory[owner];
 			case "rewards":
 				return GlobalStore.getFromGlobalStore("rewards").rewards;
+			case "trashcan":
+				return GlobalStore.getFromGlobalStore("trashcan").trashcan;
 		}
 	}
 
@@ -179,6 +185,7 @@ export default class UtilsGame {
 		GlobalStore.UpdateVariableProperty("backpack", "backpack", (backpack) => [...backpack]);
 		GlobalStore.UpdateVariableProperty("inventory", "inventory", (inventory) => ({ ...inventory }));
 		GlobalStore.UpdateVariableProperty("battleItems", "battleItems", (battleItems) => ({ ...battleItems }));
+		GlobalStore.UpdateVariableProperty("rewards", "rewards", (rewards) => [...rewards]);
 	}
 
 	static GenerateLoot(items: Item[], floor: number, roll: number): Item[] {
@@ -240,6 +247,7 @@ export default class UtilsGame {
 		const caseWin = enemyResults.total < playerResults.total;
 		const caseLose = enemyResults.total > playerResults.total;
 
+		GlobalStore.UpdateVariableProperty("battleResult", "rolls", ({ enemy, player }) => ({ enemy: [...enemy, ...enemyResults.rolls], player: [...player, ...playerResults.rolls] }));
 		switch (true) {
 			case caseDraw:
 				GlobalStore.UpdateVariableProperty("battleResult", "battleResult", "draw");
@@ -249,7 +257,6 @@ export default class UtilsGame {
 			case caseWin:
 				UtilsGame.ShelveBattleItems("enemy");
 				UtilsGame.ShelveBattleItems("player");
-				GlobalStore.UpdateVariableProperty("battleResult", "rolls", { enemy: enemyResults.rolls, player: playerResults.rolls });
 
 				if (caseLose) {
 					BattleStep("lose");

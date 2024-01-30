@@ -1,7 +1,7 @@
-import { createClient } from "@supabase/supabase-js";
-import { Database, ProviderTypes } from "@/types";
 import GlobalStore from "../global_store";
-import { Backpack, backpackConst } from "@/types/game";
+import { createClient } from "@supabase/supabase-js";
+import { backpackConst } from "@/types/local";
+import { Backpack, Database, ProviderTypes } from "@/types";
 
 const URL = process.env.NEXT_PUBLIC_SUPABASE_HOST_URL;
 const PUBLIC_KEY = process.env.NEXT_PUBLIC_SUPABASE_PUBLIC_KEY;

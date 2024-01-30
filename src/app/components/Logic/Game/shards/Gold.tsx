@@ -1,8 +1,4 @@
-"use client";
-
-import GlobalStore from "@/common/global_store";
-import Utils from "@/common/utils/utils";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { TbCoinFilled } from "react-icons/tb";
 import { twMerge } from "tailwind-merge";
 

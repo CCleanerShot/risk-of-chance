@@ -1,20 +1,43 @@
 import { AuthError, Session } from "@supabase/supabase-js";
 
+export type ActorTypes = "player" | "enemy";
+export type GameStatusTypes = { type: "battle" } | { type: "start" } | { type: "results" };
+export type MessageTypes = "log" | "warn" | "error";
+export type ModalAuthTabTypes = "signin" | "register";
+export type ModalTypes = "modalAuth";
+export type ProviderTypes = "google" | "github";
+export type ResultsTypes = "win" | "lose" | "draw";
+export type SizeTypes = "smallest" | "small" | "medium" | "large" | "largest";
+export type StatusColorTypes = "red" | "yellow" | "green";
+export type StorageTypes = "backpack" | "inventory" | "battleItems" | "rewards" | "trashcan";
+export type SupabaseSessionStatusTypes = "loading" | "none" | "exists" | "valid" | "guest";
+
+type Items = "dice" | "health" | null;
+export type Item<T extends Items = Items> = T extends null ? null : { type: T; disabled: boolean } & (T extends "dice" ? { sides: number } : T extends "health" ? { healAmount: number } : {});
+
+// to check if database query matches the type of a backpack
+export const backpackConst = [{ type: "dice", sides: 1 } as Item<"dice">] as Item[];
+export type Backpack = typeof backpackConst;
+
 export interface Alignment {
 	x: "left" | "middle" | "right";
 	y: "top" | "middle" | "bottom";
 }
 
-export type ModalAuthTabTypes = "signin" | "register";
-export type ModalTypes = "modalAuth";
-export type ProviderTypes = "google" | "github";
-export type SizeTypes = "smallest" | "small" | "medium" | "large" | "largest";
-export type StatusColorTypes = "red" | "yellow" | "green";
-export type SupabaseSessionStatusTypes = "loading" | "none" | "exists" | "valid" | "guest";
-export type MessageTypes = "log" | "warn" | "error";
-export type ResultsTypes = "win" | "lose" | "draw";
-export type StorageTypes = "backpack" | "inventory" | "battleItems" | "rewards";
-export type ActorTypes = "player" | "enemy";
+export interface NPC {
+	name: string;
+	items: Item<any>[];
+}
+
+export interface Game {
+	gameStatus: GameStatusTypes;
+	currentFloor: number;
+}
+
+export interface Health {
+	current: number;
+	max: number;
+}
 
 // // prettier-ignore
 // export type SupabaseSession =

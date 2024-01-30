@@ -4,8 +4,7 @@ import React, { useEffect, useState } from "react";
 import GlobalStore from "@/common/global_store";
 import Utils from "@/common/utils/utils";
 import UtilsGame from "@/common/utils/utils_game";
-import { Health } from "@/types/game";
-import { ActorTypes } from "@/types/local";
+import { ActorTypes, Health } from "@/types";
 import { IoMdHeart, IoMdHeartEmpty } from "react-icons/io";
 
 interface HealthProps {

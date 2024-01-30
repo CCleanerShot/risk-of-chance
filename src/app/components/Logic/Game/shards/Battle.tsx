@@ -10,7 +10,7 @@ import H1 from "@/app/components/UI/H1";
 import H2 from "@/app/components/UI/H2";
 import UtilsGame from "@/common/utils/utils_game";
 import { twMerge } from "tailwind-merge";
-import { NPCTypes } from "@/types";
+import { ActorTypes } from "@/types";
 import Utils from "@/common/utils/utils";
 
 const Battle = () => {
@@ -70,11 +70,11 @@ const Battle = () => {
 		}
 	};
 
-	const NPCLogsComponent = ({ source, className }: { source: NPCTypes; className?: string }) =>
+	const NPCLogsComponent = ({ source, className }: { source: ActorTypes; className?: string }) =>
 		battleResult.rolls[source].length ? (
-			<div className={twMerge("flex p-2 gap-3 justify-start items-start", className)}>
+			<div className={twMerge("p-2 gap-2 justify-start place-items-start grid auto-rows-min", className)} style={{ gridTemplateColumns: `repeat(${UtilsGame.maxStorage.battleItems[source]}, minmax(0, 1fr))` }}>
 				{battleResult.rolls[source].map((number, index) => (
-					<div key={`logs${index}`} className="border flex justify-center items-center p-2">
+					<div key={`logs${index}`} className="border flex justify-center items-center min-w-10 min-h-10">
 						<div className="text-sm">{`${number.value}`}</div>
 						<div>/</div>
 						<div className="text-sm">{`${number.item.sides}`}</div>
@@ -85,11 +85,11 @@ const Battle = () => {
 			<></>
 		);
 
-	const NPCMainComponent = ({ source, className, disabled }: { source: NPCTypes; className?: string; disabled: boolean }) => (
+	const NPCMainComponent = ({ source, className, disabled }: { source: ActorTypes; className?: string; disabled: boolean }) => (
 		<div className="flex flex-col gap-4 border-2 border-slate-900 border-double p-4 rounded-lg">
 			<H2>{Utils.FirstLetterUppercase(source)}</H2>
 			<Health source={source} />
-			<BattleItems source={source} disabled={disabled} />
+			<BattleItems size="medium" source={source} disabled={disabled} />
 		</div>
 	);
 

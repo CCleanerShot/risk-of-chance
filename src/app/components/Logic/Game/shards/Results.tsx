@@ -6,6 +6,8 @@ import React, { useEffect, useState } from "react";
 import Gold from "./Gold";
 import Utils from "@/common/utils/utils";
 import ItemContainer from "./ItemContainer";
+import Inventory from "./Inventory";
+import H1 from "@/app/components/UI/H1";
 
 const Results = () => {
 	const [game, setGame] = useState(GlobalStore.getFromGlobalStore("game").game);
@@ -37,11 +39,15 @@ const Results = () => {
 	}, []);
 
 	return (
-		<div className="flex flex-col">
-			<Gold>{`+ ${Utils.FormatNumber(game.currentFloor)}`}</Gold>
-			{rewards.map((reward, index) => (
-				<ItemContainer key={index} item={reward} origin="rewards"></ItemContainer>
-			))}
+		<div className="flex flex-col justify-center items-center">
+			<div className="flex flex-col justify-center items-center">
+				<H1>GET</H1>
+				<Gold>{`+ ${Utils.FormatNumber(game.currentFloor)}`}</Gold>
+				{rewards.map((reward, index) => (
+					<ItemContainer size="medium" key={index} item={reward} origin="rewards"></ItemContainer>
+				))}
+			</div>
+			<Inventory size="medium" source="player" />
 			{finalResults}
 		</div>
 	);

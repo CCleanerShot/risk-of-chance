@@ -2,15 +2,13 @@
 
 import React, { useEffect, useState } from "react";
 import Utils from "@/common/utils/utils";
-import { Item } from "@/types/game";
 import ItemContainer from "./ItemContainer";
 import UtilsGame from "@/common/utils/utils_game";
 import GlobalStore from "@/common/global_store";
 import Button from "@/app/components/UI/Button";
-import { SizeTypes } from "@/types";
 import { twMerge } from "tailwind-merge";
 import H1 from "@/app/components/UI/H1";
-import { ActorTypes } from "@/types/local";
+import { ActorTypes, SizeTypes, Item } from "@/types";
 
 interface InventoryProps {
 	size: SizeTypes;
@@ -57,7 +55,7 @@ const Inventory = ({ size, source }: InventoryProps) => {
 					if (item === null) {
 						return <Button key={`inventory${index}`} onClick={() => {}} template="green_border" className={twMerge(sizeStyles, "")}></Button>;
 					} else {
-						return <ItemContainer key={`inventory${index}`} item={item} className={twMerge(sizeStyles, "")} origin="inventory" />;
+						return <ItemContainer key={`inventory${index}`} item={item} size={size} origin="inventory" />;
 					}
 				})}
 			</div>

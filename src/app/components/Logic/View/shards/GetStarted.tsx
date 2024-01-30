@@ -1,7 +1,6 @@
 import React from "react";
 import Button from "@/app/components/UI/Button";
 import GlobalStore from "@/common/global_store";
-import SignInForm from "../../SignInForm";
 
 const GetStarted = () => {
 	const handleSignIn = () => {

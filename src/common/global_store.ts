@@ -1,6 +1,5 @@
 import { supabase } from "@/common/utils/utils_supabase";
-import { MessageTypes, ResultsTypes, SupabaseSessionStatusTypes } from "@/types";
-import { Backpack, Game, Health, Item } from "@/types/game";
+import { Backpack, Game, Health, Item, MessageTypes, ResultsTypes, SupabaseSessionStatusTypes } from "@/types";
 import { Session } from "@supabase/supabase-js";
 import UtilsGame from "./utils/utils_game";
 
@@ -107,17 +106,18 @@ export const contextsList = {
 	backpack: GlobalStore.AddVariableToGlobalStore({ backpack: [] as Backpack }),
 	battleItems: GlobalStore.AddVariableToGlobalStore({ battleItems: { player: [] as (Item | null)[], enemy: [] as (Item | null)[] } }),
 	battleResult: GlobalStore.AddVariableToGlobalStore({ battleResult: null as ResultsTypes | null, rolls: { enemy: [] as { item: Item<"dice">; value: number }[], player: [] as { item: Item<"dice">; value: number }[] } }),
-	playerDetails: GlobalStore.AddVariableToGlobalStore({ playerDetails: { name: "" } }),
+	finalResults: GlobalStore.AddVariableToGlobalStore({ finalResults: "draw" as ResultsTypes }),
 	game: GlobalStore.AddVariableToGlobalStore({ game: { gameStatus: { type: "start" }, currentFloor: UtilsGame.MIN_FLOORS } as Game }),
 	gold: GlobalStore.AddVariableToGlobalStore({ gold: 1000 }),
 	health: GlobalStore.AddVariableToGlobalStore({ health: { player: { current: UtilsGame.maxHealth["player"], max: UtilsGame.maxHealth["player"] } as Health, enemy: { current: UtilsGame.maxHealth["enemy"], max: UtilsGame.maxHealth["enemy"] } as Health } }),
 	inventory: GlobalStore.AddVariableToGlobalStore({ inventory: { player: [] as (Item | null)[], enemy: [] as (Item | null)[] } }),
 	isLoading: GlobalStore.AddVariableToGlobalStore({ isLoading: false }),
 	modalAuth: GlobalStore.AddVariableToGlobalStore({ isOpened: false }),
-	finalResults: GlobalStore.AddVariableToGlobalStore({ finalResults: "draw" as ResultsTypes }),
+	playerDetails: GlobalStore.AddVariableToGlobalStore({ playerDetails: { name: "" } }),
 	rewards: GlobalStore.AddVariableToGlobalStore({ rewards: [] as Item[] }),
 	supabaseClient: GlobalStore.AddVariableToGlobalStore({ supabaseClient: supabase }),
 	supabaseSession: GlobalStore.AddVariableToGlobalStore({ session: null as Session | null, status: "none" as SupabaseSessionStatusTypes }),
+	trashcan: GlobalStore.AddVariableToGlobalStore({ trashcan: [] as Item[] }),
 	updateMessage: GlobalStore.AddVariableToGlobalStore({ updateMessage: { msg: "", type: "log" as MessageTypes } }),
 	viewSelected: GlobalStore.AddVariableToGlobalStore({ floorSelect: 1, itemSelect: { type: "dice" } as Item }),
 } as const;
