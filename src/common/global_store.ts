@@ -2,6 +2,7 @@ import { supabase } from "@/common/utils/utils_supabase";
 import { Backpack, Game, Health, Item, MessageTypes, ResultsTypes, SupabaseSessionStatusTypes } from "@/types";
 import { Session } from "@supabase/supabase-js";
 import UtilsGame from "./utils/utils_game";
+import { PurchaseableItem } from "@/types/local";
 
 type VariableType<T extends any, K extends (args: any) => void> = {
 	variable: T;
@@ -107,7 +108,7 @@ export const contextsList = {
 	battleItems: GlobalStore.AddVariable({ battleItems: { player: [] as (Item | null)[], enemy: [] as (Item | null)[] } }),
 	battleResult: GlobalStore.AddVariable({ battleResult: null as ResultsTypes | null, rolls: { enemy: [] as { item: Item<"dice">; value: number }[], player: [] as { item: Item<"dice">; value: number }[] } }),
 	finalResults: GlobalStore.AddVariable({ finalResults: "draw" as ResultsTypes }),
-	game: GlobalStore.AddVariable({ game: { gameStatus: { type: "start" }, currentFloor: UtilsGame.MIN_FLOORS } as Game }),
+	game: GlobalStore.AddVariable({ game: { gameStatus: "start", currentFloor: UtilsGame.MIN_FLOORS } as Game }),
 	gold: GlobalStore.AddVariable({ gold: 0 }),
 	health: GlobalStore.AddVariable({ health: { player: { current: UtilsGame.maxHealth["player"], max: UtilsGame.maxHealth["player"] } as Health, enemy: { current: UtilsGame.maxHealth["enemy"], max: UtilsGame.maxHealth["enemy"] } as Health } }),
 	inventory: GlobalStore.AddVariable({ inventory: { player: [] as (Item | null)[], enemy: [] as (Item | null)[] } }),
@@ -115,6 +116,7 @@ export const contextsList = {
 	modalAuth: GlobalStore.AddVariable({ isOpened: false }),
 	playerDetails: GlobalStore.AddVariable({ playerDetails: { name: "" } }),
 	rewards: GlobalStore.AddVariable({ rewards: [] as Item[] }),
+	shop: GlobalStore.AddVariable({ shop: [] as PurchaseableItem[] }),
 	supabaseClient: GlobalStore.AddVariable({ supabaseClient: supabase }),
 	supabaseSession: GlobalStore.AddVariable({ session: null as Session | null, status: "none" as SupabaseSessionStatusTypes }),
 	trashCan: GlobalStore.AddVariable({ trashCan: [] as Item[] }),

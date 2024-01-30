@@ -20,7 +20,7 @@ interface ItemContainerProps {
 
 const ItemContainer = ({ item, source, size, className, disabled = false }: ItemContainerProps) => {
 	const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-		const currentStage = GlobalStore.getFromStore("game").game.gameStatus.type;
+		const currentStage = GlobalStore.getFromStore("game").game.gameStatus;
 		switch (currentStage) {
 			case "battle":
 				source === "backpack" && GlobalStore.Update("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
@@ -69,7 +69,7 @@ const ItemContainer = ({ item, source, size, className, disabled = false }: Item
 
 	const Contents = () => {
 		if (item == null) {
-			return <div className="grid place-items-center">{source === "trashcan" ? <FaTrashCan color="gray" /> : <></>}</div>;
+			return <div className="grid place-items-center">{source === "trashCan" ? <FaTrashCan color="gray" /> : <></>}</div>;
 		}
 
 		switch (item.type) {

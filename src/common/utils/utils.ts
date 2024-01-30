@@ -14,7 +14,7 @@ export default class Utils {
 	}
 
 	/** helper function that returns a random number from a given min/max range */
-	static Random(min: number, max: number) {
+	static RandomNumber(min: number, max: number) {
 		const difference = max - min;
 		const result = Math.random() * difference + min;
 		return result;

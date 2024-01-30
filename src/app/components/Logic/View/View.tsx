@@ -72,7 +72,7 @@ const View = () => {
 		execute();
 	}, []);
 
-	const Page = () => {
+	const PageComponent = () => {
 		switch (status) {
 			case "exists":
 			case "guest":
@@ -91,9 +91,7 @@ const View = () => {
 				<Corner color={color} facing="down-right" size={cornerSize} />
 				<Corner color={color} facing="down-left" size={cornerSize} />
 			</div>
-			<div className="flex-1 flex justify-center items-center h-full w-full">
-				<Page />
-			</div>
+			<div className="flex-1 flex justify-center items-center h-full w-full">{PageComponent()}</div>
 			<div className="flex justify-between bg-slate-700">
 				<Corner color={color} facing="up-right" size={cornerSize} />
 				<Corner color={color} facing="up-left" size={cornerSize} />

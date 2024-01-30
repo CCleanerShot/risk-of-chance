@@ -1,7 +1,7 @@
 import { AuthError, Session } from "@supabase/supabase-js";
 
 export type ActorTypes = "player" | "enemy";
-export type GameStatusTypes = { type: "battle" } | { type: "start" } | { type: "results" } | { type: "exit" };
+export type GameStatusTypes = "battle" | "start" | "results" | "exit" | "shop";
 export type MessageTypes = "log" | "warn" | "error";
 export type ModalAuthTabTypes = "signin" | "register";
 export type ModalTypes = "modalAuth";
@@ -9,12 +9,12 @@ export type ProviderTypes = "google" | "github";
 export type ResultsTypes = "win" | "lose" | "draw";
 export type SizeTypes = "smallest" | "small" | "medium" | "large" | "largest";
 export type StatusColorTypes = "red" | "yellow" | "green";
-export type StorageTypes = "backpack" | "inventory" | "battleItems" | "rewards" | "trashCan";
+export type StorageTypes = "backpack" | "inventory" | "battleItems" | "rewards" | "trashCan" | "shop";
 export type SupabaseSessionStatusTypes = "loading" | "none" | "exists" | "valid" | "guest";
 
-type Items = "dice" | "health" | null;
-export type Item<T extends Items = Items> = T extends null ? null : { type: T; disabled: boolean } & (T extends "dice" ? { sides: number } : T extends "health" ? { healAmount: number } : {});
-
+type AllItemTypes = "dice" | "health" | null;
+export type Item<Type extends AllItemTypes = AllItemTypes> = Type extends null ? null : { type: Type; disabled: boolean } & (Type extends "dice" ? { sides: number } : Type extends "health" ? { healAmount: number } : {});
+export type PurchaseableItem = Item<Exclude<AllItemTypes, null>> & { cost: number };
 // to check if database query matches the type of a backpack
 export const backpackConst = [{ type: "dice", sides: 1 } as Item<"dice">] as Item[];
 export type Backpack = typeof backpackConst;
