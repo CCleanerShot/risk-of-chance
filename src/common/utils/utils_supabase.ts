@@ -50,7 +50,7 @@ export default class UtilsSupabase {
 	}
 
 	static async Load() {
-		const session_id = GlobalStore.getFromGlobalStore("supabaseSession").session?.user.id;
+		const session_id = GlobalStore.getFromStore("supabaseSession").session?.user.id;
 
 		if (!session_id) {
 			GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: "Session missing. Perhaps you cleared cookies?", type: "error" });
@@ -79,14 +79,14 @@ export default class UtilsSupabase {
 	}
 
 	static async Save() {
-		const session_id = GlobalStore.getFromGlobalStore("supabaseSession").session?.user.id;
+		const session_id = GlobalStore.getFromStore("supabaseSession").session?.user.id;
 
 		if (!session_id) {
 			GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: "Session missing. Perhaps you cleared cookies?", type: "error" });
 			return;
 		}
 
-		const backpack = GlobalStore.getFromGlobalStore("backpack").backpack;
+		const backpack = GlobalStore.getFromStore("backpack").backpack;
 
 		const { data, error } = await UtilsSupabase.GetQuery("updateBackpack").callQuery(backpack, session_id);
 

@@ -20,7 +20,7 @@ const Backpack = ({ size, source }: BackpackProps) => {
 	const [backpack, setBackpack] = useState<Backpack>([]);
 
 	const listenToUpdate = async () => {
-		const backpack = GlobalStore.getFromGlobalStore("backpack").backpack;
+		const backpack = GlobalStore.getFromStore("backpack").backpack;
 		setBackpack(backpack);
 	};
 

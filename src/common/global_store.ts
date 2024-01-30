@@ -41,7 +41,7 @@ export default class GlobalStore {
 	 * @param variable an object with potential properties to be updated, and listened to
 	 * @returns
 	 */
-	static AddVariableToGlobalStore<T extends Record<string, any>>(variable: T): T {
+	static AddVariableToStore<T extends Record<string, any>>(variable: T): T {
 		GlobalStore.globalStore.push({ variable: variable, listeners: [] });
 		return variable as T;
 	}
@@ -88,7 +88,7 @@ export default class GlobalStore {
 	}
 
 	/** @returns destructure-able object containing specified item in the store */
-	static getFromGlobalStore = <T extends ContextsListKeys>(variable: T) => {
+	static getFromStore = <T extends ContextsListKeys>(variable: T) => {
 		return contextsList[variable];
 	};
 
@@ -103,21 +103,21 @@ export const wrapperList = {};
 
 /** TO ENSURE INTELLISENSE, JUST ADD ADDITIONAL ITEMS HERE AS NEEDED */
 export const contextsList = {
-	backpack: GlobalStore.AddVariableToGlobalStore({ backpack: [] as Backpack }),
-	battleItems: GlobalStore.AddVariableToGlobalStore({ battleItems: { player: [] as (Item | null)[], enemy: [] as (Item | null)[] } }),
-	battleResult: GlobalStore.AddVariableToGlobalStore({ battleResult: null as ResultsTypes | null, rolls: { enemy: [] as { item: Item<"dice">; value: number }[], player: [] as { item: Item<"dice">; value: number }[] } }),
-	finalResults: GlobalStore.AddVariableToGlobalStore({ finalResults: "draw" as ResultsTypes }),
-	game: GlobalStore.AddVariableToGlobalStore({ game: { gameStatus: { type: "start" }, currentFloor: UtilsGame.MIN_FLOORS } as Game }),
-	gold: GlobalStore.AddVariableToGlobalStore({ gold: 1000 }),
-	health: GlobalStore.AddVariableToGlobalStore({ health: { player: { current: UtilsGame.maxHealth["player"], max: UtilsGame.maxHealth["player"] } as Health, enemy: { current: UtilsGame.maxHealth["enemy"], max: UtilsGame.maxHealth["enemy"] } as Health } }),
-	inventory: GlobalStore.AddVariableToGlobalStore({ inventory: { player: [] as (Item | null)[], enemy: [] as (Item | null)[] } }),
-	isLoading: GlobalStore.AddVariableToGlobalStore({ isLoading: false }),
-	modalAuth: GlobalStore.AddVariableToGlobalStore({ isOpened: false }),
-	playerDetails: GlobalStore.AddVariableToGlobalStore({ playerDetails: { name: "" } }),
-	rewards: GlobalStore.AddVariableToGlobalStore({ rewards: [] as Item[] }),
-	supabaseClient: GlobalStore.AddVariableToGlobalStore({ supabaseClient: supabase }),
-	supabaseSession: GlobalStore.AddVariableToGlobalStore({ session: null as Session | null, status: "none" as SupabaseSessionStatusTypes }),
-	trashcan: GlobalStore.AddVariableToGlobalStore({ trashcan: [] as Item[] }),
-	updateMessage: GlobalStore.AddVariableToGlobalStore({ updateMessage: { msg: "", type: "log" as MessageTypes } }),
-	viewSelected: GlobalStore.AddVariableToGlobalStore({ floorSelect: 1, itemSelect: { type: "dice" } as Item }),
+	backpack: GlobalStore.AddVariableToStore({ backpack: [] as Backpack }),
+	battleItems: GlobalStore.AddVariableToStore({ battleItems: { player: [] as (Item | null)[], enemy: [] as (Item | null)[] } }),
+	battleResult: GlobalStore.AddVariableToStore({ battleResult: null as ResultsTypes | null, rolls: { enemy: [] as { item: Item<"dice">; value: number }[], player: [] as { item: Item<"dice">; value: number }[] } }),
+	finalResults: GlobalStore.AddVariableToStore({ finalResults: "draw" as ResultsTypes }),
+	game: GlobalStore.AddVariableToStore({ game: { gameStatus: { type: "start" }, currentFloor: UtilsGame.MIN_FLOORS } as Game }),
+	gold: GlobalStore.AddVariableToStore({ gold: 1000 }),
+	health: GlobalStore.AddVariableToStore({ health: { player: { current: UtilsGame.maxHealth["player"], max: UtilsGame.maxHealth["player"] } as Health, enemy: { current: UtilsGame.maxHealth["enemy"], max: UtilsGame.maxHealth["enemy"] } as Health } }),
+	inventory: GlobalStore.AddVariableToStore({ inventory: { player: [] as (Item | null)[], enemy: [] as (Item | null)[] } }),
+	isLoading: GlobalStore.AddVariableToStore({ isLoading: false }),
+	modalAuth: GlobalStore.AddVariableToStore({ isOpened: false }),
+	playerDetails: GlobalStore.AddVariableToStore({ playerDetails: { name: "" } }),
+	rewards: GlobalStore.AddVariableToStore({ rewards: [] as Item[] }),
+	supabaseClient: GlobalStore.AddVariableToStore({ supabaseClient: supabase }),
+	supabaseSession: GlobalStore.AddVariableToStore({ session: null as Session | null, status: "none" as SupabaseSessionStatusTypes }),
+	trashcan: GlobalStore.AddVariableToStore({ trashcan: [] as Item[] }),
+	updateMessage: GlobalStore.AddVariableToStore({ updateMessage: { msg: "", type: "log" as MessageTypes } }),
+	viewSelected: GlobalStore.AddVariableToStore({ floorSelect: 1, itemSelect: { type: "dice" } as Item }),
 } as const;

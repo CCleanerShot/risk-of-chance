@@ -10,22 +10,22 @@ import Inventory from "./Inventory";
 import H1 from "@/app/components/UI/H1";
 
 const Results = () => {
-	const [game, setGame] = useState(GlobalStore.getFromGlobalStore("game").game);
-	const [rewards, setRewards] = useState(GlobalStore.getFromGlobalStore("rewards").rewards);
-	const [finalResults, setfinalResults] = useState<ResultsTypes>(GlobalStore.getFromGlobalStore("finalResults").finalResults);
+	const [game, setGame] = useState(GlobalStore.getFromStore("game").game);
+	const [rewards, setRewards] = useState(GlobalStore.getFromStore("rewards").rewards);
+	const [finalResults, setfinalResults] = useState<ResultsTypes>(GlobalStore.getFromStore("finalResults").finalResults);
 
 	const listenToGame = () => {
-		const newGame = GlobalStore.getFromGlobalStore("game").game;
+		const newGame = GlobalStore.getFromStore("game").game;
 		setGame(newGame);
 	};
 
 	const listenToRewards = () => {
-		const newRewards = GlobalStore.getFromGlobalStore("rewards").rewards;
+		const newRewards = GlobalStore.getFromStore("rewards").rewards;
 		setRewards(newRewards);
 	};
 
 	const listenToFinalResults = () => {
-		const newfinalResults = GlobalStore.getFromGlobalStore("finalResults").finalResults;
+		const newfinalResults = GlobalStore.getFromStore("finalResults").finalResults;
 		setfinalResults(newfinalResults);
 	};
 

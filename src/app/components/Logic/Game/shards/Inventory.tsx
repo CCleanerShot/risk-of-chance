@@ -5,8 +5,6 @@ import Utils from "@/common/utils/utils";
 import ItemContainer from "./ItemContainer";
 import UtilsGame from "@/common/utils/utils_game";
 import GlobalStore from "@/common/global_store";
-import Button from "@/app/components/UI/Button";
-import { twMerge } from "tailwind-merge";
 import H1 from "@/app/components/UI/H1";
 import { ActorTypes, SizeTypes, Item } from "@/types";
 
@@ -19,7 +17,7 @@ const Inventory = ({ size, source }: InventoryProps) => {
 	const [inventory, setInventory] = useState<(Item | null)[]>(Utils.MakeArray(UtilsGame.maxStorage.inventory[source], (i) => null) as (Item | null)[]);
 
 	const listenForInventory = () => {
-		const newInventory = GlobalStore.getFromGlobalStore("inventory").inventory[source];
+		const newInventory = GlobalStore.getFromStore("inventory").inventory[source];
 		newInventory?.length && setInventory(inventory.map((v, i) => (newInventory[i] ? newInventory[i] : null)));
 	};
 

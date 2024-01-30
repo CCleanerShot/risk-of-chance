@@ -6,7 +6,7 @@ import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 
 const SignInForm = () => {
-	const supabaseClient = GlobalStore.getFromGlobalStore("supabaseClient").supabaseClient;
+	const supabaseClient = GlobalStore.getFromStore("supabaseClient").supabaseClient;
 
 	return (
 		<div className="flex">

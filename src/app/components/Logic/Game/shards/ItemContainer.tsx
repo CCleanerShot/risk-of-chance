@@ -20,7 +20,7 @@ interface ItemContainerProps {
 
 const ItemContainer = ({ item, source, size, className, disabled = false }: ItemContainerProps) => {
 	const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-		const currentStage = GlobalStore.getFromGlobalStore("game").game.gameStatus.type;
+		const currentStage = GlobalStore.getFromStore("game").game.gameStatus.type;
 		switch (currentStage) {
 			case "battle":
 				source === "backpack" && GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });

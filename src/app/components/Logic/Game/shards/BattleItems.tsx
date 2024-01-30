@@ -16,10 +16,10 @@ interface BattleItemsProps {
 }
 
 const BattleItems = ({ source, size, disabled = false }: BattleItemsProps) => {
-	const [items, setItems] = useState<(Item | null)[]>(GlobalStore.getFromGlobalStore("battleItems").battleItems[source]);
+	const [items, setItems] = useState<(Item | null)[]>(GlobalStore.getFromStore("battleItems").battleItems[source]);
 
 	const listenToBattleItems = () => {
-		const newItems = GlobalStore.getFromGlobalStore("battleItems").battleItems[source];
+		const newItems = GlobalStore.getFromStore("battleItems").battleItems[source];
 		setItems([...newItems]);
 	};
 

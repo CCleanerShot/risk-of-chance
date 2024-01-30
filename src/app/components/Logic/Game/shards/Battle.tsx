@@ -15,22 +15,22 @@ import Utils from "@/common/utils/utils";
 
 const Battle = () => {
 	function checkIfItemsMax(): boolean {
-		const array = GlobalStore.getFromGlobalStore("battleItems").battleItems.player;
+		const array = GlobalStore.getFromStore("battleItems").battleItems.player;
 		const arrayWithItems = array.filter((i) => i?.type);
 		return arrayWithItems.length >= UtilsGame.maxStorage.battleItems.player;
 	}
 
 	const [isReady, setIsReady] = useState(checkIfItemsMax());
 	const [helperHovered, setHelperHovered] = useState(false);
-	const [battleResult, setBattleResult] = useState(GlobalStore.getFromGlobalStore("battleResult"));
-	const [floor, setFloor] = useState(GlobalStore.getFromGlobalStore("game").game.currentFloor);
+	const [battleResult, setBattleResult] = useState(GlobalStore.getFromStore("battleResult"));
+	const [floor, setFloor] = useState(GlobalStore.getFromStore("game").game.currentFloor);
 
 	const handleBattle = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		UtilsGame.DoBattle();
 	};
 
 	const listenToGame = () => {
-		const { currentFloor, gameStatus } = GlobalStore.getFromGlobalStore("game").game;
+		const { currentFloor, gameStatus } = GlobalStore.getFromStore("game").game;
 		setFloor(currentFloor);
 	};
 
@@ -39,7 +39,7 @@ const Battle = () => {
 	};
 
 	const listenToBattleResult = () => {
-		const { battleResult, rolls } = GlobalStore.getFromGlobalStore("battleResult");
+		const { battleResult, rolls } = GlobalStore.getFromStore("battleResult");
 		setBattleResult({ battleResult, rolls });
 	};
 

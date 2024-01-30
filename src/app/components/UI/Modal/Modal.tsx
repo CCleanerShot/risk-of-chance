@@ -17,7 +17,7 @@ const Modal = ({ alignment, children, listenTo }: ModalProps) => {
 	const [isOpened, setIsOpened] = useState(false);
 
 	const listenForOpened = () => {
-		const newState = GlobalStore.getFromGlobalStore(listenTo).isOpened;
+		const newState = GlobalStore.getFromStore(listenTo).isOpened;
 		setIsOpened(newState);
 	};
 

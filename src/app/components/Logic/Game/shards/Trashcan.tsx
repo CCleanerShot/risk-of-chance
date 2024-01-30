@@ -12,10 +12,10 @@ interface TrashcanProps {
 }
 
 const Trashcan = ({ size }: TrashcanProps) => {
-	const [trashcan, setTrashcan] = useState<Item[]>(GlobalStore.getFromGlobalStore("trashcan").trashcan);
+	const [trashcan, setTrashcan] = useState<Item[]>(GlobalStore.getFromStore("trashcan").trashcan);
 
 	const listenToTrashcan = () => {
-		const newTrashcan = GlobalStore.getFromGlobalStore("trashcan").trashcan;
+		const newTrashcan = GlobalStore.getFromStore("trashcan").trashcan;
 		setTrashcan(newTrashcan);
 	};
 

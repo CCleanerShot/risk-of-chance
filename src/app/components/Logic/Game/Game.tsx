@@ -14,7 +14,7 @@ const Game = () => {
 	const [gameScreen, setGameScreen] = useState<GameStatusTypes>({ type: "start" });
 
 	const listenToGame = () => {
-		const game = GlobalStore.getFromGlobalStore("game").game;
+		const game = GlobalStore.getFromStore("game").game;
 		setGameScreen(game.gameStatus);
 	};
 

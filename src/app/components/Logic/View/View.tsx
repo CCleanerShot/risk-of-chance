@@ -15,7 +15,7 @@ const View = () => {
 	const [status, setStatus] = useState<SupabaseSessionStatusTypes>("loading");
 
 	const listenToSupabaseSession = () => {
-		const status = GlobalStore.getFromGlobalStore("supabaseSession").status;
+		const status = GlobalStore.getFromStore("supabaseSession").status;
 		switch (status) {
 			case "loading":
 				setColor("red");
@@ -41,7 +41,7 @@ const View = () => {
 	};
 
 	const listenToUpdateMessage = () => {
-		const { msg, type } = GlobalStore.getFromGlobalStore("updateMessage").updateMessage;
+		const { msg, type } = GlobalStore.getFromStore("updateMessage").updateMessage;
 		switch (type) {
 			case "error":
 				toast.error(msg);
@@ -59,7 +59,7 @@ const View = () => {
 		async function execute() {
 			GlobalStore.AddListenerToVariable("supabaseSession", listenToSupabaseSession);
 			GlobalStore.AddListenerToVariable("updateMessage", listenToUpdateMessage);
-			const supabaseClient = GlobalStore.getFromGlobalStore("supabaseClient").supabaseClient;
+			const supabaseClient = GlobalStore.getFromStore("supabaseClient").supabaseClient;
 			const session = (await supabaseClient.auth.getSession()).data.session;
 			if (!session) {
 				GlobalStore.UpdateVariableProperty("supabaseSession", "status", "none");

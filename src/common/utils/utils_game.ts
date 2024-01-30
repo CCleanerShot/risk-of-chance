@@ -131,7 +131,7 @@ export default class UtilsGame {
 	}
 
 	static StartBattleCycle(floor: number) {
-		const { enemy, player } = GlobalStore.getFromGlobalStore("inventory").inventory;
+		const { enemy, player } = GlobalStore.getFromStore("inventory").inventory;
 
 		if (!player.length) {
 			// TODO: remove this notification from the toast lol
@@ -145,15 +145,15 @@ export default class UtilsGame {
 	static GetStorage(type: StorageTypes, owner: ActorTypes) {
 		switch (type) {
 			case "backpack":
-				return GlobalStore.getFromGlobalStore("backpack").backpack;
+				return GlobalStore.getFromStore("backpack").backpack;
 			case "battleItems":
-				return GlobalStore.getFromGlobalStore("battleItems").battleItems[owner];
+				return GlobalStore.getFromStore("battleItems").battleItems[owner];
 			case "inventory":
-				return GlobalStore.getFromGlobalStore("inventory").inventory[owner];
+				return GlobalStore.getFromStore("inventory").inventory[owner];
 			case "rewards":
-				return GlobalStore.getFromGlobalStore("rewards").rewards;
+				return GlobalStore.getFromStore("rewards").rewards;
 			case "trashcan":
-				return GlobalStore.getFromGlobalStore("trashcan").trashcan;
+				return GlobalStore.getFromStore("trashcan").trashcan;
 		}
 	}
 
@@ -200,7 +200,7 @@ export default class UtilsGame {
 	}
 
 	static ShelveBattleItems(actor: ActorTypes) {
-		const items = GlobalStore.getFromGlobalStore("battleItems").battleItems[actor];
+		const items = GlobalStore.getFromStore("battleItems").battleItems[actor];
 		items.forEach((item) => {
 			if (item === null) {
 				return;
@@ -213,7 +213,7 @@ export default class UtilsGame {
 
 	static DoBattle() {
 		function GetDiceRollsAndTotal(actor: ActorTypes) {
-			const items = GlobalStore.getFromGlobalStore("battleItems").battleItems[actor];
+			const items = GlobalStore.getFromStore("battleItems").battleItems[actor];
 			const dices = items.filter((item) => item?.type === "dice") as Item<"dice">[];
 			const rolls = dices.map((dice) => ({ item: dice, value: Math.round(Utils.Random(1, dice.sides)) }));
 			const total = rolls.reduce((pV, cV) => pV + cV.value, 0);
@@ -222,14 +222,14 @@ export default class UtilsGame {
 
 		function BattleStep(result: ResultsTypes) {
 			const target: ActorTypes = result === "lose" ? "player" : "enemy";
-			const newHealth = Math.max(0, GlobalStore.getFromGlobalStore("health").health[target].current - 1);
+			const newHealth = Math.max(0, GlobalStore.getFromStore("health").health[target].current - 1);
 
 			if (newHealth === 0) {
 				UtilsGame.EndBattle(result);
 				return;
 			}
 
-			const { enemy, player } = GlobalStore.getFromGlobalStore("inventory").inventory;
+			const { enemy, player } = GlobalStore.getFromStore("inventory").inventory;
 			const newBattleItems = UtilsGame.SelectRandomBattleItems(enemy, "enemy");
 			newBattleItems.forEach((item) => UtilsGame.MoveItem("enemy", item, "inventory", "battleItems"));
 			GlobalStore.UpdateVariableProperty("inventory", "inventory", (inv) => inv);
@@ -271,7 +271,7 @@ export default class UtilsGame {
 	}
 
 	static EnableAllItems(actor: ActorTypes, exception?: (item: Item) => boolean) {
-		const inventory = GlobalStore.getFromGlobalStore("inventory").inventory[actor];
+		const inventory = GlobalStore.getFromStore("inventory").inventory[actor];
 		const filtered = exception ? inventory.filter((item) => !exception(item)) : inventory;
 		filtered.forEach((item) => (item ? (item.disabled = false) : "do nothing"));
 	}
@@ -280,10 +280,10 @@ export default class UtilsGame {
 		UtilsGame.EnableAllItems("enemy");
 		UtilsGame.EnableAllItems("player");
 
-		const { currentFloor, gameStatus } = GlobalStore.getFromGlobalStore("game").game;
+		const { currentFloor, gameStatus } = GlobalStore.getFromStore("game").game;
 
 		// give a random item from the enemy's inv
-		const enemyInv = GlobalStore.getFromGlobalStore("inventory").inventory["enemy"];
+		const enemyInv = GlobalStore.getFromStore("inventory").inventory["enemy"];
 		GlobalStore.UpdateVariableProperty("rewards", "rewards", [Utils.ShuffleArray(enemyInv)[0]]);
 		GlobalStore.UpdateVariableProperty("game", "game", ({ currentFloor, gameStatus }) => ({ currentFloor: currentFloor, gameStatus: { type: "results" } }));
 

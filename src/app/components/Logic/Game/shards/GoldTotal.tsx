@@ -6,9 +6,9 @@ import Utils from "@/common/utils/utils";
 import Gold from "./Gold";
 
 const GoldTotal = () => {
-	const [gold, setGold] = useState(GlobalStore.getFromGlobalStore("gold").gold);
+	const [gold, setGold] = useState(GlobalStore.getFromStore("gold").gold);
 	const listenToGold = () => {
-		const newGold = GlobalStore.getFromGlobalStore("gold").gold;
+		const newGold = GlobalStore.getFromStore("gold").gold;
 		setGold(gold);
 	};
 
