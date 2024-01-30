@@ -44,7 +44,7 @@ const Results = () => {
 				<H1>GET</H1>
 				<Gold>{`+ ${Utils.FormatNumber(game.currentFloor)}`}</Gold>
 				{rewards.map((reward, index) => (
-					<ItemContainer size="medium" key={index} item={reward} origin="rewards"></ItemContainer>
+					<ItemContainer size="medium" key={index} item={reward} source="rewards"></ItemContainer>
 				))}
 			</div>
 			<Inventory size="medium" source="player" />

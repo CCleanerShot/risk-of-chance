@@ -8,6 +8,7 @@ import GlobalStore from "@/common/global_store";
 import Inventory from "./shards/Inventory";
 import Battle from "./shards/Battle";
 import Results from "./shards/Results";
+import Start from "./shards/Start";
 
 const Game = () => {
 	const [gameScreen, setGameScreen] = useState<GameStatusTypes>({ type: "start" });
@@ -27,15 +28,7 @@ const Game = () => {
 		case "results":
 			return <Results />;
 		case "start":
-			return (
-				<div className="flex-1 flex justify-around">
-					<div className="flex gap-2">
-						<Backpack size="smallest" source="player" />
-						<Inventory size="small" source="player" />
-					</div>
-					<Floors />
-				</div>
-			);
+			return <Start />;
 	}
 };
 

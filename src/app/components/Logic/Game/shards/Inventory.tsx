@@ -52,11 +52,7 @@ const Inventory = ({ size, source }: InventoryProps) => {
 			<H1>Inventory</H1>
 			<div className="grid gap-1" style={{ gridTemplateColumns: `repeat(${Math.round(Math.sqrt(inventory.length))}, minmax(0, 1fr))` }}>
 				{inventory.map((item, index) => {
-					if (item === null) {
-						return <Button key={`inventory${index}`} onClick={() => {}} template="green_border" className={twMerge(sizeStyles, "")}></Button>;
-					} else {
-						return <ItemContainer key={`inventory${index}`} item={item} size={size} origin="inventory" />;
-					}
+					return <ItemContainer key={`inventory${index}`} item={item} size={size} source="inventory" />;
 				})}
 			</div>
 		</div>

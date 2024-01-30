@@ -20,11 +20,6 @@ export default class Utils {
 		return result;
 	}
 
-	/** helper function to create a null array */
-	static MakeNullArray(length: number) {
-		return Array(length).fill(null);
-	}
-
 	/** helper function to create a null array, which then each element is iterated on */
 	static MakeArray<T extends any>(length: number, eachNumber: (index: number) => T) {
 		return Array(length)

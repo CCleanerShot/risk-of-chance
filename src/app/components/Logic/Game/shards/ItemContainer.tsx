@@ -6,38 +6,39 @@ import GlobalStore from "@/common/global_store";
 import { twMerge } from "tailwind-merge";
 import { Item, SizeTypes, StorageTypes } from "@/types";
 import UtilsGame from "@/common/utils/utils_game";
+import { FaTrashCan } from "react-icons/fa6";
 
 // TODO: refactor from 100 different buttons listening on everything, to a radio-like system where only the submit button knows
 
 interface ItemContainerProps {
 	item: Item;
-	origin: StorageTypes;
+	source: StorageTypes;
 	size: SizeTypes;
 	className?: string;
 	disabled?: boolean;
 }
 
-const ItemContainer = ({ item, origin, size, className, disabled = false }: ItemContainerProps) => {
+const ItemContainer = ({ item, source, size, className, disabled = false }: ItemContainerProps) => {
 	const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		const currentStage = GlobalStore.getFromGlobalStore("game").game.gameStatus.type;
 		switch (currentStage) {
 			case "battle":
-				origin === "backpack" && GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
-				origin === "battleItems" && UtilsGame.MoveItem("player", item, origin, "inventory");
-				origin === "inventory" && UtilsGame.MoveItem("player", item, origin, "battleItems");
-				origin === "rewards" && GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
+				source === "backpack" && GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
+				source === "battleItems" && UtilsGame.MoveItem("player", item, source, "inventory");
+				source === "inventory" && UtilsGame.MoveItem("player", item, source, "battleItems");
+				source === "rewards" && GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
 				break;
 			case "start":
-				origin === "backpack" && UtilsGame.MoveItem("player", item, origin, "inventory");
-				origin === "battleItems" && GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
-				origin === "inventory" && UtilsGame.MoveItem("player", item, origin, "backpack");
-				origin === "rewards" && GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
+				source === "backpack" && UtilsGame.MoveItem("player", item, source, "inventory");
+				source === "battleItems" && GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
+				source === "inventory" && UtilsGame.MoveItem("player", item, source, "backpack");
+				source === "rewards" && GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
 				break;
 			case "results":
-				origin === "backpack" && GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
-				origin === "battleItems" && GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
-				origin === "inventory" && UtilsGame.MoveItem("player", item, origin, "rewards");
-				origin === "rewards" && UtilsGame.MoveItem("player", item, origin, "inventory");
+				source === "backpack" && GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
+				source === "battleItems" && GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
+				source === "inventory" && UtilsGame.MoveItem("player", item, source, "rewards");
+				source === "rewards" && UtilsGame.MoveItem("player", item, source, "inventory");
 				break;
 			default:
 				GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: "Cannot move: unhandled behavior (contact dev plz)", type: "error" });
@@ -68,7 +69,7 @@ const ItemContainer = ({ item, origin, size, className, disabled = false }: Item
 
 	const Contents = () => {
 		if (item == null) {
-			return <div></div>;
+			return <div className="grid place-items-center">{source === "trashcan" ? <FaTrashCan color="gray" /> : <></>}</div>;
 		}
 
 		switch (item.type) {
@@ -78,7 +79,7 @@ const ItemContainer = ({ item, origin, size, className, disabled = false }: Item
 			}
 
 			case "health": {
-				return <div>health</div>;
+				return <div className={item.disabled ? "line-through text-red-500" : ""}>health</div>;
 			}
 
 			default: {
@@ -88,7 +89,7 @@ const ItemContainer = ({ item, origin, size, className, disabled = false }: Item
 	};
 
 	return (
-		<Button disabled={disabled || item?.disabled} template="green_border" className={twMerge(sizeStyles, "text-white border-slate-900 p-1", className)} onClick={handleClick}>
+		<Button disabled={disabled || !item || item.disabled} template="green_border" className={twMerge(sizeStyles, "text-white border-slate-900 p-1", className)} onClick={handleClick}>
 			<Contents />
 		</Button>
 	);

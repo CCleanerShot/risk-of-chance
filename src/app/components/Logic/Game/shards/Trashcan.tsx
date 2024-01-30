@@ -2,10 +2,16 @@
 
 import React, { useEffect, useState } from "react";
 import GlobalStore from "@/common/global_store";
-import { Item } from "@/types";
+import { Item, SizeTypes } from "@/types";
 import ItemContainer from "./ItemContainer";
+import UtilsGame from "@/common/utils/utils_game";
+import Utils from "@/common/utils/utils";
 
-const Trashcan = () => {
+interface TrashcanProps {
+	size: SizeTypes;
+}
+
+const Trashcan = ({ size }: TrashcanProps) => {
 	const [trashcan, setTrashcan] = useState<Item[]>(GlobalStore.getFromGlobalStore("trashcan").trashcan);
 
 	const listenToTrashcan = () => {
@@ -20,8 +26,8 @@ const Trashcan = () => {
 
 	return (
 		<div className="">
-			{trashcan.map((item) => (
-				<ItemContainer item={item} size="small" origin="trashcan" />
+			{Utils.MakeArray(UtilsGame.maxStorage.trashcan.player, () => null).map((item) => (
+				<ItemContainer item={item} size={size} source="trashcan" />
 			))}
 		</div>
 	);

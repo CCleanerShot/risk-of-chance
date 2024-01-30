@@ -37,8 +37,7 @@ const Backpack = ({ size, source }: BackpackProps) => {
 	return (
 		<div>
 			<H1>Backpack</H1>
-			<div className="grid grid-cols-10 gap-1">{Utils.MakeArray(UtilsGame.maxStorage.backpack["player"], (i) => i).map((index) => (backpack[index] ? <ItemContainer item={backpack[index]} origin="backpack" size={size} /> : <ItemContainer item={null} origin="backpack" size={size} />))}</div>
-			<GoldTotal />
+			<div className="grid grid-cols-10 gap-1">{Utils.MakeArray(UtilsGame.maxStorage.backpack["player"], (i) => i).map((index) => (backpack[index] ? <ItemContainer item={backpack[index]} source="backpack" size={size} /> : <ItemContainer item={null} source="backpack" size={size} />))}</div>
 		</div>
 	);
 };
