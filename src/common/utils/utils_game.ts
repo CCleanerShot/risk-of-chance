@@ -48,10 +48,14 @@ export default class UtilsGame {
 			enemy: 3,
 		},
 
-		trashcan: {
+		trashCan: {
 			player: 1,
 			enemy: 1,
 		},
+	};
+
+	static specialRolls = {
+		exitRoom: () => Math.random() < 0.2,
 	};
 
 	static STARTING_INVENTORY: Item[] = [
@@ -119,27 +123,44 @@ export default class UtilsGame {
 		return array;
 	}
 
-	static GenerateFloor(floor: number) {
+	static StartFloor(floor: number, possibleSpecialRooms: boolean) {
 		// TODO: add more cool things to a floor
+
+		if (possibleSpecialRooms) {
+			const isSuccess = UtilsGame.specialRolls.exitRoom();
+			if (isSuccess) {
+				GlobalStore.Update("game", "game", ({ currentFloor, gameStatus }) => ({ currentFloor: currentFloor, gameStatus: { type: "exit" } }));
+				return;
+			}
+		}
+
 		let inventory: (Item | null)[] = UtilsGame.CreateEnemyInventory(floor) as Item[];
 		const items = UtilsGame.SelectRandomBattleItems(inventory as Item[], "enemy");
 		inventory = inventory.map((i) => (items.includes(i) ? null : i));
 
-		GlobalStore.UpdateVariableProperty("inventory", "inventory", ({ enemy, player }) => ({ enemy: inventory, player: player }));
-		GlobalStore.UpdateVariableProperty("battleItems", "battleItems", ({ enemy, player }) => ({ enemy: items, player: player }));
-		GlobalStore.UpdateVariableProperty("game", "game", { currentFloor: floor, gameStatus: { type: "battle" } });
+		UtilsGame.EnableAllItems();
+
+		GlobalStore.Update("inventory", "inventory", ({ enemy, player }) => ({ enemy: inventory, player: player }));
+		GlobalStore.Update("battleItems", "battleItems", ({ enemy, player }) => ({ enemy: items, player: player }));
+		GlobalStore.Update("game", "game", { currentFloor: floor, gameStatus: { type: "battle" } });
 	}
 
-	static StartBattleCycle(floor: number) {
+	static AttemptJourney(floor: number) {
 		const { enemy, player } = GlobalStore.getFromStore("inventory").inventory;
+		const currentInv = player.filter((item) => item?.type);
+		const minItemsNeeded = UtilsGame.maxStorage.battleItems["player"] * 3;
 
-		if (!player.length) {
-			// TODO: remove this notification from the toast lol
-			GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: "Giving starter items...", type: "log" });
-			GlobalStore.UpdateVariableProperty("inventory", "inventory", { enemy, player: [...UtilsGame.STARTING_INVENTORY] });
+		if (currentInv.length > 0 && currentInv.length < 9) {
+			GlobalStore.Update("updateMessage", "updateMessage", { msg: `You need atleast ${minItemsNeeded} to start!`, type: "error" });
+			return;
 		}
 
-		UtilsGame.GenerateFloor(floor);
+		if (!currentInv.length) {
+			GlobalStore.Update("updateMessage", "updateMessage", { msg: "Giving starter items...", type: "log" });
+			GlobalStore.Update("inventory", "inventory", ({ enemy, player }) => ({ enemy, player: [...UtilsGame.STARTING_INVENTORY] }));
+		}
+
+		UtilsGame.StartFloor(floor, false);
 	}
 
 	static GetStorage(type: StorageTypes, owner: ActorTypes) {
@@ -152,8 +173,8 @@ export default class UtilsGame {
 				return GlobalStore.getFromStore("inventory").inventory[owner];
 			case "rewards":
 				return GlobalStore.getFromStore("rewards").rewards;
-			case "trashcan":
-				return GlobalStore.getFromStore("trashcan").trashcan;
+			case "trashCan":
+				return GlobalStore.getFromStore("trashCan").trashCan;
 		}
 	}
 
@@ -164,12 +185,12 @@ export default class UtilsGame {
 		const amountOfItems = storageDestination.filter((i) => !!i);
 
 		if (foundSourceIndex === -1) {
-			GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: `Cannot move: original item is missing`, type: "error" });
+			GlobalStore.Update("updateMessage", "updateMessage", { msg: `Cannot move: original item is missing`, type: "error" });
 			return;
 		}
 
 		if (amountOfItems.length >= UtilsGame.maxStorage[destination][actor]) {
-			GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: `Cannot move: max capacity reached for ${destination}`, type: "warn" });
+			GlobalStore.Update("updateMessage", "updateMessage", { msg: `Cannot move: max capacity reached for ${destination}`, type: "warn" });
 			return;
 		}
 
@@ -182,10 +203,10 @@ export default class UtilsGame {
 			storageDestination[foundDestinationNullIndex] = item; // in the case that the array contained null values
 		}
 
-		GlobalStore.UpdateVariableProperty("backpack", "backpack", (backpack) => [...backpack]);
-		GlobalStore.UpdateVariableProperty("inventory", "inventory", (inventory) => ({ ...inventory }));
-		GlobalStore.UpdateVariableProperty("battleItems", "battleItems", (battleItems) => ({ ...battleItems }));
-		GlobalStore.UpdateVariableProperty("rewards", "rewards", (rewards) => [...rewards]);
+		GlobalStore.Update("backpack", "backpack", (backpack) => [...backpack]);
+		GlobalStore.Update("inventory", "inventory", (inventory) => ({ ...inventory }));
+		GlobalStore.Update("battleItems", "battleItems", (battleItems) => ({ ...battleItems }));
+		GlobalStore.Update("rewards", "rewards", (rewards) => [...rewards]);
 	}
 
 	static GenerateLoot(items: Item[], floor: number, roll: number): Item[] {
@@ -232,9 +253,9 @@ export default class UtilsGame {
 			const { enemy, player } = GlobalStore.getFromStore("inventory").inventory;
 			const newBattleItems = UtilsGame.SelectRandomBattleItems(enemy, "enemy");
 			newBattleItems.forEach((item) => UtilsGame.MoveItem("enemy", item, "inventory", "battleItems"));
-			GlobalStore.UpdateVariableProperty("inventory", "inventory", (inv) => inv);
-			GlobalStore.UpdateVariableProperty("battleResult", "battleResult", result);
-			GlobalStore.UpdateVariableProperty("health", "health", ({ enemy, player }) => ({
+			GlobalStore.Update("inventory", "inventory", (inv) => inv);
+			GlobalStore.Update("battleResult", "battleResult", result);
+			GlobalStore.Update("health", "health", ({ enemy, player }) => ({
 				enemy: { current: target === "enemy" ? newHealth : enemy.current, max: enemy.max },
 				player: { current: target === "player" ? newHealth : player.current, max: player.max },
 			}));
@@ -247,10 +268,10 @@ export default class UtilsGame {
 		const caseWin = enemyResults.total < playerResults.total;
 		const caseLose = enemyResults.total > playerResults.total;
 
-		GlobalStore.UpdateVariableProperty("battleResult", "rolls", ({ enemy, player }) => ({ enemy: [...enemy, ...enemyResults.rolls], player: [...player, ...playerResults.rolls] }));
+		GlobalStore.Update("battleResult", "rolls", ({ enemy, player }) => ({ enemy: [...enemy, ...enemyResults.rolls], player: [...player, ...playerResults.rolls] }));
 		switch (true) {
 			case caseDraw:
-				GlobalStore.UpdateVariableProperty("battleResult", "battleResult", "draw");
+				GlobalStore.Update("battleResult", "battleResult", "draw");
 				break;
 
 			case caseLose:
@@ -270,32 +291,50 @@ export default class UtilsGame {
 		}
 	}
 
-	static EnableAllItems(actor: ActorTypes, exception?: (item: Item) => boolean) {
-		const inventory = GlobalStore.getFromStore("inventory").inventory[actor];
-		const filtered = exception ? inventory.filter((item) => !exception(item)) : inventory;
-		filtered.forEach((item) => (item ? (item.disabled = false) : "do nothing"));
+	static EnableAllItems(actor?: ActorTypes, exception?: (item: Item) => boolean) {
+		const inventory = GlobalStore.getFromStore("inventory").inventory;
+
+		if (actor) {
+			const filtered = exception ? inventory[actor].filter((item) => !exception(item)) : inventory[actor];
+			filtered.forEach((item) => (item ? (item.disabled = false) : "do nothing"));
+		} else {
+			const { enemy, player } = inventory;
+			enemy.forEach((item) => (item ? (item.disabled = false) : "do nothing"));
+			player.forEach((item) => (item ? (item.disabled = false) : "do nothing"));
+		}
 	}
 
 	static EndBattle(result: ResultsTypes) {
-		UtilsGame.EnableAllItems("enemy");
-		UtilsGame.EnableAllItems("player");
+		UtilsGame.EnableAllItems();
 
 		const { currentFloor, gameStatus } = GlobalStore.getFromStore("game").game;
 
 		// give a random item from the enemy's inv
 		const enemyInv = GlobalStore.getFromStore("inventory").inventory["enemy"];
-		GlobalStore.UpdateVariableProperty("rewards", "rewards", [Utils.ShuffleArray(enemyInv)[0]]);
-		GlobalStore.UpdateVariableProperty("game", "game", ({ currentFloor, gameStatus }) => ({ currentFloor: currentFloor, gameStatus: { type: "results" } }));
+		GlobalStore.Update("rewards", "rewards", [Utils.ShuffleArray(enemyInv)[0]]);
+		GlobalStore.Update("game", "game", ({ currentFloor, gameStatus }) => ({ currentFloor: currentFloor, gameStatus: { type: "results" } }));
+		GlobalStore.Update("battleResult", "rolls", { enemy: [], player: [] });
 
+		GlobalStore.Update("health", "health", ({ enemy, player }) => ({ enemy: { ...enemy, current: enemy.max }, player: { ...player, current: player.max } }));
 		switch (result) {
 			case "win":
-				GlobalStore.UpdateVariableProperty("finalResults", "finalResults", "win");
-				GlobalStore.UpdateVariableProperty("gold", "gold", (pV) => pV + currentFloor);
+				GlobalStore.Update("finalResults", "finalResults", "win");
+				GlobalStore.Update("gold", "gold", (pV) => pV + currentFloor);
 				break;
 			case "lose":
-				GlobalStore.UpdateVariableProperty("finalResults", "finalResults", "lose");
-				GlobalStore.UpdateVariableProperty("inventory", "inventory", (pV) => ({ enemy: pV.enemy, player: [] }));
+				GlobalStore.Update("finalResults", "finalResults", "lose");
+				GlobalStore.Update("inventory", "inventory", (pV) => ({ enemy: pV.enemy, player: [] }));
 				break;
 		}
+	}
+
+	static ExitJourney() {
+		UtilsGame.EnableAllItems();
+		GlobalStore.Update("game", "game", { currentFloor: 0, gameStatus: { type: "start" } });
+	}
+
+	static Die() {
+		GlobalStore.Update("inventory", "inventory", { enemy: [], player: [] });
+		UtilsGame.ExitJourney();
 	}
 }

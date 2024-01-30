@@ -12,7 +12,7 @@ interface ModalExitProps {
 
 const ModalExit = ({ modal, className }: ModalExitProps) => {
 	const handleClose = () => {
-		GlobalStore.UpdateVariableProperty(modal, "isOpened", false);
+		GlobalStore.Update(modal, "isOpened", false);
 	};
 
 	return (

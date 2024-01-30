@@ -4,11 +4,11 @@ import GlobalStore from "@/common/global_store";
 
 const GetStarted = () => {
 	const handleSignIn = () => {
-		GlobalStore.UpdateVariableProperty("modalAuth", "isOpened", true);
+		GlobalStore.Update("modalAuth", "isOpened", true);
 	};
 
 	const handleGuest = () => {
-		GlobalStore.UpdateVariableProperty("supabaseSession", "status", "guest");
+		GlobalStore.Update("supabaseSession", "status", "guest");
 	};
 
 	return (

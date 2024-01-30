@@ -9,6 +9,7 @@ import Inventory from "./shards/Inventory";
 import Battle from "./shards/Battle";
 import Results from "./shards/Results";
 import Start from "./shards/Start";
+import Exit from "./shards/Exit";
 
 const Game = () => {
 	const [gameScreen, setGameScreen] = useState<GameStatusTypes>({ type: "start" });
@@ -19,7 +20,7 @@ const Game = () => {
 	};
 
 	useEffect(() => {
-		GlobalStore.AddListenerToVariable("game", listenToGame);
+		GlobalStore.AddListener("game", listenToGame);
 	}, []);
 
 	switch (gameScreen.type) {
@@ -29,6 +30,8 @@ const Game = () => {
 			return <Results />;
 		case "start":
 			return <Start />;
+		case "exit":
+			return <Exit />;
 	}
 };
 

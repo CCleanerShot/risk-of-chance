@@ -26,7 +26,7 @@ const BattleItems = ({ source, size, disabled = false }: BattleItemsProps) => {
 	const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {};
 
 	useEffect(() => {
-		GlobalStore.AddListenerToVariable("battleItems", listenToBattleItems);
+		GlobalStore.AddListener("battleItems", listenToBattleItems);
 	}, []);
 
 	let backgroundStyles = "";

@@ -13,7 +13,7 @@ const GoldTotal = () => {
 	};
 
 	useEffect(() => {
-		GlobalStore.AddListenerToVariable("gold", listenToGold);
+		GlobalStore.AddListener("gold", listenToGold);
 	}, []);
 	return <Gold>{Utils.FormatNumber(gold)}</Gold>;
 };

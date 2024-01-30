@@ -23,29 +23,29 @@ const ItemContainer = ({ item, source, size, className, disabled = false }: Item
 		const currentStage = GlobalStore.getFromStore("game").game.gameStatus.type;
 		switch (currentStage) {
 			case "battle":
-				source === "backpack" && GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
+				source === "backpack" && GlobalStore.Update("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
 				source === "battleItems" && UtilsGame.MoveItem("player", item, source, "inventory");
 				source === "inventory" && UtilsGame.MoveItem("player", item, source, "battleItems");
-				source === "rewards" && GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
+				source === "rewards" && GlobalStore.Update("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
 				break;
 			case "start":
 				source === "backpack" && UtilsGame.MoveItem("player", item, source, "inventory");
-				source === "battleItems" && GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
+				source === "battleItems" && GlobalStore.Update("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
 				source === "inventory" && UtilsGame.MoveItem("player", item, source, "backpack");
-				source === "rewards" && GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
+				source === "rewards" && GlobalStore.Update("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
 				break;
 			case "results":
-				source === "backpack" && GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
-				source === "battleItems" && GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
+				source === "backpack" && GlobalStore.Update("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
+				source === "battleItems" && GlobalStore.Update("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
 				source === "inventory" && UtilsGame.MoveItem("player", item, source, "rewards");
 				source === "rewards" && UtilsGame.MoveItem("player", item, source, "inventory");
 				break;
 			default:
-				GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: "Cannot move: unhandled behavior (contact dev plz)", type: "error" });
+				GlobalStore.Update("updateMessage", "updateMessage", { msg: "Cannot move: unhandled behavior (contact dev plz)", type: "error" });
 				break;
 		}
 
-		GlobalStore.UpdateVariableProperty("viewSelected", "itemSelect", item);
+		GlobalStore.Update("viewSelected", "itemSelect", item);
 	};
 
 	let sizeStyles: string;

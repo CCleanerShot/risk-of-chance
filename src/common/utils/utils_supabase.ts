@@ -20,12 +20,12 @@ export default class UtilsSupabase {
 		const item = queries[query];
 
 		const wrapperFunction = async (params: Parameters<typeof item>) => {
-			GlobalStore.UpdateVariableProperty("isLoading", "isLoading", true);
+			GlobalStore.Update("isLoading", "isLoading", true);
 
 			// @ts-ignore
 			const result = await item(...params);
 
-			GlobalStore.UpdateVariableProperty("isLoading", "isLoading", false);
+			GlobalStore.Update("isLoading", "isLoading", false);
 			return result;
 		};
 
@@ -53,14 +53,14 @@ export default class UtilsSupabase {
 		const session_id = GlobalStore.getFromStore("supabaseSession").session?.user.id;
 
 		if (!session_id) {
-			GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: "Session missing. Perhaps you cleared cookies?", type: "error" });
+			GlobalStore.Update("updateMessage", "updateMessage", { msg: "Session missing. Perhaps you cleared cookies?", type: "error" });
 			return;
 		}
 
 		const { data, error } = await UtilsSupabase.GetQuery("getBackpack").callQuery(session_id);
 
 		if (error) {
-			GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: "Server error. Is your internet even on?", type: "error" });
+			GlobalStore.Update("updateMessage", "updateMessage", { msg: "Server error. Is your internet even on?", type: "error" });
 			return;
 		}
 
@@ -69,20 +69,20 @@ export default class UtilsSupabase {
 		// check if object is a valid backpack;
 		for (const prop in backpackConst[0]) {
 			if (!foundBackpack[prop]) {
-				GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: "A save with invalid format found. Contact me if you see this.", type: "warn" });
+				GlobalStore.Update("updateMessage", "updateMessage", { msg: "A save with invalid format found. Contact me if you see this.", type: "warn" });
 				return;
 			}
 		}
 
-		GlobalStore.UpdateVariableProperty("backpack", "backpack", foundBackpack);
-		GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: "Load success!", type: "log" });
+		GlobalStore.Update("backpack", "backpack", foundBackpack);
+		GlobalStore.Update("updateMessage", "updateMessage", { msg: "Load success!", type: "log" });
 	}
 
 	static async Save() {
 		const session_id = GlobalStore.getFromStore("supabaseSession").session?.user.id;
 
 		if (!session_id) {
-			GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: "Session missing. Perhaps you cleared cookies?", type: "error" });
+			GlobalStore.Update("updateMessage", "updateMessage", { msg: "Session missing. Perhaps you cleared cookies?", type: "error" });
 			return;
 		}
 
@@ -91,10 +91,10 @@ export default class UtilsSupabase {
 		const { data, error } = await UtilsSupabase.GetQuery("updateBackpack").callQuery(backpack, session_id);
 
 		if (error) {
-			GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: "Server error. Is your internet even on?", type: "error" });
+			GlobalStore.Update("updateMessage", "updateMessage", { msg: "Server error. Is your internet even on?", type: "error" });
 			return;
 		}
 
-		GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: "Save success!", type: "log" });
+		GlobalStore.Update("updateMessage", "updateMessage", { msg: "Save success!", type: "log" });
 	}
 }

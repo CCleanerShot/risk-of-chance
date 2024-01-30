@@ -26,8 +26,8 @@ const Backpack = ({ size, source }: BackpackProps) => {
 
 	useEffect(() => {
 		async function execute() {
-			GlobalStore.AddListenerToVariable("backpack", listenToUpdate);
-			GlobalStore.AddListenerToVariable("supabaseSession", listenToUpdate);
+			GlobalStore.AddListener("backpack", listenToUpdate);
+			GlobalStore.AddListener("supabaseSession", listenToUpdate);
 			await UtilsSupabase.Load();
 		}
 
@@ -37,7 +37,9 @@ const Backpack = ({ size, source }: BackpackProps) => {
 	return (
 		<div>
 			<H1>Backpack</H1>
-			<div className="grid grid-cols-10 gap-1">{Utils.MakeArray(UtilsGame.maxStorage.backpack["player"], (i) => i).map((index) => (backpack[index] ? <ItemContainer item={backpack[index]} source="backpack" size={size} /> : <ItemContainer item={null} source="backpack" size={size} />))}</div>
+			<div className="grid grid-cols-10 gap-1">
+				{Utils.MakeArray(UtilsGame.maxStorage.backpack["player"], (i) => null).map((v, i) => (backpack[i] ? <ItemContainer key={`backpack${i}`} item={backpack[i]} source="backpack" size={size} /> : <ItemContainer key={`backpack${i}`} item={null} source="backpack" size={size} />))}
+			</div>
 		</div>
 	);
 };

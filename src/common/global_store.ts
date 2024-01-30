@@ -25,7 +25,7 @@ export default class GlobalStore {
 		return foundVariable;
 	}
 
-	private static callAllListenersOfVariable<T extends ContextsListKeys>(variable: T) {
+	private static callAllListeners<T extends ContextsListKeys>(variable: T) {
 		const foundVariable = GlobalStore.findVariable(contextsList[variable]);
 		foundVariable.listeners.forEach((listener) => {
 			if (listener.listenerArgs) {
@@ -41,7 +41,7 @@ export default class GlobalStore {
 	 * @param variable an object with potential properties to be updated, and listened to
 	 * @returns
 	 */
-	static AddVariableToStore<T extends Record<string, any>>(variable: T): T {
+	static AddVariable<T extends Record<string, any>>(variable: T): T {
 		GlobalStore.globalStore.push({ variable: variable, listeners: [] });
 		return variable as T;
 	}
@@ -52,7 +52,7 @@ export default class GlobalStore {
 	 * @param listener a function that will be called whenever the variable is updated with 'GlobalStore.UpdateVariableProperty', or a wrapper function is called
 	 * @param listenerArgs optional listener parameters of a listener
 	 */
-	static AddListenerToVariable<T extends ContextsListKeys, K extends (args: any) => void>(variable: T, listener: K, ...listenerArgs: K extends (...args: infer Params) => any ? Params : never) {
+	static AddListener<T extends ContextsListKeys, K extends (args: any) => void>(variable: T, listener: K, ...listenerArgs: K extends (...args: infer Params) => any ? Params : never) {
 		const foundVariable = GlobalStore.findVariable(contextsList[variable]);
 		foundVariable.listeners.push({ listener: listener, listenerArgs: listenerArgs });
 	}
@@ -62,7 +62,7 @@ export default class GlobalStore {
 	 * @param variable the variable to be removed on (comes from a static list)
 	 * @param listener a function that will be removed
 	 */
-	RemoveListenerToVariable<T extends ContextsListKeys, K extends (args: any) => void>(variable: T, listener: K, ...listenerArgs: K extends (...args: infer Params) => any ? Params : never) {
+	RemoveListener<T extends ContextsListKeys, K extends (args: any) => void>(variable: T, listener: K, ...listenerArgs: K extends (...args: infer Params) => any ? Params : never) {
 		const foundVariable = GlobalStore.findVariable(contextsList[variable]);
 
 		const foundIndex = foundVariable.listeners.findIndex((searchListener) => searchListener.listener === listener);
@@ -75,7 +75,7 @@ export default class GlobalStore {
 	 * @param property property of the variable to actually be updated
 	 * @param updatedValue the new value of the chosen variable's property
 	 */
-	static UpdateVariableProperty<T extends ContextsListKeys, K extends keyof (typeof contextsList)[T], U extends (typeof contextsList)[T][K] | ((args: (typeof contextsList)[T][K]) => (typeof contextsList)[T][K])>(variable: T, property: K, updatedValue: U) {
+	static Update<T extends ContextsListKeys, K extends keyof (typeof contextsList)[T], U extends (typeof contextsList)[T][K] | ((args: (typeof contextsList)[T][K]) => (typeof contextsList)[T][K])>(variable: T, property: K, updatedValue: U) {
 		const foundVariable = GlobalStore.findVariable(contextsList[variable]);
 		if (typeof updatedValue === "function") {
 			foundVariable.variable[property] = updatedValue(foundVariable.variable[property]);
@@ -84,7 +84,7 @@ export default class GlobalStore {
 		}
 
 		GlobalStore.updateTimestamp();
-		GlobalStore.callAllListenersOfVariable(variable);
+		GlobalStore.callAllListeners(variable);
 	}
 
 	/** @returns destructure-able object containing specified item in the store */
@@ -93,7 +93,7 @@ export default class GlobalStore {
 	};
 
 	/** @returns destructure-able object containing all the current items in the store */
-	static getFromGlobalStoreAll = () => {
+	static getFromStoreAll = () => {
 		return contextsList;
 	};
 }
@@ -103,21 +103,21 @@ export const wrapperList = {};
 
 /** TO ENSURE INTELLISENSE, JUST ADD ADDITIONAL ITEMS HERE AS NEEDED */
 export const contextsList = {
-	backpack: GlobalStore.AddVariableToStore({ backpack: [] as Backpack }),
-	battleItems: GlobalStore.AddVariableToStore({ battleItems: { player: [] as (Item | null)[], enemy: [] as (Item | null)[] } }),
-	battleResult: GlobalStore.AddVariableToStore({ battleResult: null as ResultsTypes | null, rolls: { enemy: [] as { item: Item<"dice">; value: number }[], player: [] as { item: Item<"dice">; value: number }[] } }),
-	finalResults: GlobalStore.AddVariableToStore({ finalResults: "draw" as ResultsTypes }),
-	game: GlobalStore.AddVariableToStore({ game: { gameStatus: { type: "start" }, currentFloor: UtilsGame.MIN_FLOORS } as Game }),
-	gold: GlobalStore.AddVariableToStore({ gold: 1000 }),
-	health: GlobalStore.AddVariableToStore({ health: { player: { current: UtilsGame.maxHealth["player"], max: UtilsGame.maxHealth["player"] } as Health, enemy: { current: UtilsGame.maxHealth["enemy"], max: UtilsGame.maxHealth["enemy"] } as Health } }),
-	inventory: GlobalStore.AddVariableToStore({ inventory: { player: [] as (Item | null)[], enemy: [] as (Item | null)[] } }),
-	isLoading: GlobalStore.AddVariableToStore({ isLoading: false }),
-	modalAuth: GlobalStore.AddVariableToStore({ isOpened: false }),
-	playerDetails: GlobalStore.AddVariableToStore({ playerDetails: { name: "" } }),
-	rewards: GlobalStore.AddVariableToStore({ rewards: [] as Item[] }),
-	supabaseClient: GlobalStore.AddVariableToStore({ supabaseClient: supabase }),
-	supabaseSession: GlobalStore.AddVariableToStore({ session: null as Session | null, status: "none" as SupabaseSessionStatusTypes }),
-	trashcan: GlobalStore.AddVariableToStore({ trashcan: [] as Item[] }),
-	updateMessage: GlobalStore.AddVariableToStore({ updateMessage: { msg: "", type: "log" as MessageTypes } }),
-	viewSelected: GlobalStore.AddVariableToStore({ floorSelect: 1, itemSelect: { type: "dice" } as Item }),
+	backpack: GlobalStore.AddVariable({ backpack: [] as Backpack }),
+	battleItems: GlobalStore.AddVariable({ battleItems: { player: [] as (Item | null)[], enemy: [] as (Item | null)[] } }),
+	battleResult: GlobalStore.AddVariable({ battleResult: null as ResultsTypes | null, rolls: { enemy: [] as { item: Item<"dice">; value: number }[], player: [] as { item: Item<"dice">; value: number }[] } }),
+	finalResults: GlobalStore.AddVariable({ finalResults: "draw" as ResultsTypes }),
+	game: GlobalStore.AddVariable({ game: { gameStatus: { type: "start" }, currentFloor: UtilsGame.MIN_FLOORS } as Game }),
+	gold: GlobalStore.AddVariable({ gold: 0 }),
+	health: GlobalStore.AddVariable({ health: { player: { current: UtilsGame.maxHealth["player"], max: UtilsGame.maxHealth["player"] } as Health, enemy: { current: UtilsGame.maxHealth["enemy"], max: UtilsGame.maxHealth["enemy"] } as Health } }),
+	inventory: GlobalStore.AddVariable({ inventory: { player: [] as (Item | null)[], enemy: [] as (Item | null)[] } }),
+	isLoading: GlobalStore.AddVariable({ isLoading: false }),
+	modalAuth: GlobalStore.AddVariable({ isOpened: false }),
+	playerDetails: GlobalStore.AddVariable({ playerDetails: { name: "" } }),
+	rewards: GlobalStore.AddVariable({ rewards: [] as Item[] }),
+	supabaseClient: GlobalStore.AddVariable({ supabaseClient: supabase }),
+	supabaseSession: GlobalStore.AddVariable({ session: null as Session | null, status: "none" as SupabaseSessionStatusTypes }),
+	trashCan: GlobalStore.AddVariable({ trashCan: [] as Item[] }),
+	updateMessage: GlobalStore.AddVariable({ updateMessage: { msg: "", type: "log" as MessageTypes } }),
+	viewSelected: GlobalStore.AddVariable({ floorSelect: 1, itemSelect: { type: "dice" } as Item }),
 } as const;

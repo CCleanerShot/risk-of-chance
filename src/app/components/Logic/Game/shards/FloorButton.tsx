@@ -17,11 +17,11 @@ const FloorButton = ({ floor }: FloorButtonProps) => {
 		const floor = Number(e.currentTarget.textContent);
 
 		if (isNaN(floor)) {
-			GlobalStore.UpdateVariableProperty("updateMessage", "updateMessage", { msg: "Floor select error! Please notify the dev!", type: "error" });
+			GlobalStore.Update("updateMessage", "updateMessage", { msg: "Floor select error! Please notify the dev!", type: "error" });
 			return;
 		}
 
-		GlobalStore.UpdateVariableProperty("viewSelected", "floorSelect", floor);
+		GlobalStore.Update("viewSelected", "floorSelect", floor);
 	};
 
 	const listenToViewSelected = () => {
@@ -30,7 +30,7 @@ const FloorButton = ({ floor }: FloorButtonProps) => {
 	};
 
 	useEffect(() => {
-		GlobalStore.AddListenerToVariable("viewSelected", listenToViewSelected);
+		GlobalStore.AddListener("viewSelected", listenToViewSelected);
 		listenToViewSelected();
 	}, []);
 

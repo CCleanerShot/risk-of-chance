@@ -44,9 +44,9 @@ const Battle = () => {
 	};
 
 	useEffect(() => {
-		GlobalStore.AddListenerToVariable("game", listenToGame);
-		GlobalStore.AddListenerToVariable("battleItems", listenToBattleItems);
-		GlobalStore.AddListenerToVariable("battleResult", listenToBattleResult);
+		GlobalStore.AddListener("game", listenToGame);
+		GlobalStore.AddListener("battleItems", listenToBattleItems);
+		GlobalStore.AddListener("battleResult", listenToBattleResult);
 	}, []);
 
 	const handleHelperMouse = (input: boolean) => {

@@ -8,6 +8,8 @@ import Utils from "@/common/utils/utils";
 import ItemContainer from "./ItemContainer";
 import Inventory from "./Inventory";
 import H1 from "@/app/components/UI/H1";
+import Button from "@/app/components/UI/Button";
+import UtilsGame from "@/common/utils/utils_game";
 
 const Results = () => {
 	const [game, setGame] = useState(GlobalStore.getFromStore("game").game);
@@ -30,27 +32,59 @@ const Results = () => {
 	};
 
 	useEffect(() => {
-		GlobalStore.AddListenerToVariable("finalResults", listenToFinalResults);
-		GlobalStore.AddListenerToVariable("game", listenToGame);
-		GlobalStore.AddListenerToVariable("rewards", listenToRewards);
+		GlobalStore.AddListener("finalResults", listenToFinalResults);
+		GlobalStore.AddListener("game", listenToGame);
+		GlobalStore.AddListener("rewards", listenToRewards);
 		listenToFinalResults();
 		listenToGame();
 		listenToRewards();
 	}, []);
 
-	return (
-		<div className="flex flex-col justify-center items-center">
+	const handleContinue = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+		const { currentFloor, gameStatus } = GlobalStore.getFromStore("game").game;
+		UtilsGame.StartFloor(currentFloor + 1, true);
+	};
+
+	const handleExit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+		UtilsGame.ExitJourney();
+	};
+
+	const handleDie = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+		UtilsGame.Die();
+	};
+
+	const WinComponent = () => (
+		<div className="flex flex-col justify-center items-center gap-2">
 			<div className="flex flex-col justify-center items-center">
-				<H1>GET</H1>
 				<Gold>{`+ ${Utils.FormatNumber(game.currentFloor)}`}</Gold>
+				<H1>LOOT</H1>
 				{rewards.map((reward, index) => (
 					<ItemContainer size="medium" key={index} item={reward} source="rewards"></ItemContainer>
 				))}
 			</div>
-			<Inventory size="medium" source="player" />
-			{finalResults}
+			<div className="flex gap-2 justify-center items-start">
+				<Inventory size="medium" source="player" />
+			</div>
+			<Button template="darker_inner" onClick={handleContinue}>
+				CONTINUE
+			</Button>
 		</div>
 	);
+
+	const LoseComponent = () => <Button onClick={handleDie} template="standard" className="flex flex-col justify-center items-center border-red-500 text-red-500 hover:text-red-500">{`You lost :(`}</Button>;
+
+	switch (finalResults) {
+		case "draw":
+			return (
+				<Button onClick={handleExit} template="darker_inner">
+					dunno what happened. you can go back :D.
+				</Button>
+			);
+		case "lose":
+			return LoseComponent();
+		case "win":
+			return WinComponent();
+	}
 };
 
 export default Results;

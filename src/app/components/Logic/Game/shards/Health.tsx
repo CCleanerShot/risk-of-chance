@@ -20,7 +20,7 @@ const Health = ({ source }: HealthProps) => {
 	};
 
 	useEffect(() => {
-		GlobalStore.AddListenerToVariable("health", listenToHealth);
+		GlobalStore.AddListener("health", listenToHealth);
 	}, []);
 
 	return (

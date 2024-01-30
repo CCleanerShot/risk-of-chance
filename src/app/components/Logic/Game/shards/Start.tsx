@@ -2,7 +2,7 @@ import React from "react";
 import Backpack from "./Backpack";
 import Inventory from "./Inventory";
 import Floors from "./Floors";
-import Trashcan from "./Trashcan";
+import TrashCan from "./TrashCan";
 import GoldTotal from "./GoldTotal";
 
 const Start = () => {
@@ -13,7 +13,7 @@ const Start = () => {
 					<Backpack size="smallest" source="player" />
 					<div className="flex justify-between items-center">
 						<GoldTotal />
-						<Trashcan size="smallest" />
+						<TrashCan size="smallest" />
 					</div>
 				</div>
 				<Inventory size="small" source="player" />

@@ -22,7 +22,7 @@ const Modal = ({ alignment, children, listenTo }: ModalProps) => {
 	};
 
 	useEffect(() => {
-		GlobalStore.AddListenerToVariable(listenTo, listenForOpened);
+		GlobalStore.AddListener(listenTo, listenForOpened);
 	});
 
 	return (

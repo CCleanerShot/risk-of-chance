@@ -1,7 +1,7 @@
 import { AuthError, Session } from "@supabase/supabase-js";
 
 export type ActorTypes = "player" | "enemy";
-export type GameStatusTypes = { type: "battle" } | { type: "start" } | { type: "results" };
+export type GameStatusTypes = { type: "battle" } | { type: "start" } | { type: "results" } | { type: "exit" };
 export type MessageTypes = "log" | "warn" | "error";
 export type ModalAuthTabTypes = "signin" | "register";
 export type ModalTypes = "modalAuth";
@@ -9,7 +9,7 @@ export type ProviderTypes = "google" | "github";
 export type ResultsTypes = "win" | "lose" | "draw";
 export type SizeTypes = "smallest" | "small" | "medium" | "large" | "largest";
 export type StatusColorTypes = "red" | "yellow" | "green";
-export type StorageTypes = "backpack" | "inventory" | "battleItems" | "rewards" | "trashcan";
+export type StorageTypes = "backpack" | "inventory" | "battleItems" | "rewards" | "trashCan";
 export type SupabaseSessionStatusTypes = "loading" | "none" | "exists" | "valid" | "guest";
 
 type Items = "dice" | "health" | null;

@@ -22,7 +22,7 @@ const Inventory = ({ size, source }: InventoryProps) => {
 	};
 
 	useEffect(() => {
-		GlobalStore.AddListenerToVariable("inventory", listenForInventory);
+		GlobalStore.AddListener("inventory", listenForInventory);
 		listenForInventory();
 	}, []);
 

@@ -57,15 +57,15 @@ const View = () => {
 
 	useEffect(() => {
 		async function execute() {
-			GlobalStore.AddListenerToVariable("supabaseSession", listenToSupabaseSession);
-			GlobalStore.AddListenerToVariable("updateMessage", listenToUpdateMessage);
+			GlobalStore.AddListener("supabaseSession", listenToSupabaseSession);
+			GlobalStore.AddListener("updateMessage", listenToUpdateMessage);
 			const supabaseClient = GlobalStore.getFromStore("supabaseClient").supabaseClient;
 			const session = (await supabaseClient.auth.getSession()).data.session;
 			if (!session) {
-				GlobalStore.UpdateVariableProperty("supabaseSession", "status", "none");
+				GlobalStore.Update("supabaseSession", "status", "none");
 			} else {
-				GlobalStore.UpdateVariableProperty("supabaseSession", "status", "exists");
-				GlobalStore.UpdateVariableProperty("supabaseSession", "session", session);
+				GlobalStore.Update("supabaseSession", "status", "exists");
+				GlobalStore.Update("supabaseSession", "session", session);
 			}
 		}
 
