@@ -1,11 +1,8 @@
 "use effect";
 
 import React, { useEffect, useState } from "react";
-import Floors from "./shards/Floors";
-import Backpack from "./shards/Backpack";
 import { GameStatusTypes } from "@/types";
 import GlobalStore from "@/common/global_store";
-import Inventory from "./shards/Inventory";
 import Battle from "./shards/Battle";
 import Results from "./shards/Results";
 import Start from "./shards/Start";

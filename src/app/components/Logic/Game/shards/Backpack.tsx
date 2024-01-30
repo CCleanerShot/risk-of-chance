@@ -21,14 +21,15 @@ const Backpack = ({ size, source }: BackpackProps) => {
 	const [backpack, setBackpack] = useState<Backpack>([]);
 
 	const listenToUpdate = async () => {
-		const backpack = GlobalStore.getFromStore("backpack").backpack;
-		setBackpack(backpack);
+		const newBackpack = GlobalStore.getFromStore("backpack").backpack;
+		setBackpack(newBackpack);
 	};
 
 	useEffect(() => {
 		async function execute() {
 			GlobalStore.AddListener("backpack", listenToUpdate);
 			GlobalStore.AddListener("supabaseSession", listenToUpdate);
+			listenToUpdate();
 			await UtilsSupabase.Load();
 		}
 
