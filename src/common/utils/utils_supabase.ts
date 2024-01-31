@@ -11,8 +11,8 @@ export const supabase = createClient<Database>(URL, PUBLIC_KEY);
 // prettier-ignore
 export const queries = {
 	createUser: async (oauth_origin: string, username: string) => await supabase.from("users").insert({ oauth_origin: oauth_origin, username: username, inventory: null }),
-	getBackpack: async(oauth_origin: string) => await supabase.from('users').select().eq('oauth_origin', oauth_origin),
-	updateBackpack: async (backpack: Backpack, session_id: string) => await supabase.from("users").update({ backpack: JSON.stringify(backpack) }).eq("oauth_origin", session_id),
+	getData: async(oauth_origin: string) => await supabase.from('users').select().eq('oauth_origin', oauth_origin),
+	updateData: async (backpack: Backpack,gold: number, session_id: string) => await supabase.from("users").update({ backpack: JSON.stringify(backpack), gold: gold }).eq("oauth_origin", session_id),
 } as const;
 
 export default class UtilsSupabase {
@@ -57,7 +57,7 @@ export default class UtilsSupabase {
 			return;
 		}
 
-		const { data, error } = await UtilsSupabase.GetQuery("getBackpack").callQuery(session_id);
+		const { data, error } = await UtilsSupabase.GetQuery("getData").callQuery(session_id);
 
 		if (error) {
 			GlobalStore.Update("updateMessage", "updateMessage", { msg: "Server error. Is your internet even on?", type: "error" });
@@ -65,6 +65,7 @@ export default class UtilsSupabase {
 		}
 
 		const foundBackpack = JSON.parse(data?.[0].backpack as string);
+		console.log(data?.[0].gold);
 
 		// check if object is a valid backpack;
 		for (const prop in backpackConst[0]) {
@@ -87,8 +88,8 @@ export default class UtilsSupabase {
 		}
 
 		const backpack = GlobalStore.getFromStore("backpack").backpack;
-
-		const { data, error } = await UtilsSupabase.GetQuery("updateBackpack").callQuery(backpack, session_id);
+		const gold = GlobalStore.getFromStore("gold").gold;
+		const { data, error } = await UtilsSupabase.GetQuery("updateData").callQuery(backpack, gold, session_id);
 
 		if (error) {
 			GlobalStore.Update("updateMessage", "updateMessage", { msg: "Server error. Is your internet even on?", type: "error" });

@@ -28,7 +28,7 @@ export default class UtilsCSS {
 	}
 
 	static ReturnPositionFromAlignment(alignment: Alignment) {
-		let alignmentStyles: { left: 0; top: 0; transform: { x: string; y: string } } = { left: 0, top: 0, transform: { x: "", y: "" } };
+		let alignmentStyles: { left: 0; top: 0; transform: { x: string; y: string } } = { left: 0, top: 0, transform: { x: "0px", y: "0px" } };
 		switch (alignment.x) {
 			case "left":
 				break;

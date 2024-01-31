@@ -13,6 +13,7 @@ export interface Database {
         Row: {
           backpack: Json | null
           created_at: string
+          gold: number
           id: string
           oauth_origin: string
           username: string
@@ -20,6 +21,7 @@ export interface Database {
         Insert: {
           backpack?: Json | null
           created_at?: string
+          gold?: number
           id?: string
           oauth_origin: string
           username: string
@@ -27,6 +29,7 @@ export interface Database {
         Update: {
           backpack?: Json | null
           created_at?: string
+          gold?: number
           id?: string
           oauth_origin?: string
           username?: string

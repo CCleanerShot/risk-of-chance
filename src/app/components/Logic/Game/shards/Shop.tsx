@@ -28,7 +28,7 @@ const Shop = () => {
 		<div className="flex gap-2">
 			<Backpack size="smallest" source="player" />
 			<div className="flex flex-col gap-2">
-				<H1>WELCOME!</H1>
+				<H1>THE SHOP</H1>
 				{shop.map((item) => (
 					<div className="flex">
 						<div className="flex justify-center items-center gap-2">

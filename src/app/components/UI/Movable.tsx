@@ -41,6 +41,7 @@ const Movable = ({ children, className, defaultPosition }: MovableProps) => {
 
 	const { left, top, transform } = UtilsCSS.ReturnPositionFromAlignment(defaultPosition);
 
+	console.log(`translate(${transform.x}, ${transform.y})`);
 	return (
 		<div
 			draggable

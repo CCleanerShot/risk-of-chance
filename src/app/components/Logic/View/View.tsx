@@ -8,6 +8,7 @@ import Corner from "@/app/components/UI/Corner";
 import { SizeTypes, StatusColorTypes, SupabaseSessionStatusTypes } from "@/types";
 import LoadingIcon from "@/app/components/UI/LoadingIcon";
 import toast from "react-hot-toast";
+import GameOverlay from "../GameOverlay/GameOverlay";
 
 const View = () => {
 	const cornerSize: SizeTypes = "medium";
@@ -77,7 +78,12 @@ const View = () => {
 			case "exists":
 			case "guest":
 			case "valid":
-				return <Game />;
+				return (
+					<>
+						<Game />
+						<GameOverlay />
+					</>
+				);
 			case "loading":
 				return <LoadingIcon color="red" size={30} durationMillseconds={500} />;
 			case "none":
