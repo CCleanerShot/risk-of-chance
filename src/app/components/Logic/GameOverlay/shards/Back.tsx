@@ -33,7 +33,7 @@ const Back = ({ currentStatus, className }: BackProps) => {
 	};
 
 	return (
-		<Button onClick={handleClick} template="green_border" disabled={disabled} className={twMerge("", className)}>
+		<Button onClick={handleClick} template="green_border" disabled={disabled} className={twMerge(disabled ? "text-slate-800" : "", className)}>
 			BACK
 		</Button>
 	);

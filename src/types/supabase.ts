@@ -15,6 +15,7 @@ export interface Database {
           created_at: string
           gold: number
           id: string
+          inventory: Json | null
           oauth_origin: string
           username: string
         }
@@ -23,6 +24,7 @@ export interface Database {
           created_at?: string
           gold?: number
           id?: string
+          inventory?: Json | null
           oauth_origin: string
           username: string
         }
@@ -31,6 +33,7 @@ export interface Database {
           created_at?: string
           gold?: number
           id?: string
+          inventory?: Json | null
           oauth_origin?: string
           username?: string
         }

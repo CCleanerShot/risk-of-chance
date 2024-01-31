@@ -29,15 +29,15 @@ const Shop = () => {
 			<Backpack size="smallest" source="player" />
 			<div className="flex flex-col gap-2">
 				<H1>THE SHOP</H1>
-				{shop.map((item) => (
-					<div className="flex">
+				{shop.map((item, index) => (
+					<div key={`item${index}`} className="flex">
 						<div className="flex justify-center items-center gap-2">
-							<Button template="green_border" onClick={() => UtilsGame.BuyItem(item, item?.cost)}>
-								<ItemContainer item={item} size="small" source="shop" disabled={true} className="border-0 p-0" />
-							</Button>
-							<div className="flex justify-start item-start">
-								<Gold>{Utils.FormatNumber(item.cost)}</Gold>
-							</div>
+							<ItemContainer item={item} size="small" source="shop" overrideOnClick={() => UtilsGame.BuyItem(item, item?.cost)} />
+							{item?.type && (
+								<div className="flex justify-start item-start">
+									<Gold>{Utils.FormatNumber(item.cost)}</Gold>
+								</div>
+							)}
 						</div>
 					</div>
 				))}

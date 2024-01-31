@@ -14,7 +14,7 @@ const Save = ({ disabled, className }: SaveProps) => {
 	};
 
 	return (
-		<Button onClick={handleSave} disabled={disabled} template="darker_inner" className={twMerge(disabled ? "line-through" : "", className)}>
+		<Button onClick={handleSave} disabled={disabled} template="green_border" className={twMerge(disabled ? "text-slate-800" : "", className)}>
 			SAVE
 		</Button>
 	);

@@ -7,9 +7,10 @@ interface MovableProps {
 	children: React.ReactNode;
 	defaultPosition: Alignment;
 	className?: string;
+	isDraggedStyles?: string;
 }
 
-const Movable = ({ children, className, defaultPosition }: MovableProps) => {
+const Movable = ({ children, className, defaultPosition, isDraggedStyles }: MovableProps) => {
 	const [isDragged, setIsDragged] = useState(false);
 	const [newPosition, setNewPosition] = useState<{ x: number; y: number } | null>(null);
 	const [startPosition, setStartPosition] = useState<{ x: number; y: number } | null>(null);
@@ -41,12 +42,11 @@ const Movable = ({ children, className, defaultPosition }: MovableProps) => {
 
 	const { left, top, transform } = UtilsCSS.ReturnPositionFromAlignment(defaultPosition);
 
-	console.log(`translate(${transform.x}, ${transform.y})`);
 	return (
 		<div
 			draggable
 			style={newPosition ? { left: newPosition.x, top: newPosition.y } : { left: 0, top: 0, transform: `translate(${transform.x}, ${transform.y})` }}
-			className={twMerge(isDragged ? "bg-green-200" : "", "fixed", className)}
+			className={twMerge(isDragged ? twMerge("bg-green-200", isDraggedStyles) : "", "fixed outline-none caret-transparent", className)}
 			onDragStart={handleDragStart}
 			onDrag={handleDrag}
 			onDragEnd={handleDragEnd}

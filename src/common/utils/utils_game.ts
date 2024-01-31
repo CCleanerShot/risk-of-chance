@@ -45,8 +45,8 @@ export default class UtilsGame {
 		},
 
 		rewards: {
-			player: 3,
-			enemy: 3,
+			player: 1,
+			enemy: 1,
 		},
 
 		trashCan: {
@@ -61,11 +61,11 @@ export default class UtilsGame {
 	} as const;
 
 	static shopItems = [
-		[1, 15],
-		[15, 35],
-		[35, 55],
-		[55, 75],
-		[75, 100],
+		[2, 10, 1],
+		[10, 30, 4],
+		[30, 50, 6],
+		[50, 70, 8],
+		[70, 90, 10],
 	] as const;
 
 	static specialRolls = {
@@ -91,12 +91,11 @@ export default class UtilsGame {
 
 	static GenerateShop() {
 		const rolls = Utils.MakeArray(UtilsGame.maxStorage.shop["player"], (i) => {
-			const min = UtilsGame.shopItems[i][0];
-			const max = UtilsGame.shopItems[i][1];
+			const [min, max, costMultiplier] = UtilsGame.shopItems[i];
 			return Math.round(Utils.RandomNumber(min, max));
 		});
 
-		const dices: PurchaseableItem[] = rolls.map((v, i) => ({ type: "dice", cost: (i + 1) * 2 * v, disabled: false, sides: v }));
+		const dices: PurchaseableItem[] = rolls.map((v, i) => ({ type: "dice", cost: v * UtilsGame.shopItems[i][2], disabled: false, sides: v }));
 		GlobalStore.Update("shop", "shop", dices);
 	}
 
@@ -104,13 +103,13 @@ export default class UtilsGame {
 		const currentGold = GlobalStore.getFromStore("gold").gold;
 		const playerBackpack = GlobalStore.getFromStore("backpack").backpack;
 		const currentCapacity = playerBackpack.filter((item) => item?.type);
-
+		const maxCapacity = UtilsGame.maxStorage.backpack.player;
 		if (currentGold - cost < 0) {
 			GlobalStore.Update("updateMessage", "updateMessage", { msg: "Cannot buy: not enough gold!", type: "error" });
 			return;
 		}
 
-		if (currentCapacity.length === playerBackpack.length) {
+		if (currentCapacity.length >= maxCapacity) {
 			GlobalStore.Update("updateMessage", "updateMessage", { msg: "Cannoy buy: your backpack is full!", type: "error" });
 			return;
 		}
@@ -172,8 +171,13 @@ export default class UtilsGame {
 		return array;
 	}
 
+	// TODO: add more cool things to a floor
 	static StartFloor(floor: number, possibleSpecialRooms: boolean) {
-		// TODO: add more cool things to a floor
+		const minItemsNeeded = UtilsGame.maxStorage.battleItems["player"] * 3;
+		if (!UtilsGame.HasEnoughDicesInInv()) {
+			GlobalStore.Update("updateMessage", "updateMessage", { msg: `You need atleast ${minItemsNeeded} dices to start!`, type: "error" });
+			return;
+		}
 
 		if (possibleSpecialRooms) {
 			const isSuccess = UtilsGame.specialRolls.exitRoom();
@@ -183,6 +187,7 @@ export default class UtilsGame {
 			}
 		}
 
+		UtilsGame.GenerateShop();
 		let inventory: (Item | null)[] = UtilsGame.CreateEnemyInventory(floor) as Item[];
 		const items = UtilsGame.SelectRandomBattleItems(inventory as Item[], "enemy");
 		inventory = inventory.map((i) => (items.includes(i) ? null : i));
@@ -194,16 +199,22 @@ export default class UtilsGame {
 		GlobalStore.Update("game", "game", { currentFloor: floor, gameStatus: "battle" });
 	}
 
-	static AttemptJourney(floor: number) {
+	static HasEnoughDicesInInv(): boolean {
 		const { enemy, player } = GlobalStore.getFromStore("inventory").inventory;
 		const currentInv = player.filter((item) => item?.type);
 		const currentDices = player.filter((item) => item?.type === "dice");
 		const minItemsNeeded = UtilsGame.maxStorage.battleItems["player"] * 3;
 
 		if (currentDices.length < minItemsNeeded && currentInv.length) {
-			GlobalStore.Update("updateMessage", "updateMessage", { msg: `You need atleast ${minItemsNeeded} dices to start!`, type: "error" });
-			return;
+			return false;
 		}
+
+		return true;
+	}
+
+	static AttemptJourney(floor: number) {
+		const { enemy, player } = GlobalStore.getFromStore("inventory").inventory;
+		const currentInv = player.filter((item) => item?.type);
 
 		if (!currentInv.length) {
 			GlobalStore.Update("updateMessage", "updateMessage", { msg: "Giving starter items...", type: "log" });
@@ -257,10 +268,13 @@ export default class UtilsGame {
 			storageDestination[foundDestinationNullIndex] = item; // in the case that the array contained null values
 		}
 
+		console.log(GlobalStore.getFromStore("shop").shop);
 		GlobalStore.Update("backpack", "backpack", (backpack) => [...backpack]);
 		GlobalStore.Update("inventory", "inventory", (inventory) => ({ ...inventory }));
 		GlobalStore.Update("battleItems", "battleItems", (battleItems) => ({ ...battleItems }));
 		GlobalStore.Update("rewards", "rewards", (rewards) => [...rewards]);
+		GlobalStore.Update("shop", "shop", (shop) => [...shop]);
+
 		return true;
 	}
 

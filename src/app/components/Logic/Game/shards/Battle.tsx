@@ -98,7 +98,7 @@ const Battle = () => {
 			<H1>{`Floor ${floor}`}</H1>
 			<Inventory size="medium" source="player" />
 			<div className="flex gap-5">
-				<div className="flex gap-2 ">
+				<div className="flex gap-2 overflow-hidden">
 					{NPCLogsComponent({ source: "player", className: "border border-green-500" })}
 					{NPCMainComponent({ disabled: false, source: "player", className: "border border-green-500" })}
 				</div>

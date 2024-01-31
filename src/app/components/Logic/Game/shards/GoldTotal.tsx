@@ -9,12 +9,13 @@ const GoldTotal = () => {
 	const [gold, setGold] = useState(GlobalStore.getFromStore("gold").gold);
 	const listenToGold = () => {
 		const newGold = GlobalStore.getFromStore("gold").gold;
-		setGold(gold);
+		setGold(newGold);
 	};
 
 	useEffect(() => {
 		GlobalStore.AddListener("gold", listenToGold);
 	}, []);
+
 	return <Gold>{Utils.FormatNumber(gold)}</Gold>;
 };
 

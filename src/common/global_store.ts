@@ -1,5 +1,5 @@
 import { supabase } from "@/common/utils/utils_supabase";
-import { Backpack, Game, Health, Item, MessageTypes, ResultsTypes, SupabaseSessionStatusTypes } from "@/types";
+import { Game, Health, Item, MessageTypes, ResultsTypes, SupabaseSessionStatusTypes } from "@/types";
 import { Session } from "@supabase/supabase-js";
 import UtilsGame from "./utils/utils_game";
 import { PurchaseableItem } from "@/types/local";
@@ -50,7 +50,7 @@ export default class GlobalStore {
 	/**
 	 * adds a listener to a variable. whenever the variable is updated, or a wrapper function manually calls for an update, all listeners of that variable will be called
 	 * @param variable the variable to be listened on (comes from a static list)
-	 * @param listener a function that will be called whenever the variable is updated with 'GlobalStore.UpdateVariableProperty', or a wrapper function is called
+	 * @param listener a function that will be called whenever the variable is updated with 'GlobalStore.Update', or a wrapper function is called
 	 * @param listenerArgs optional listener parameters of a listener
 	 */
 	static AddListener<T extends ContextsListKeys, K extends (args: any) => void>(variable: T, listener: K, ...listenerArgs: K extends (...args: infer Params) => any ? Params : never) {
@@ -88,6 +88,26 @@ export default class GlobalStore {
 		GlobalStore.callAllListeners(variable);
 	}
 
+	/**
+	 * helper function, which adds a standardized listener to a variable. and calls 'AddListener'. no matter what. the listener grabs the property when called, and uses the passed in 'setState' method onto it
+	 * @param variable the variable to be listened on (comes from a static list)
+	 * @param property property of the variable to actually be updated
+	 * @param setState optional listener parameters of a listener
+	 *
+	 * NOTE: because it is self-enclosing, the listener used here cannot be removed
+	 *
+	 * WIP: also needs work because it does not regenerate objects/arrays, which will not cause an update
+	 */
+	static AddStandardListener<T extends ContextsListKeys, K extends keyof (typeof contextsList)[T]>(variable: T, property: K, setState: React.Dispatch<React.SetStateAction<(typeof contextsList)[T][K]>>) {
+		const listener = () => {
+			const newValue = GlobalStore.getFromStore(variable)[property];
+			setState(newValue);
+		};
+
+		GlobalStore.AddListener(variable, listener);
+		listener();
+	}
+
 	/** @returns destructure-able object containing specified item in the store */
 	static getFromStore = <T extends ContextsListKeys>(variable: T) => {
 		return contextsList[variable];
@@ -104,7 +124,7 @@ export const wrapperList = {};
 
 /** TO ENSURE INTELLISENSE, JUST ADD ADDITIONAL ITEMS HERE AS NEEDED */
 export const contextsList = {
-	backpack: GlobalStore.AddVariable({ backpack: [] as Backpack }),
+	backpack: GlobalStore.AddVariable({ backpack: [] as Item[] }),
 	battleItems: GlobalStore.AddVariable({ battleItems: { player: [] as (Item | null)[], enemy: [] as (Item | null)[] } }),
 	battleResult: GlobalStore.AddVariable({ battleResult: null as ResultsTypes | null, rolls: { enemy: [] as { item: Item<"dice">; value: number }[], player: [] as { item: Item<"dice">; value: number }[] } }),
 	finalResults: GlobalStore.AddVariable({ finalResults: "draw" as ResultsTypes }),
@@ -114,6 +134,7 @@ export const contextsList = {
 	inventory: GlobalStore.AddVariable({ inventory: { player: [] as (Item | null)[], enemy: [] as (Item | null)[] } }),
 	isLoading: GlobalStore.AddVariable({ isLoading: false }),
 	modalAuth: GlobalStore.AddVariable({ isOpened: false }),
+	modalSettings: GlobalStore.AddVariable({ isOpened: false }),
 	playerDetails: GlobalStore.AddVariable({ playerDetails: { name: "" } }),
 	rewards: GlobalStore.AddVariable({ rewards: [] as Item[] }),
 	shop: GlobalStore.AddVariable({ shop: [] as PurchaseableItem[] }),

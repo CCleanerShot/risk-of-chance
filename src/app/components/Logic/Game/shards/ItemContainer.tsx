@@ -16,9 +16,10 @@ interface ItemContainerProps {
 	size: SizeTypes;
 	className?: string;
 	disabled?: boolean;
+	overrideOnClick?: (args: any) => any;
 }
 
-const ItemContainer = ({ item, source, size, className, disabled = false }: ItemContainerProps) => {
+const ItemContainer = ({ item, source, size, className, disabled = false, overrideOnClick }: ItemContainerProps) => {
 	const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		const currentStage = GlobalStore.getFromStore("game").game.gameStatus;
 		switch (currentStage) {
@@ -89,7 +90,7 @@ const ItemContainer = ({ item, source, size, className, disabled = false }: Item
 	};
 
 	return (
-		<Button disabled={disabled || !item || item.disabled} template="green_border" className={twMerge(sizeStyles, "text-white border-slate-900 p-1", className)} onClick={handleClick}>
+		<Button disabled={disabled || !item || item.disabled} template="green_border" className={twMerge(sizeStyles, "text-white border-slate-900 p-1", className)} onClick={overrideOnClick ?? handleClick}>
 			<Contents />
 		</Button>
 	);

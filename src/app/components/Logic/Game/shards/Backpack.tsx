@@ -2,12 +2,11 @@
 
 import React, { useEffect, useState } from "react";
 import GlobalStore from "@/common/global_store";
-import UtilsSupabase from "@/common/utils/utils_supabase";
 import UtilsGame from "@/common/utils/utils_game";
 import Utils from "@/common/utils/utils";
 import ItemContainer from "./ItemContainer";
 import H1 from "@/app/components/UI/H1";
-import { ActorTypes, Backpack, SizeTypes } from "@/types";
+import { ActorTypes, Item, SizeTypes } from "@/types";
 import GoldTotal from "./GoldTotal";
 import TrashCan from "./TrashCan";
 
@@ -18,7 +17,7 @@ interface BackpackProps {
 
 const Backpack = ({ size, source }: BackpackProps) => {
 	const [tabNumber, setTabNumber] = useState(1);
-	const [backpack, setBackpack] = useState<Backpack>([]);
+	const [backpack, setBackpack] = useState<Item[]>([]);
 
 	const listenToUpdate = async () => {
 		const newBackpack = GlobalStore.getFromStore("backpack").backpack;
@@ -30,7 +29,6 @@ const Backpack = ({ size, source }: BackpackProps) => {
 			GlobalStore.AddListener("backpack", listenToUpdate);
 			GlobalStore.AddListener("supabaseSession", listenToUpdate);
 			listenToUpdate();
-			await UtilsSupabase.Load();
 		}
 
 		execute();

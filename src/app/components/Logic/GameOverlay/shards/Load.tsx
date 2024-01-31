@@ -14,7 +14,7 @@ const Load = ({ disabled, className }: LoadProps) => {
 	};
 
 	return (
-		<Button onClick={handleLoad} disabled={disabled} template="darker_inner" className={twMerge(disabled ? "line-through" : "", className)}>
+		<Button onClick={handleLoad} disabled={disabled} template="darker_inner" className={twMerge(disabled ? "text-slate-800" : "", className)}>
 			LOAD
 		</Button>
 	);

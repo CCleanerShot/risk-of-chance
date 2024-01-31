@@ -9,6 +9,7 @@ import { SizeTypes, StatusColorTypes, SupabaseSessionStatusTypes } from "@/types
 import LoadingIcon from "@/app/components/UI/LoadingIcon";
 import toast from "react-hot-toast";
 import GameOverlay from "../GameOverlay/GameOverlay";
+import UtilsSupabase from "@/common/utils/utils_supabase";
 
 const View = () => {
 	const cornerSize: SizeTypes = "medium";
@@ -19,26 +20,19 @@ const View = () => {
 		const status = GlobalStore.getFromStore("supabaseSession").status;
 		switch (status) {
 			case "loading":
-				setColor("red");
-				setStatus("loading");
-				break;
 			case "none":
 				setColor("red");
-				setStatus("none");
 				break;
 			case "exists":
-				setColor("green");
-				setStatus("exists");
-				break;
 			case "valid":
 				setColor("green");
-				setStatus("valid");
 				break;
 			case "guest":
 				setColor("yellow");
-				setStatus("guest");
 				break;
 		}
+
+		setStatus(status);
 	};
 
 	const listenToUpdateMessage = () => {
@@ -67,6 +61,7 @@ const View = () => {
 			} else {
 				GlobalStore.Update("supabaseSession", "status", "exists");
 				GlobalStore.Update("supabaseSession", "session", session);
+				await UtilsSupabase.Load();
 			}
 		}
 

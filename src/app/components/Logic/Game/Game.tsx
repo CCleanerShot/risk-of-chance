@@ -24,44 +24,6 @@ const Game = () => {
 		GlobalStore.AddListener("game", listenToGame);
 	}, []);
 
-	const BackButtonComponent = (status: GameStatusTypes) => {
-		const handleClick = () => {
-			switch (status) {
-				case "battle":
-				case "exit":
-				case "results":
-				case "start":
-					GlobalStore.Update("updateMessage", "updateMessage", { msg: "what how did this happen? bug lol", type: "warn" });
-					break;
-				case "shop":
-					GlobalStore.Update("game", "game", ({ currentFloor, gameStatus }) => ({ currentFloor, gameStatus: "start" }));
-					break;
-			}
-		};
-
-		const DisabledButtonComponent = () => (
-			<Button template="green_border" disabled={true} className="mt-2 line-through text-slate-800">
-				BACK
-			</Button>
-		);
-
-		const WorkingButtonComponent = (status: GameStatusTypes) => (
-			<Button template="green_border" onClick={() => handleClick()} className="mt-2">
-				BACK
-			</Button>
-		);
-
-		switch (status) {
-			case "battle":
-			case "exit":
-			case "results":
-			case "start":
-				return DisabledButtonComponent();
-			case "shop":
-				return WorkingButtonComponent("shop");
-		}
-	};
-
 	const ScreenComponent = () => {
 		switch (gameScreen) {
 			case "battle":
