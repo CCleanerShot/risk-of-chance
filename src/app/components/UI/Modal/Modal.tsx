@@ -29,7 +29,7 @@ const Modal = ({ alignment, children, listenTo }: ModalProps) => {
 		<>
 			{isOpened && (
 				<ModalOverlay>
-					<Movable defaultPosition={alignment} className="min-h-40 min-w-80 z-50 fixed border-4 border-slate-900 p-2 cursor-pointer bg-white">
+					<Movable defaultPosition={alignment} className="min-h-30 min-w-60 z-50 fixed border-4 border-slate-900 p-2 bg-slate-700">
 						<ModalExit modal={listenTo} />
 						{children}
 					</Movable>

@@ -110,7 +110,7 @@ export default class UtilsGame {
 		}
 
 		if (currentCapacity.length >= maxCapacity) {
-			GlobalStore.Update("updateMessage", "updateMessage", { msg: "Cannoy buy: your backpack is full!", type: "error" });
+			GlobalStore.Update("updateMessage", "updateMessage", { msg: "Cannot buy: your backpack is full!", type: "error" });
 			return;
 		}
 
@@ -247,7 +247,6 @@ export default class UtilsGame {
 		const storageDestination = UtilsGame.GetStorage(destination, actor);
 		const foundSourceIndex = storageSource.findIndex((i) => i === item);
 		const amountOfItems = storageDestination.filter((i) => !!i);
-		const isActorBased = UtilsGame.maxStorage[destination]?.[actor];
 
 		if (foundSourceIndex === -1) {
 			GlobalStore.Update("updateMessage", "updateMessage", { msg: `Cannot move: original item is missing`, type: "error" });
@@ -261,19 +260,26 @@ export default class UtilsGame {
 
 		storageSource[foundSourceIndex] = null;
 
-		const foundDestinationNullIndex = storageDestination.findIndex((i) => i === null);
-		if (foundDestinationNullIndex === -1) {
-			storageDestination.push(item); // in the case that the array didnt contain null values
-		} else {
-			storageDestination[foundDestinationNullIndex] = item; // in the case that the array contained null values
+		switch (destination) {
+			case "trashCan":
+				storageDestination[0] = item;
+				break;
+			default:
+				const foundDestinationNullIndex = storageDestination.findIndex((i) => i === null);
+				if (foundDestinationNullIndex === -1) {
+					storageDestination.push(item); // in the case that the array didnt contain null values
+				} else {
+					storageDestination[foundDestinationNullIndex] = item; // in the case that the array contained null values
+				}
+				break;
 		}
 
-		console.log(GlobalStore.getFromStore("shop").shop);
 		GlobalStore.Update("backpack", "backpack", (backpack) => [...backpack]);
 		GlobalStore.Update("inventory", "inventory", (inventory) => ({ ...inventory }));
 		GlobalStore.Update("battleItems", "battleItems", (battleItems) => ({ ...battleItems }));
 		GlobalStore.Update("rewards", "rewards", (rewards) => [...rewards]);
 		GlobalStore.Update("shop", "shop", (shop) => [...shop]);
+		GlobalStore.Update("trashCan", "trashCan", (trashCan) => [...trashCan]);
 
 		return true;
 	}

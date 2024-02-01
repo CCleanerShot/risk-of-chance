@@ -11,7 +11,7 @@ const Start = () => {
 	};
 
 	return (
-		<div className="flex-1 flex justify-around">
+		<div className="flex-1 flex justify-around gap-2">
 			<div className="flex gap-2">
 				<div className="flex flex-col gap-2">
 					<Backpack size="smallest" source="player" />

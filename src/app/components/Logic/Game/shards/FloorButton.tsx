@@ -25,7 +25,7 @@ const FloorButton = ({ floor }: FloorButtonProps) => {
 	};
 
 	const listenToViewSelected = () => {
-		const { itemSelect, floorSelect } = GlobalStore.getFromStore("viewSelected");
+		const { floorSelect } = GlobalStore.getFromStore("viewSelected");
 		setIsSelected(floor === floorSelect);
 	};
 

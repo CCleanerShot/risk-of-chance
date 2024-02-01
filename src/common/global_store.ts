@@ -2,7 +2,7 @@ import { supabase } from "@/common/utils/utils_supabase";
 import { Game, Health, Item, MessageTypes, ResultsTypes, SupabaseSessionStatusTypes } from "@/types";
 import { Session } from "@supabase/supabase-js";
 import UtilsGame from "./utils/utils_game";
-import { PurchaseableItem } from "@/types/local";
+import { PurchaseableItem, SettingTypes, StorageTypes } from "@/types/local";
 
 type VariableType<T extends any, K extends (args: any) => void> = {
 	variable: T;
@@ -63,7 +63,7 @@ export default class GlobalStore {
 	 * @param variable the variable to be removed on (comes from a static list)
 	 * @param listener a function that will be removed
 	 */
-	RemoveListener<T extends ContextsListKeys, K extends (args: any) => void>(variable: T, listener: K, ...listenerArgs: K extends (...args: infer Params) => any ? Params : never) {
+	static RemoveListener<T extends ContextsListKeys, K extends (args: any) => void>(variable: T, listener: K, ...listenerArgs: K extends (...args: infer Params) => any ? Params : never) {
 		const foundVariable = GlobalStore.findVariable(contextsList[variable]);
 
 		const foundIndex = foundVariable.listeners.findIndex((searchListener) => searchListener.listener === listener);
@@ -137,10 +137,13 @@ export const contextsList = {
 	modalSettings: GlobalStore.AddVariable({ isOpened: false }),
 	playerDetails: GlobalStore.AddVariable({ playerDetails: { name: "" } }),
 	rewards: GlobalStore.AddVariable({ rewards: [] as Item[] }),
+	selectedItem: GlobalStore.AddVariable({ selectedItem: { source: "backpack" as StorageTypes, item: null as Item } }),
 	shop: GlobalStore.AddVariable({ shop: [] as PurchaseableItem[] }),
+	settings: GlobalStore.AddVariable({ settings: { moveItem: "Q", deleteItem: "W" } }),
+	settingToChange: GlobalStore.AddVariable({ settingToChange: null as SettingTypes | null }),
 	supabaseClient: GlobalStore.AddVariable({ supabaseClient: supabase }),
 	supabaseSession: GlobalStore.AddVariable({ session: null as Session | null, status: "none" as SupabaseSessionStatusTypes }),
 	trashCan: GlobalStore.AddVariable({ trashCan: [] as Item[] }),
 	updateMessage: GlobalStore.AddVariable({ updateMessage: { msg: "", type: "log" as MessageTypes } }),
-	viewSelected: GlobalStore.AddVariable({ floorSelect: 1, itemSelect: { type: "dice" } as Item }),
+	viewSelected: GlobalStore.AddVariable({ floorSelect: 1 }),
 } as const;

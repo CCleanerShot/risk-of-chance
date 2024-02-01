@@ -4,8 +4,6 @@ import React, { useEffect, useState } from "react";
 import GlobalStore from "@/common/global_store";
 import { Item, SizeTypes } from "@/types";
 import ItemContainer from "./ItemContainer";
-import UtilsGame from "@/common/utils/utils_game";
-import Utils from "@/common/utils/utils";
 
 interface TrashCanProps {
 	size: SizeTypes;
@@ -26,9 +24,8 @@ const TrashCan = ({ size }: TrashCanProps) => {
 
 	return (
 		<div className="">
-			{Utils.MakeArray(UtilsGame.maxStorage.trashCan.player, () => null).map((item, i) => (
-				<ItemContainer key={`trashcan${i}`} item={item} size={size} source="trashCan" />
-			))}
+			{trashCan.length > 0 && trashCan.map((item, i) => <ItemContainer key={`trashcan${i}`} item={item} size={size} source="trashCan" />)}
+			{trashCan.length < 1 && <ItemContainer item={null} size={size} source="trashCan" />}
 		</div>
 	);
 };

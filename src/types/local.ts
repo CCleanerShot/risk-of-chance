@@ -7,6 +7,7 @@ export type ModalAuthTabTypes = "signin" | "register";
 export type ModalTypes = "modalAuth" | "modalSettings";
 export type ProviderTypes = "google" | "github";
 export type ResultsTypes = "win" | "lose" | "draw";
+export type SettingTypes = "moveItem" | "deleteItem";
 export type SizeTypes = "smallest" | "small" | "medium" | "large" | "largest";
 export type StatusColorTypes = "red" | "yellow" | "green";
 export type StorageTypes = "backpack" | "inventory" | "battleItems" | "rewards" | "trashCan" | "shop";

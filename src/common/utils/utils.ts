@@ -47,6 +47,21 @@ export default class Utils {
 		return Utils.ReverseString(result);
 	}
 
+	static formatVariableString(string: string) {
+		const letters = string.match(/[A-Z]/g);
+
+		if (!letters) {
+			return string;
+		} else {
+			let result = string;
+			letters.forEach((v, i) => {
+				const regex = new RegExp(`${v}`, "g");
+				result = result.replace(regex, ` ${v.toLowerCase()}`);
+			});
+			return result;
+		}
+	}
+
 	/** helper function that reverses a string */
 	static ReverseString(input: string) {
 		let result: string = "";

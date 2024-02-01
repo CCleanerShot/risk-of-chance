@@ -42,7 +42,7 @@ const SVG = ({ size, url, className, styles }: IconProps) => {
 		Object.assign(defaultStyles, styles);
 	}
 
-	return <div className={twMerge("bg-black", sizeStyles, className)} style={defaultStyles} />;
+	return <svg className={twMerge(sizeStyles, className)} style={defaultStyles} />;
 };
 
 export default SVG;

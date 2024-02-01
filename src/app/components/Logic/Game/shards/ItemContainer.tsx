@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Button from "@/app/components/UI/Button";
 import GlobalStore from "@/common/global_store";
 import { twMerge } from "tailwind-merge";
@@ -20,33 +20,57 @@ interface ItemContainerProps {
 }
 
 const ItemContainer = ({ item, source, size, className, disabled = false, overrideOnClick }: ItemContainerProps) => {
-	const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-		const currentStage = GlobalStore.getFromStore("game").game.gameStatus;
-		switch (currentStage) {
-			case "battle":
-				source === "backpack" && GlobalStore.Update("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
-				source === "battleItems" && UtilsGame.MoveItem("player", item, source, "inventory");
-				source === "inventory" && UtilsGame.MoveItem("player", item, source, "battleItems");
-				source === "rewards" && GlobalStore.Update("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
-				break;
-			case "start":
-				source === "backpack" && UtilsGame.MoveItem("player", item, source, "inventory");
-				source === "battleItems" && GlobalStore.Update("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
-				source === "inventory" && UtilsGame.MoveItem("player", item, source, "backpack");
-				source === "rewards" && GlobalStore.Update("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
-				break;
-			case "results":
-				source === "backpack" && GlobalStore.Update("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
-				source === "battleItems" && GlobalStore.Update("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
-				source === "inventory" && UtilsGame.MoveItem("player", item, source, "rewards");
-				source === "rewards" && UtilsGame.MoveItem("player", item, source, "inventory");
-				break;
-			default:
-				GlobalStore.Update("updateMessage", "updateMessage", { msg: "Cannot move: unhandled behavior (contact dev plz)", type: "error" });
-				break;
-		}
+	const [isSelected, setIsSelected] = useState(false);
 
-		GlobalStore.Update("viewSelected", "itemSelect", item);
+	const listenToSelectedItem = () => {
+		const selectedItem = GlobalStore.getFromStore("selectedItem").selectedItem.item;
+		setIsSelected(item !== null && selectedItem === item);
+		GlobalStore.RemoveListener("selectedItem", listenToSelectedItem);
+	};
+
+	const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+		if (!isSelected) {
+			setIsSelected(true);
+			GlobalStore.AddListener("selectedItem", listenToSelectedItem);
+			GlobalStore.Update("selectedItem", "selectedItem", { item, source });
+		} else {
+			const currentStage = GlobalStore.getFromStore("game").game.gameStatus;
+			switch (currentStage) {
+				case "battle":
+					source === "backpack" && GlobalStore.Update("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
+					source === "battleItems" && UtilsGame.MoveItem("player", item, source, "inventory");
+					source === "inventory" && UtilsGame.MoveItem("player", item, source, "battleItems");
+					source === "rewards" && GlobalStore.Update("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
+					source === "trashCan" && GlobalStore.Update("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
+					break;
+				case "start":
+					source === "backpack" && UtilsGame.MoveItem("player", item, source, "inventory");
+					source === "battleItems" && GlobalStore.Update("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
+					source === "inventory" && UtilsGame.MoveItem("player", item, source, "backpack");
+					source === "rewards" && GlobalStore.Update("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
+					source === "trashCan" && UtilsGame.MoveItem("player", item, source, "backpack");
+					break;
+				case "results":
+					source === "backpack" && GlobalStore.Update("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
+					source === "battleItems" && GlobalStore.Update("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
+					source === "inventory" && UtilsGame.MoveItem("player", item, source, "rewards");
+					source === "rewards" && UtilsGame.MoveItem("player", item, source, "inventory");
+					source === "trashCan" && GlobalStore.Update("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
+					break;
+				case "shop":
+					source === "backpack" && GlobalStore.Update("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
+					source === "battleItems" && GlobalStore.Update("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
+					source === "inventory" && UtilsGame.MoveItem("player", item, source, "rewards");
+					source === "rewards" && GlobalStore.Update("updateMessage", "updateMessage", { msg: "Cannot move: unexpected error! (contact dev plz)", type: "error" });
+					source === "trashCan" && UtilsGame.MoveItem("player", item, source, "backpack");
+					break;
+				default:
+					GlobalStore.Update("updateMessage", "updateMessage", { msg: "Cannot move: unhandled behavior (contact dev plz)", type: "error" });
+					break;
+			}
+
+			GlobalStore.Update("selectedItem", "selectedItem", { item: null, source: "backpack" });
+		}
 	};
 
 	let sizeStyles: string;
@@ -76,11 +100,11 @@ const ItemContainer = ({ item, source, size, className, disabled = false, overri
 		switch (item.type) {
 			case "dice": {
 				const _item = item as Item<"dice">;
-				return <div className={item.disabled ? "line-through text-red-500" : ""}>{_item.sides}</div>;
+				return <div className={twMerge(item.disabled ? "line-through text-red-500" : "", "text-center")}>{_item.sides}</div>;
 			}
 
 			case "health": {
-				return <div className={item.disabled ? "line-through text-red-500" : ""}>health</div>;
+				return <div className={twMerge(item.disabled ? "line-through text-red-500" : "", "text-center")}>health</div>;
 			}
 
 			default: {
@@ -90,7 +114,7 @@ const ItemContainer = ({ item, source, size, className, disabled = false, overri
 	};
 
 	return (
-		<Button disabled={disabled || !item || item.disabled} template="green_border" className={twMerge(sizeStyles, "text-white border-slate-900 p-1", className)} onClick={overrideOnClick ?? handleClick}>
+		<Button disabled={disabled || !item || item.disabled} template="green_border" className={twMerge(sizeStyles, "text-white border-slate-900 p-1 flex justify-center items-center", isSelected ? "text-green-500" : "", className)} onClick={overrideOnClick ?? handleClick}>
 			<Contents />
 		</Button>
 	);

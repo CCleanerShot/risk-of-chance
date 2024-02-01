@@ -1,6 +1,5 @@
 import Button from "@/app/components/UI/Button";
 import GlobalStore from "@/common/global_store";
-import UtilsSupabase from "@/common/utils/utils_supabase";
 import React from "react";
 import { twMerge } from "tailwind-merge";
 

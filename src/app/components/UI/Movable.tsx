@@ -46,7 +46,7 @@ const Movable = ({ children, className, defaultPosition, isDraggedStyles }: Mova
 		<div
 			draggable
 			style={newPosition ? { left: newPosition.x, top: newPosition.y } : { left: 0, top: 0, transform: `translate(${transform.x}, ${transform.y})` }}
-			className={twMerge(isDragged ? twMerge("bg-green-200", isDraggedStyles) : "", "fixed outline-none caret-transparent", className)}
+			className={twMerge(isDragged ? twMerge("bg-green-200", isDraggedStyles) : "", "fixed cursor-move", className)}
 			onDragStart={handleDragStart}
 			onDrag={handleDrag}
 			onDragEnd={handleDragEnd}

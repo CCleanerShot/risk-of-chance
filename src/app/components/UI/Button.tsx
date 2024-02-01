@@ -15,10 +15,11 @@ interface ButtonProps {
 }
 
 const buttonStyles = {
-	standard: "border-2 border-slate-900 hover:text-green-600",
-	darker_inner: "border-2 border-slate-900 hover:bg-green-600 ",
 	borderless: "hover:text-green-600",
+	darker_inner: "border-2 border-slate-900 hover:bg-green-600 ",
 	green_border: "border-2 border-slate-900 hover:border-green-600",
+	standard: "border-2 border-slate-900 hover:text-green-600",
+	none: "",
 } as const;
 
 const Button = ({ template, children, className, disabled = false, onClick, onMouseEnter, onMouseLeave, size }: ButtonProps) => {

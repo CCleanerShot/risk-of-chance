@@ -1,9 +1,9 @@
 import React from "react";
 import Button from "@/app/components/UI/Button";
-import SVG from "@/app/components/UI/SVG";
 import Utils from "@/common/utils/utils";
 import { ProviderTypes } from "@/types";
 import UtilsSupabase from "@/common/utils/utils_supabase";
+import Image from "next/image";
 
 interface ModalAuthProviderProps {
 	provider: ProviderTypes;
@@ -14,9 +14,9 @@ const ModalAuthProvider = ({ provider }: ModalAuthProviderProps) => {
 	};
 
 	return (
-		<Button onClick={handleClick} template="standard" className="flex justify-between gap-2 group">
-			<div>{`Sign In/Sign Up with ${Utils.FirstLetterUppercase(provider)}`}</div>
-			<SVG size="large" url={`images/${provider}.svg`} className="transition h-6 w-6 group-hover:bg-green-600" />
+		<Button onClick={handleClick} template="none" className="flex justify-between gap-2 group bg-white">
+			<span className="m-auto">{`Join with ${Utils.FirstLetterUppercase(provider)}`}</span>
+			<Image src={`images/${provider}.svg`} alt={`image of ${provider} logo`} width={1} height={1} className="flex-1" />
 		</Button>
 	);
 };
