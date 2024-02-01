@@ -16,7 +16,7 @@ const ModalAuthProvider = ({ provider }: ModalAuthProviderProps) => {
 	return (
 		<Button onClick={handleClick} template="none" className="flex justify-between gap-2 group bg-white">
 			<span className="m-auto">{`Join with ${Utils.FirstLetterUppercase(provider)}`}</span>
-			<Image src={`images/${provider}.svg`} alt={`image of ${provider} logo`} width={1} height={1} className="flex-1" />
+			<Image src={`images/${provider}.svg`} alt={`image of ${provider} logo`} width={40} height={40} />
 		</Button>
 	);
 };
