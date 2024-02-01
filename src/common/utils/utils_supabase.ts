@@ -6,7 +6,6 @@ import { Database, Json, ProviderTypes } from "@/types";
 const URL = process.env.NEXT_PUBLIC_SUPABASE_HOST_URL;
 const PUBLIC_KEY = process.env.NEXT_PUBLIC_SUPABASE_PUBLIC_KEY;
 const ENVIRONMENT = process.env.ENVIRONMENT;
-console.log("test", ENVIRONMENT === "development", ENVIRONMENT === "production", process.env.NEXT_PUBLIC_HOMEPAGE_PROD);
 
 const DEV_PAGE = process.env.NEXT_PUBLIC_HOMEPAGE_DEV;
 const PROD_PAGE = process.env.NEXT_PUBLIC_HOMEPAGE_PROD;
