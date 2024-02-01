@@ -6,7 +6,11 @@ import { Database, Json, ProviderTypes } from "@/types";
 const URL = process.env.NEXT_PUBLIC_SUPABASE_HOST_URL;
 const PUBLIC_KEY = process.env.NEXT_PUBLIC_SUPABASE_PUBLIC_KEY;
 const ENVIRONMENT = process.env.ENVIRONMENT;
-const HOMEPAGE = ENVIRONMENT === "development" ? process.env.NEXT_PUBLIC_HOMEPAGE_DEV : ENVIRONMENT === "production" ? process.env.NEXT_PUBLIC_HOMEPAGE_PROD : process.env.NEXT_PUBLIC_HOMEPAGE_DEV;
+console.log("test", ENVIRONMENT === "development", ENVIRONMENT === "production", process.env.NEXT_PUBLIC_HOMEPAGE_PROD);
+
+const DEV_PAGE = process.env.NEXT_PUBLIC_HOMEPAGE_DEV;
+const PROD_PAGE = process.env.NEXT_PUBLIC_HOMEPAGE_PROD;
+const HOMEPAGE = ENVIRONMENT === "development" ? DEV_PAGE : ENVIRONMENT === "production" ? PROD_PAGE : DEV_PAGE;
 
 export const supabase = createClient<Database>(URL, PUBLIC_KEY);
 
@@ -40,7 +44,7 @@ export default class UtilsSupabase {
 		switch (provider) {
 			case "github": {
 				const queryParams = { access_type: "offline", prompt: "consent" };
-				supabase.auth.signInWithOAuth({ provider: provider, options: { queryParams: queryParams, redirectTo: HOMEPAGE } });
+				supabase.auth.signInWithOAuth({ provider: provider, options: { queryParams: queryParams } });
 				break;
 			}
 			case "google": {
