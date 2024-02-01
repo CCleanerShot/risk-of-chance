@@ -2,10 +2,11 @@ import GlobalStore from "../global_store";
 import { createClient } from "@supabase/supabase-js";
 import { Item } from "@/types/local";
 import { Database, Json, ProviderTypes } from "@/types";
-import UtilsGame from "./utils_game";
 
 const URL = process.env.NEXT_PUBLIC_SUPABASE_HOST_URL;
 const PUBLIC_KEY = process.env.NEXT_PUBLIC_SUPABASE_PUBLIC_KEY;
+const ENVIRONMENT = process.env.ENVIRONMENT;
+const HOMEPAGE = ENVIRONMENT === "development" ? process.env.NEXT_PUBLIC_HOMEPAGE_DEV : ENVIRONMENT === "production" ? process.env.NEXT_PUBLIC_HOMEPAGE_PROD : process.env.NEXT_PUBLIC_HOMEPAGE_DEV;
 
 export const supabase = createClient<Database>(URL, PUBLIC_KEY);
 
@@ -39,7 +40,7 @@ export default class UtilsSupabase {
 		switch (provider) {
 			case "github": {
 				const queryParams = { access_type: "offline", prompt: "consent" };
-				supabase.auth.signInWithOAuth({ provider: provider, options: { queryParams: queryParams } });
+				supabase.auth.signInWithOAuth({ provider: provider, options: { queryParams: queryParams, redirectTo: HOMEPAGE } });
 				break;
 			}
 			case "google": {
