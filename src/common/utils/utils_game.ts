@@ -1,4 +1,4 @@
-import Utils from "../utils/utils";
+import Utils from "./utils";
 import GlobalStore from "../global_store";
 import { StorageTypes } from "@/types";
 import { ActorTypes, ResultsTypes, Item } from "@/types";
@@ -116,6 +116,15 @@ export default class UtilsGame {
 
 		const moveSuccessful = UtilsGame.MoveItem("player", item, "shop", "backpack");
 		if (moveSuccessful) GlobalStore.Update("gold", "gold", currentGold - cost);
+	}
+
+	static SellItem(item: Item, cost: number) {
+		if (item) {
+			GlobalStore.Update("gold", "gold", (prevGold) => prevGold + cost);
+			GlobalStore.Update("trashCan", "trashCan", []);
+		} else {
+			GlobalStore.Update("updateMessage", "updateMessage", { msg: "Cannot sell: unexpected error!", type: "error" });
+		}
 	}
 
 	static CreateEnemyInventory(floor: number): Item[] {

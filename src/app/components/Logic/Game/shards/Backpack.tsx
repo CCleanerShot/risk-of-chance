@@ -16,7 +16,6 @@ interface BackpackProps {
 }
 
 const Backpack = ({ size, source }: BackpackProps) => {
-	const [tabNumber, setTabNumber] = useState(1);
 	const [backpack, setBackpack] = useState<Item[]>([]);
 
 	const listenToUpdate = async () => {
@@ -44,7 +43,6 @@ const Backpack = ({ size, source }: BackpackProps) => {
 			</div>
 			<div className="flex justify-between items-center">
 				<GoldTotal />
-				<TrashCan size="smallest" />
 			</div>
 		</div>
 	);

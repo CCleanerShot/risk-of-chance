@@ -68,7 +68,9 @@ export default class GlobalStore {
 
 		const foundIndex = foundVariable.listeners.findIndex((searchListener) => searchListener.listener === listener);
 
-		foundVariable.listeners.push({ listener: listener, listenerArgs: listenerArgs });
+		if (foundIndex) {
+			foundVariable.listeners.splice(foundIndex, 1);
+		}
 	}
 	/**
 	 * updates a property from a variable, to which after, all listeners of the variable will be called. is 1 of 2 ways the listeners of a variable can be automatically called
@@ -137,7 +139,6 @@ export const contextsList = {
 	modalSettings: GlobalStore.AddVariable({ isOpened: false }),
 	playerDetails: GlobalStore.AddVariable({ playerDetails: { name: "" } }),
 	rewards: GlobalStore.AddVariable({ rewards: [] as Item[] }),
-	selectedItem: GlobalStore.AddVariable({ selectedItem: { source: "backpack" as StorageTypes, item: null as Item } }),
 	shop: GlobalStore.AddVariable({ shop: [] as PurchaseableItem[] }),
 	settings: GlobalStore.AddVariable({ settings: { moveItem: "Q", deleteItem: "W" } }),
 	settingToChange: GlobalStore.AddVariable({ settingToChange: null as SettingTypes | null }),
@@ -145,5 +146,5 @@ export const contextsList = {
 	supabaseSession: GlobalStore.AddVariable({ session: null as Session | null, status: "none" as SupabaseSessionStatusTypes }),
 	trashCan: GlobalStore.AddVariable({ trashCan: [] as Item[] }),
 	updateMessage: GlobalStore.AddVariable({ updateMessage: { msg: "", type: "log" as MessageTypes } }),
-	viewSelected: GlobalStore.AddVariable({ floorSelect: 1 }),
+	viewSelected: GlobalStore.AddVariable({ floorSelect: 1, inventorySelect: null as Item, backpackSelect: null as Item }),
 } as const;
