@@ -10,3 +10,4 @@ im moving my todo list here now cuz its gotten smaller:
 - ~~add backbutton for shop~~
 - ~~fix backpack not saving on death~~
 - add graphics for various dice
+- move site off vercel (maybe now i might be too lazy to do that)
