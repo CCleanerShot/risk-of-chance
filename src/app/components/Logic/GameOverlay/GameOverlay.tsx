@@ -11,32 +11,42 @@ import H2 from "../../UI/H2";
 import Settings from "./shards/Settings";
 
 const GameOverlay = () => {
-	const [isLoading, setIsLoading] = useState(false);
-	const [gameStatus, setGameStatus] = useState<GameStatusTypes>(GlobalStore.getFromStore("game").game.gameStatus);
+    const [isLoading, setIsLoading] = useState(false);
+    const [gameStatus, setGameStatus] = useState<GameStatusTypes>(GlobalStore.getFromStore("game").game.gameStatus);
 
-	const listenToGame = () => {
-		const newStatus = GlobalStore.getFromStore("game").game.gameStatus;
-		setGameStatus(newStatus);
-	};
+    const listenToIsLoading = () => {
+        const newIsLoading = GlobalStore.getFromStore("isLoading").isLoading;
+        setIsLoading(newIsLoading);
+    };
 
-	useEffect(() => {
-		GlobalStore.AddListener("game", listenToGame);
-		GlobalStore.AddStandardListener("isLoading", "isLoading", setIsLoading);
-		listenToGame();
-	}, []);
+    const listenToGame = () => {
+        const newStatus = GlobalStore.getFromStore("game").game.gameStatus;
+        setGameStatus(newStatus);
+    };
 
-	return (
-		<Movable defaultPosition={{ x: "left", y: "top" }} isDraggedStyles="bg-slate-700">
-			<H2>Control Panel</H2>
-			<div className="grid grid-cols-2  gap-2 items-center p-4 border-4 border-slate-900 bg-slate-700">
-				<Back currentStatus={gameStatus} className="p-1" />
-				<Settings disabled={false} className="p-1" />
-				<Load disabled={gameStatus !== "start" && gameStatus !== "shop"} className="p-1" />
-				<Save disabled={gameStatus !== "start" && gameStatus !== "shop"} className="p-1" />
-				<span className="text-slate-400 text-sm italic text-center col-span-2">move me!</span>
-			</div>
-		</Movable>
-	);
+    useEffect(() => {
+        GlobalStore.AddListener("game", listenToGame);
+        GlobalStore.AddListener("isLoading", listenToIsLoading);
+        listenToGame();
+
+        return () => {
+            GlobalStore.RemoveListener("game", listenToGame);
+            GlobalStore.RemoveListener("isLoading", listenToIsLoading);
+        };
+    }, []);
+
+    return (
+        <Movable defaultPosition={{ x: "left", y: "top" }} isDraggedStyles="bg-slate-700">
+            <H2>Control Panel</H2>
+            <div className="grid grid-cols-2  gap-2 items-center p-4 border-4 border-slate-900 bg-slate-700">
+                <Back currentStatus={gameStatus} className="p-1" />
+                <Settings disabled={false} className="p-1" />
+                <Load disabled={gameStatus !== "start" && gameStatus !== "shop"} className="p-1" />
+                <Save disabled={gameStatus !== "start" && gameStatus !== "shop"} className="p-1" />
+                <span className="text-slate-400 text-sm italic text-center col-span-2">move me!</span>
+            </div>
+        </Movable>
+    );
 };
 
 export default GameOverlay;

@@ -8,37 +8,41 @@ import Keybind from "./shards/Keybind";
 import { SettingTypes } from "@/types";
 
 const ModalSettings = () => {
-	const [settings, setSettings] = useState(GlobalStore.getFromStore("settings").settings);
-	const [settingToChange, setSettingToChange] = useState(GlobalStore.getFromStore("settingToChange").settingToChange);
+    const [settings, setSettings] = useState(GlobalStore.getFromStore("settings").settings);
+    const [settingToChange, setSettingToChange] = useState(GlobalStore.getFromStore("settingToChange").settingToChange);
 
-	const listenToSettings = () => {
-		const newSettings = GlobalStore.getFromStore("settings").settings;
-		setSettings(newSettings);
-	};
+    const listenToSettings = () => {
+        const newSettings = GlobalStore.getFromStore("settings").settings;
+        setSettings(newSettings);
+    };
 
-	const listenToSettingToChange = () => {
-		const newSettingToChange = GlobalStore.getFromStore("settingToChange").settingToChange;
-		setSettingToChange(newSettingToChange);
-	};
+    const listenToSettingToChange = () => {
+        const newSettingToChange = GlobalStore.getFromStore("settingToChange").settingToChange;
+        setSettingToChange(newSettingToChange);
+    };
 
-	useEffect(() => {
-		GlobalStore.AddListener("settings", listenToSettings);
-		GlobalStore.AddListener("settingToChange", listenToSettingToChange);
+    useEffect(() => {
+        GlobalStore.AddListener("settings", listenToSettings);
+        GlobalStore.AddListener("settingToChange", listenToSettingToChange);
+        listenToSettings();
+        listenToSettingToChange();
 
-		listenToSettings();
-		listenToSettingToChange();
-	}, []);
+        return () => {
+            GlobalStore.RemoveListener("settings", listenToSettings);
+            GlobalStore.RemoveListener("settingToChange", listenToSettingToChange);
+        };
+    }, []);
 
-	return (
-		<Modal alignment={{ x: "middle", y: "middle" }} listenTo="modalSettings">
-			<div className="flex flex-col gap-2 p-2">
-				<H1>Settings</H1>
-				{Object.entries(settings).map(([key, value], index) => (
-					<Keybind key={`keybind${index}`} defaultValue={settingToChange === key ? "waiting..." : value} keybind={key as SettingTypes} />
-				))}
-			</div>
-		</Modal>
-	);
+    return (
+        <Modal alignment={{ x: "middle", y: "middle" }} listenTo="modalSettings">
+            <div className="flex flex-col gap-2 p-2">
+                <H1>Settings</H1>
+                {Object.entries(settings).map(([key, value], index) => (
+                    <Keybind key={`keybind${index}`} defaultValue={settingToChange === key ? "waiting..." : value} keybind={key as SettingTypes} />
+                ))}
+            </div>
+        </Modal>
+    );
 };
 
 export default ModalSettings;

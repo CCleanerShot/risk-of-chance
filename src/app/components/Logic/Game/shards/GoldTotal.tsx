@@ -6,17 +6,21 @@ import Utils from "@/common/utils/utils";
 import Gold from "./Gold";
 
 const GoldTotal = () => {
-	const [gold, setGold] = useState(GlobalStore.getFromStore("gold").gold);
-	const listenToGold = () => {
-		const newGold = GlobalStore.getFromStore("gold").gold;
-		setGold(newGold);
-	};
+    const [gold, setGold] = useState(GlobalStore.getFromStore("gold").gold);
+    const listenToGold = () => {
+        const newGold = GlobalStore.getFromStore("gold").gold;
+        setGold(newGold);
+    };
 
-	useEffect(() => {
-		GlobalStore.AddListener("gold", listenToGold);
-	}, []);
+    useEffect(() => {
+        GlobalStore.AddListener("gold", listenToGold);
 
-	return <Gold>{Utils.FormatNumber(gold)}</Gold>;
+        return () => {
+            GlobalStore.RemoveListener("gold", listenToGold);
+        };
+    }, []);
+
+    return <Gold>{Utils.FormatNumber(gold)}</Gold>;
 };
 
 export default GoldTotal;

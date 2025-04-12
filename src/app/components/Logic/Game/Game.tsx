@@ -9,37 +9,51 @@ import Start from "./shards/Start";
 import Exit from "./shards/Exit";
 import Shop from "./shards/Shop";
 import UtilsGame from "@/common/utils/utils_game";
-import Button from "../../UI/Button";
+import UtilsSupabase from "@/common/utils/utils_supabase";
+import Username from "@/app/components/Logic/Username/Username";
 
 const Game = () => {
-	const [gameScreen, setGameScreen] = useState<GameStatusTypes>("start");
+    const [gameScreen, setGameScreen] = useState<GameStatusTypes>("start");
 
-	const listenToGame = () => {
-		const game = GlobalStore.getFromStore("game").game;
-		setGameScreen(game.gameStatus);
-	};
+    const listenToGame = () => {
+        const game = GlobalStore.getFromStore("game").game;
+        setGameScreen(game.gameStatus);
 
-	useEffect(() => {
-		UtilsGame.Initialize();
-		GlobalStore.AddListener("game", listenToGame);
-	}, []);
+        if (GlobalStore.getFromStore("supabaseSession").session !== null) {
+            UtilsSupabase.Save(false);
+        }
+    };
 
-	const ScreenComponent = () => {
-		switch (gameScreen) {
-			case "battle":
-				return <Battle />;
-			case "results":
-				return <Results />;
-			case "start":
-				return <Start />;
-			case "exit":
-				return <Exit />;
-			case "shop":
-				return <Shop />;
-		}
-	};
+    useEffect(() => {
+        UtilsGame.Initialize();
+        GlobalStore.AddListener("game", listenToGame);
 
-	return <div className="flex-1 flex justify-center items-center">{ScreenComponent()}</div>;
+        return () => {
+            GlobalStore.RemoveListener("game", listenToGame);
+        };
+    }, []);
+
+    const ScreenComponent = () => {
+        switch (gameScreen) {
+            case "battle":
+                return <Battle />;
+            case "results":
+                return <Results />;
+            case "start":
+                return <Start />;
+            case "exit":
+                return <Exit />;
+            case "shop":
+                return <Shop />;
+        }
+    };
+
+    return (
+        <div className="flex-1 flex justify-center items-center">
+            {ScreenComponent()}
+            <Username />
+        </div>
+    );
 };
 
 export default Game;

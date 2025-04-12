@@ -4,7 +4,7 @@ export type ActorTypes = "player" | "enemy";
 export type GameStatusTypes = "battle" | "start" | "results" | "exit" | "shop";
 export type MessageTypes = "log" | "warn" | "error";
 export type ModalAuthTabTypes = "signin" | "register";
-export type ModalTypes = "modalAuth" | "modalSettings";
+export type ModalTypes = "modalAuth" | "modalSettings" | "modalCreateUser";
 export type ProviderTypes = "google" | "github";
 export type ResultsTypes = "win" | "lose" | "draw";
 export type SettingTypes = "moveItem" | "deleteItem";
@@ -19,23 +19,23 @@ export type PurchaseableItem = Item & { cost: number };
 // to check if database query matches the type of a backpack
 
 export interface Alignment {
-	x: "left" | "middle" | "right";
-	y: "top" | "middle" | "bottom";
+    x: "left" | "middle" | "right";
+    y: "top" | "middle" | "bottom";
 }
 
 export interface NPC {
-	name: string;
-	items: Item<any>[];
+    name: string;
+    items: Item<any>[];
 }
 
 export interface Game {
-	gameStatus: GameStatusTypes;
-	currentFloor: number;
+    gameStatus: GameStatusTypes;
+    currentFloor: number;
 }
 
 export interface Health {
-	current: number;
-	max: number;
+    current: number;
+    max: number;
 }
 
 // // prettier-ignore
