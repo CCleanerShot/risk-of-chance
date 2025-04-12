@@ -9,7 +9,7 @@ declare global {
             NEXT_PUBLIC_SUPABASE_PUBLIC_KEY: string;
             NEXT_PUBLIC_HOMEPAGE_DEV: string;
             NEXT_PUBLIC_HOMEPAGE_PROD: string;
-            NEXT_PUBLIC_ENVIRONMENT: string;
+            NEXT_PUBLIC_ENVIRONMENT: "development" | "production";
         }
     }
 }
