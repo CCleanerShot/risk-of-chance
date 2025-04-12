@@ -1,8 +1,7 @@
-import { supabase } from "@/common/utils/utils_supabase";
-import { Game, Health, Item, MessageTypes, ResultsTypes, SupabaseSessionStatusTypes } from "@/types";
-import { Session } from "@supabase/supabase-js";
 import UtilsGame from "./utils/utils_game";
-import { PurchaseableItem, SettingTypes, StorageTypes } from "@/types/local";
+import { Session } from "@supabase/supabase-js";
+import { supabase } from "@/common/utils/utils_supabase";
+import { Game, Health, Item, MessageTypes, ResultsTypes, SupabaseSessionStatusTypes, PurchaseableItem, SettingTypes } from "@/types";
 
 type VariableType<T extends any, K extends (args: any) => void> = {
     variable: T;

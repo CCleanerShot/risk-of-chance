@@ -1,7 +1,6 @@
-import { Item } from "@/types/local";
 import GlobalStore from "../global_store";
-import { Database, ProviderTypes } from "@/types";
 import { createClient } from "@supabase/supabase-js";
+import { Database, ProviderTypes, Item } from "@/types";
 
 const URL = process.env.NEXT_PUBLIC_SUPABASE_HOST_URL;
 const PUBLIC_KEY = process.env.NEXT_PUBLIC_SUPABASE_PUBLIC_KEY;

@@ -1,8 +1,6 @@
 import Utils from "./utils";
 import GlobalStore from "../global_store";
-import { StorageTypes } from "@/types";
-import { ActorTypes, ResultsTypes, Item } from "@/types";
-import { PurchaseableItem } from "@/types/local";
+import { ActorTypes, ResultsTypes, Item, StorageTypes, PurchaseableItem } from "@/types";
 
 export default class UtilsGame {
     static MIN_DIFFICULTY = 9 as const;
