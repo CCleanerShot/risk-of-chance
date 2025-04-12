@@ -11,6 +11,7 @@ const SignInForm = () => {
 
     return (
         <div className="flex">
+            test
             <Auth supabaseClient={supabaseClient} providers={["google", "github"]} appearance={{ theme: ThemeSupa }} redirectTo={page}></Auth>
         </div>
     );

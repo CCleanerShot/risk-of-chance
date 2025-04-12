@@ -2,17 +2,7 @@ import GlobalStore from "../global_store";
 import { createClient } from "@supabase/supabase-js";
 import { Database, ProviderTypes, Item } from "@/types";
 
-const URL = process.env.NEXT_PUBLIC_SUPABASE_HOST_URL;
-const PUBLIC_KEY = process.env.NEXT_PUBLIC_SUPABASE_PUBLIC_KEY;
-const ENVIRONMENT = process.env.ENVIRONMENT;
-
-const DEV_PAGE = process.env.NEXT_PUBLIC_HOMEPAGE_DEV;
-const PROD_PAGE = process.env.NEXT_PUBLIC_HOMEPAGE_PROD;
-
-console.log(ENVIRONMENT);
-const HOMEPAGE = ENVIRONMENT === "development" ? DEV_PAGE : ENVIRONMENT === "production" ? PROD_PAGE : "test";
-
-export const supabase = createClient<Database>(URL, PUBLIC_KEY);
+export const supabase = createClient<Database>(process.env.NEXT_PUBLIC_SUPABASE_HOST_URL, process.env.NEXT_PUBLIC_SUPABASE_PUBLIC_KEY);
 
 // prettier-ignore
 export const queries = {
@@ -41,11 +31,17 @@ export default class UtilsSupabase {
     }
 
     static SignInWithProvider(provider: ProviderTypes) {
+        const ENVIRONMENT = process.env.NEXT_PUBLIC_ENVIRONMENT;
+        const DEV_PAGE = process.env.NEXT_PUBLIC_HOMEPAGE_DEV;
+        const PROD_PAGE = process.env.NEXT_PUBLIC_HOMEPAGE_PROD;
+        const HOMEPAGE = ENVIRONMENT === "development" ? DEV_PAGE : ENVIRONMENT === "production" ? PROD_PAGE : "test";
+
+        console.log(ENVIRONMENT, DEV_PAGE, PROD_PAGE, HOMEPAGE);
         const queryParams = { access_type: "offline", prompt: "consent" };
         switch (provider) {
             case "github":
             case "google":
-                supabase.auth.signInWithOAuth({ provider: provider, options: { queryParams: queryParams } });
+                supabase.auth.signInWithOAuth({ provider: provider, options: { queryParams: queryParams, redirectTo: HOMEPAGE } });
                 break;
         }
     }
