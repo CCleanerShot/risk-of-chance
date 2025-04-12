@@ -8,7 +8,9 @@ const ENVIRONMENT = process.env.ENVIRONMENT;
 
 const DEV_PAGE = process.env.NEXT_PUBLIC_HOMEPAGE_DEV;
 const PROD_PAGE = process.env.NEXT_PUBLIC_HOMEPAGE_PROD;
-const HOMEPAGE = ENVIRONMENT === "development" ? DEV_PAGE : ENVIRONMENT === "production" ? PROD_PAGE : DEV_PAGE;
+
+console.log(ENVIRONMENT);
+const HOMEPAGE = ENVIRONMENT === "development" ? DEV_PAGE : ENVIRONMENT === "production" ? PROD_PAGE : "test";
 
 export const supabase = createClient<Database>(URL, PUBLIC_KEY);
 
